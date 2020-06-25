@@ -15,6 +15,11 @@ namespace RC {
 	public:
 		int id;
 		std::vector<RPlayer> players;
+
+		void addPlayer(RPlayer &player);
+		void addPlayer(int id, std::string &name);
+		void removePlayer(RPlayer &player);
+		void removePlayer(int id);
 	};
 }
 
