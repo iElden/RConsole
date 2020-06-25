@@ -11,7 +11,7 @@ bool RC::RClient::isInLobby() const noexcept
 	return this->myLobby.has_value();
 }
 
-RC::RClientLobby &RC::RClient::getLobby() const
+const RC::RClientLobby &RC::RClient::getLobby() const
 {
 	return *this->myLobby;
 }

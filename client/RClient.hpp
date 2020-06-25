@@ -16,7 +16,7 @@ namespace RC {
 		std::optional<RClientLobby> myLobby = std::nullopt;
 
 		bool isInLobby() const noexcept;
-		RClientLobby& getLobby() const; // raise if not in lobby
+		const RClientLobby& getLobby() const; // raise if not in lobby
 	};
 }
 
