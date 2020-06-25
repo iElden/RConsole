@@ -7,6 +7,9 @@
 
 
 #define PACKED __attribute((packed))
+#define MAX_USERNAME 64
+#define MAX_PASSWORD 64
+#define MAX_MESSAGE 64
 
 namespace RC::Network
 {
@@ -40,8 +43,8 @@ namespace RC::Network
 
 	struct PACKED PacketHello {
 		Opcode code;
-		char username[64];
-		char password[64];
+		char username[MAX_USERNAME];
+		char password[MAX_PASSWORD];
 	};
 
 	struct PACKED PackerOlleh {
@@ -51,7 +54,7 @@ namespace RC::Network
 
 	struct PACKED PacketKicked {
 		Opcode code;
-		char reason[64];
+		char reason[MAX_MESSAGE];
 	};
 
 	struct PACKED PacketPing {
@@ -60,10 +63,9 @@ namespace RC::Network
 	};
 
 	struct PACKED NPlayer {
-		Opcode code;
 		unsigned id;
 		unsigned ping;
-		char username[64];
+		char username[MAX_USERNAME];
 	};
 
 	struct PACKED PacketLobbyState {
@@ -101,7 +103,7 @@ namespace RC::Network
 
 	struct PACKED PacketError {
 		Opcode code;
-		char error[64];
+		char error[MAX_MESSAGE];
 	};
 
 	struct PACKED PacketPlayerJoined {
