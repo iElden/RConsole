@@ -12,8 +12,8 @@
 
 namespace RC {
 	class RClient {
-		std::optional<RPlayer> &me;
-		std::optional<RClientLobby> &myLobby;
+		std::optional<RPlayer> me = std::nullopt;
+		std::optional<RClientLobby> myLobby = std::nullopt;
 
 		bool isInLobby() const noexcept;
 		RClientLobby& getLobby() const; // raise if not in lobby
