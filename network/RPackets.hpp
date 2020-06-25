@@ -30,73 +30,108 @@ namespace RC::Network
 		LOBBY_LIST_REQUEST,
 		LOBBY_LIST,
 		LOBBY_STATE_REQUEST,
-		LOBBY_STATE
+		LOBBY_STATE,
+		PLAYER_READY,
+		SET_READY,
+		CHOOSE_GAME,
+		GAME_START,
+		GAME_EVENT
 	};
 
 	struct PACKED PacketHello {
+		Opcode code;
 		char username[64];
 		char password[64];
 	};
 
 	struct PACKED PackerOlleh {
+		Opcode code;
 		unsigned id;
 	};
 
 	struct PACKED PacketKicked {
+		Opcode code;
 		char reason[64];
 	};
 
 	struct PACKED PacketPing {
+		Opcode code;
 		unsigned lastPing;
 	};
 
 	struct PACKED NPlayer {
+		Opcode code;
 		unsigned id;
 		unsigned ping;
 		char username[64];
 	};
 
 	struct PACKED PacketLobbyState {
+		Opcode code;
 		unsigned playerCount;
 		NPlayer players[0];
 	};
 
 	struct PACKED PacketLobbyJoined {
+		Opcode code;
 		unsigned playerCount;
 		NPlayer players[0];
 	};
 
 	struct PACKED NLobby {
+		Opcode code;
 		unsigned id;
 	};
 
 	struct PACKED PacketLobbyCreated {
+		Opcode code;
 		NLobby lobby;
 	};
 
 	struct PACKED PacketLobbyDeleted {
+		Opcode code;
 		NLobby lobby;
 	};
 
 	struct PACKED PacketLobbyList {
+		Opcode code;
 		unsigned nbLobby;
 		NLobby lobbies[0];
 	};
 
 	struct PACKED PacketError {
+		Opcode code;
 		char error[64];
 	};
 
 	struct PACKED PacketPlayerJoined {
+		Opcode code;
 		NPlayer player;
 	};
 
 	struct PACKED PacketJoinLobby {
+		Opcode code;
 		unsigned id;
 	};
 
 	struct PACKED PacketCreateLobby {
+		Opcode code;
 		NLobby lobby;
+	};
+
+	struct PACKED PacketChooseGame {
+		Opcode code;
+		unsigned id;
+	};
+
+	struct PACKED PacketGameStart {
+		Opcode code;
+		unsigned gameSelected;
+	};
+
+	struct PacketGameEvent {
+		Opcode code;
+		char gameData[0];
 	};
 
 	union PACKED Packet {
@@ -114,6 +149,9 @@ namespace RC::Network
 		PacketPlayerJoined playerJoined;
 		PacketJoinLobby joinLobby;
 		PacketCreateLobby createLobby;
+		PacketChooseGame chooseGame;
+		PacketGameStart gameStart;
+		PacketGameEvent gameEvent;
 	};
 }
 
