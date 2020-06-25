@@ -14,11 +14,6 @@
 namespace RC {
 	//! Represent a connection to a Client.
 	class ClientConnection : public Network::Connection {
-
-		template <typename T>
-		void sendPacket(const T& packet) {
-			this->sendRawPacket(&packet, sizeof(T));
-		};
 		void sendOk();
 		void sendError(const std::string &message);
 		void sendOlleh(unsigned int playerId);

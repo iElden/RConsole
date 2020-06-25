@@ -10,6 +10,11 @@
 namespace RC::Network {
 	class Connection {
 	public:
+		template <typename T>
+		void sendPacket(const T& packet) {
+			this->sendRawPacket(&packet, sizeof(T));
+		};
+
 		void sendRawPacket(const void *packet, unsigned int size);
 	};
 }
