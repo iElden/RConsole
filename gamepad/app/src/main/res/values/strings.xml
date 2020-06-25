@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">RGamepad</string>
+    <string name="server">ielden.eu</string>
+    <string name="placeholder">Enter client ID here.</string>
+    <string name="left"><![CDATA[<]]></string>
+    <string name="right"><![CDATA[>]]></string>
+    <string name="up">^</string>
+    <string name="down">v</string>
+    <string name="x">x</string>
+    <string name="y">y</string>
+    <string name="b">b</string>
+    <string name="a">a</string>
+</resources>
