@@ -7,12 +7,12 @@
 
 
 #include <string>
-#include "RPackets.hpp"
+#include "Connection.hpp"
 
 namespace RC::Network
 {
 	//! Represent a connection to a Server.
-	class ServerConnection {
+	class ServerConnection : public Connection {
 		void connect(const std::string &ip, unsigned short port);
 
 		void sendHello(const std::string &username, const std::string &password);

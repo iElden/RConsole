@@ -26,9 +26,8 @@ namespace RC::Network
 		void sendPlayerJoined(const NPlayer &player);
 		void sendLobbyList(const std::vector<NLobby> &lobbies);
 		void sendLobbyState(const std::vector<NPlayer> &players);
-		void sendPlayerReady();
+		void sendPlayerReady(uint32_t id);
 		void sendGameStart(uint32_t gameSelected);
-		void sendGameEvent(const void *data, uint64_t size);
 	};
 }
 

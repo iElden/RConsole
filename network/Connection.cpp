@@ -5,94 +5,30 @@
 ** Connection.cpp
 */
 
+#include <cstring>
 #include "Connection.hpp"
 #include "Exceptions.hpp"
 
 namespace RC::Network
 {
-	void Connection::host(unsigned short port)
-	{
-
-	}
-
-	void Connection::connect(const std::string &ip, unsigned short port)
-	{
-
-	}
-
-	void Connection::sendHello(const std::string &username, const std::string &password)
-	{
-
-	}
-
-	void Connection::sendOlleh(uint32_t id)
-	{
-
-	}
-
-	void Connection::sendPing(uint32_t lastPing)
-	{
-
-	}
-
-	void Connection::sendPong()
-	{
-
-	}
-
 	void Connection::sendGoodbye()
 	{
+		PacketHeader packet{
+			sizeof(packet) - sizeof(packet.dataSize),
+			GOODBYE
+		};
 
-	}
-
-	void Connection::sendKicked(const std::string &reason)
-	{
-
-	}
-
-	void Connection::sendJoinLobby(uint32_t id)
-	{
-
-	}
-
-	void Connection::sendCreateLobby(const NLobby &lobby)
-	{
-
-	}
-
-	void Connection::sendDeleteLobby()
-	{
-
-	}
-
-	void Connection::sendLeaveLobby()
-	{
-
-	}
-
-	void Connection::sendLobbyJoined(const std::vector<NPlayer> &players)
-	{
-
-	}
-
-	void Connection::sendLobbyCreated(const NLobby &lobby)
-	{
-
-	}
-
-	void Connection::sendLobbyDeleted(const NLobby &lobby)
-	{
-
-	}
-
-	void Connection::sendPlayerJoined(const NPlayer &player)
-	{
-
+		this->sendData(packet);
 	}
 
 	void Connection::sendOk()
 	{
+		PacketHeader packet{
+			sizeof(packet) - sizeof(packet.dataSize),
+			OK
+		};
 
+		this->sendData(packet);
 	}
 
 	void Connection::sendError(const std::string &error)
@@ -100,49 +36,21 @@ namespace RC::Network
 
 	}
 
-	void Connection::sendLobbyListRequest()
-	{
-
-	}
-
-	void Connection::sendLobbyList(const std::vector<NLobby> &lobbies)
-	{
-
-	}
-
-	void Connection::sendLobbyStateRequest()
-	{
-
-	}
-
-	void Connection::sendLobbyState(const std::vector<NPlayer> &players)
-	{
-
-	}
-
-	void Connection::sendPlayerReady()
-	{
-
-	}
-
-	void Connection::sendSetReady()
-	{
-
-	}
-
-	void Connection::sendChooseGame(uint32_t id)
-	{
-
-	}
-
-	void Connection::sendGameStart(uint32_t gameSelected)
-	{
-
-	}
-
 	void Connection::sendGameEvent(const void *data, uint64_t size)
 	{
+		char *buffer = new char[size + sizeof(PacketGameEvent)];
+		auto *packet = reinterpret_cast<PacketGameEvent *>(buffer);
 
+		packet->code = GAME_START;
+		packet->dataSize = size + sizeof(PacketGameEvent) - sizeof(packet->dataSize);
+		std::memcpy(&packet->gameData, data, size);
+		try {
+			this->sendRawData(packet, size + sizeof(PacketGameEvent));
+		} catch (...) {
+			delete[] buffer;
+			throw;
+		}
+		delete[] buffer;
 	}
 
 	void Connection::receiveNextPacket(Packet &buffer)
@@ -157,6 +65,19 @@ namespace RC::Network
 				readSize
 			)
 		);
+
+		Connection::_checkSFMLStatus(
+			this->_sock.receive(
+				&buffer.header.code,
+				packetSize,
+				readSize
+			)
+		);
+
+		if (readSize != packetSize)
+			throw InvalidPacketSizeException(readSize, packetSize);
+
+		buffer.header.dataSize = packetSize;
 	}
 
 	void Connection::sendRawData(const void *data, size_t size)
@@ -179,8 +100,3 @@ namespace RC::Network
 		}
 	}
 }
-
-/*void RC::Network::Connection::sendRawPacket(const void *packet, unsigned int size)
-{
-
-}*/

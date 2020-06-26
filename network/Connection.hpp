@@ -27,6 +27,7 @@ namespace RC::Network
 		void sendOk();
 		void sendError(const std::string &error);
 		void sendGoodbye();
+		void sendGameEvent(const void *data, uint64_t size);
 
 		template <typename T>
 		void sendData(const T &data) {

@@ -50,7 +50,7 @@ namespace RC::Network
 		char password[MAX_PASSWORD];
 	};
 
-	struct PACKED PackerOlleh {
+	struct PACKED PacketOlleh {
 		uint64_t dataSize;
 		Opcode code;
 		uint32_t id;
@@ -89,8 +89,6 @@ namespace RC::Network
 	};
 
 	struct PACKED NLobby {
-		uint64_t dataSize;
-		Opcode code;
 		uint32_t id;
 	};
 
@@ -155,6 +153,12 @@ namespace RC::Network
 		char gameData[0];
 	};
 
+	struct PacketPlayerReady {
+		uint64_t dataSize;
+		Opcode code;
+		uint32_t id;
+	};
+
 	struct PacketHeader {
 		uint64_t dataSize;
 		Opcode code;
@@ -163,7 +167,7 @@ namespace RC::Network
 	union PACKED Packet {
 		PacketHeader header;
 		PacketHello hello;
-		PackerOlleh olleh;
+		PacketOlleh olleh;
 		PacketKicked kicked;
 		PacketPing ping;
 		PacketLobbyJoined lobbyJoined;
@@ -173,6 +177,7 @@ namespace RC::Network
 		PacketLobbyList lobbyList;
 		PacketError error;
 		PacketPlayerJoined playerJoined;
+		PacketPlayerReady playerReady;
 		PacketJoinLobby joinLobby;
 		PacketCreateLobby createLobby;
 		PacketChooseGame chooseGame;
