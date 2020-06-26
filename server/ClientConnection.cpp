@@ -28,7 +28,7 @@ void RC::ClientConnection::sendError(const std::string &message)
 
 void RC::ClientConnection::sendOlleh(unsigned int playerId)
 {
-	this->sendPacket(Network::PackerOlleh{
+	this->sendPacket(Network::PacketOlleh{
 		Network::Opcode::OLLEH,
 		playerId
 	});

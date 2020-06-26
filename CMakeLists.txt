@@ -19,6 +19,8 @@ add_executable(
 		client/RClient.hpp
 )
 
+target_link_libraries(client sfml-network)
+
 
 add_executable(
 		server
@@ -26,3 +28,5 @@ add_executable(
 		${NETWORK_SRC}
 		server/ClientConnection.cpp server/ClientConnection.hpp network/Utils.hpp network/Utils.cpp network/Connection.cpp network/Connection.hpp
 )
+
+target_link_libraries(server sfml-network)

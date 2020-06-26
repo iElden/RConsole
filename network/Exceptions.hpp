@@ -32,7 +32,13 @@ namespace RC::Network
 
 	class SocketErrorException : public NetworkException {
 	public:
-		SocketErrorException(): NetworkException("The socket encountered an unexpected error.") {};
+		SocketErrorException(): NetworkException("The socket encountered an unexpected error") {};
+	};
+
+	class InvalidPacketSizeException : public NetworkException {
+	public:
+		InvalidPacketSizeException(size_t got, size_t expected):
+		NetworkException("The packet had an invalid size. Expected " + std::to_string(expected) + " bytes but got " + std::to_string(got) + " bytes") {};
 	};
 }
 

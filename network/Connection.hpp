@@ -44,7 +44,7 @@ namespace RC::Network {
 		void sendLobbyList(const std::vector<NLobby> &lobbies);
 		void sendLobbyStateRequest();
 		void sendLobbyState(const std::vector<NPlayer> &players);
-		void sendPlayerReady();
+		void sendPlayerReady(uint32_t id);
 		void sendSetReady();
 		void sendChooseGame(uint32_t id);
 		void sendGameStart(uint32_t gameSelected);
