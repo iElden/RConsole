@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(NETWORK_SRC
     network/RPackets.hpp
-    network/Utils.hpp network/Utils.cpp network/Connection.cpp network/Connection.hpp)
+    network/Utils.hpp network/Utils.cpp network/Connection.cpp network/Connection.hpp network/Exceptions.hpp)
 
 add_executable(
 		client

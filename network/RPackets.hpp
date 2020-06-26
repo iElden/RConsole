@@ -6,6 +6,8 @@
 #define RCONSOLE_RPACKETS_HPP
 
 
+#include <cstdint>
+
 #define PACKED __attribute((packed))
 #define MAX_USERNAME 64
 #define MAX_PASSWORD 64
@@ -42,102 +44,124 @@ namespace RC::Network
 	};
 
 	struct PACKED PacketHello {
+		uint64_t dataSize;
 		Opcode code;
 		char username[MAX_USERNAME];
 		char password[MAX_PASSWORD];
 	};
 
 	struct PACKED PackerOlleh {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned id;
+		uint32_t id;
 	};
 
 	struct PACKED PacketKicked {
+		uint64_t dataSize;
 		Opcode code;
 		char reason[MAX_MESSAGE];
 	};
 
 	struct PACKED PacketPing {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned lastPing;
+		uint32_t lastPing;
 	};
 
 	struct PACKED NPlayer {
-		unsigned id;
-		unsigned ping;
+		uint32_t id;
+		uint32_t ping;
 		char username[MAX_USERNAME];
 	};
 
 	struct PACKED PacketLobbyState {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned playerCount;
+		uint32_t playerCount;
 		NPlayer players[0];
 	};
 
 	struct PACKED PacketLobbyJoined {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned playerCount;
+		uint32_t playerCount;
 		NPlayer players[0];
 	};
 
 	struct PACKED NLobby {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned id;
+		uint32_t id;
 	};
 
 	struct PACKED PacketLobbyCreated {
+		uint64_t dataSize;
 		Opcode code;
 		NLobby lobby;
 	};
 
 	struct PACKED PacketLobbyDeleted {
+		uint64_t dataSize;
 		Opcode code;
 		NLobby lobby;
 	};
 
 	struct PACKED PacketLobbyList {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned nbLobby;
+		uint32_t nbLobby;
 		NLobby lobbies[0];
 	};
 
 	struct PACKED PacketError {
+		uint64_t dataSize;
 		Opcode code;
 		char error[MAX_MESSAGE];
 	};
 
 	struct PACKED PacketPlayerJoined {
+		uint64_t dataSize;
 		Opcode code;
 		NPlayer player;
 	};
 
 	struct PACKED PacketJoinLobby {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned id;
+		uint32_t id;
 	};
 
 	struct PACKED PacketCreateLobby {
+		uint64_t dataSize;
 		Opcode code;
 		NLobby lobby;
 	};
 
 	struct PACKED PacketChooseGame {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned id;
+		uint32_t id;
 	};
 
 	struct PACKED PacketGameStart {
+		uint64_t dataSize;
 		Opcode code;
-		unsigned gameSelected;
+		uint32_t gameSelected;
 	};
 
 	struct PacketGameEvent {
+		uint64_t dataSize;
 		Opcode code;
 		char gameData[0];
 	};
 
-	union PACKED Packet {
+	struct PacketHeader {
+		uint64_t dataSize;
 		Opcode code;
+	};
+
+	union PACKED Packet {
+		PacketHeader header;
 		PacketHello hello;
 		PackerOlleh olleh;
 		PacketKicked kicked;
