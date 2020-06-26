@@ -10,8 +10,9 @@
 
 #include <string>
 
-namespace RC::Network::Utils {
-	void sendRawPacket(void *packet, unsigned size);
+namespace RC::Network::Utils
+{
+	void copyToBuffer(char *buffer, const std::string &str, size_t buffSize);
 }
 
 #endif //RCONSOLE_UTILS_HPP

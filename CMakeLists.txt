@@ -29,7 +29,7 @@ add_executable(
 		client/RClient.hpp
 )
 
-target_link_libraries(client sfml-network)
+target_link_libraries(client sfml-network sfml-system)
 
 
 add_executable(
@@ -38,4 +38,4 @@ add_executable(
 		${NETWORK_SRC}
 )
 
-target_link_libraries(server sfml-network)
+target_link_libraries(server sfml-network sfml-system)

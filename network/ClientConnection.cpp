@@ -6,15 +6,17 @@
 */
 
 #include "ClientConnection.hpp"
-#include <memory.h>
-
-#define COPY_MESSAGE(src, dest) ::memset(dest, 0, MAX_MESSAGE), src.copy(dest, MAX_MESSAGE - 1)
+#include "Utils.hpp"
+#include <cstring>
 
 namespace RC::Network
 {
 	void ClientConnection::host(unsigned short port)
 	{
+		sf::TcpListener listener;
 
+		Connection::_checkSFMLStatus(listener.listen(port));
+		Connection::_checkSFMLStatus(listener.accept(this->_sock));
 	}
 
 	void ClientConnection::sendOlleh(uint32_t id)
@@ -96,21 +98,52 @@ namespace RC::Network
 
 	void ClientConnection::sendKicked(const std::string &reason)
 	{
+		PacketKicked packet{
+			sizeof(packet) - sizeof(packet.dataSize),
+			KICKED,
+			{}
+		};
 
+		Utils::copyToBuffer(packet.reason, reason, sizeof(packet.reason));
+		this->sendData(packet);
 	}
 
 	void ClientConnection::sendLobbyJoined(const std::vector<NPlayer> &players)
 	{
+		size_t size = sizeof(PacketLobbyJoined) + players.size() * sizeof(NPlayer);
+		char *buffer = new char[size];
+		auto *packet = reinterpret_cast<PacketLobbyJoined *>(buffer);
 
+		packet->dataSize = size - sizeof(packet->dataSize);
+		packet->code = LOBBY_JOINED;
+		packet->playerCount = players.size();
+		std::memcpy(packet->players, players.data(), players.size() * sizeof(NPlayer));
+		this->sendRawData(packet, size);
 	}
 
 	void ClientConnection::sendLobbyList(const std::vector<NLobby> &lobbies)
 	{
+		size_t size = sizeof(PacketLobbyList) + lobbies.size() * sizeof(NLobby);
+		char *buffer = new char[size];
+		auto *packet = reinterpret_cast<PacketLobbyList *>(buffer);
 
+		packet->dataSize = size - sizeof(packet->dataSize);
+		packet->code = LOBBY_STATE;
+		packet->nbLobby = lobbies.size();
+		std::memcpy(packet->lobbies, lobbies.data(), lobbies.size() * sizeof(NPlayer));
+		this->sendRawData(packet, size);
 	}
 
 	void ClientConnection::sendLobbyState(const std::vector<NPlayer> &players)
 	{
+		size_t size = sizeof(PacketLobbyState) + players.size() * sizeof(NPlayer);
+		char *buffer = new char[size];
+		auto *packet = reinterpret_cast<PacketLobbyState *>(buffer);
 
+		packet->dataSize = size - sizeof(packet->dataSize);
+		packet->code = LOBBY_STATE;
+		packet->playerCount = players.size();
+		std::memcpy(packet->players, players.data(), players.size() * sizeof(NPlayer));
+		this->sendRawData(packet, size);
 	}
 }

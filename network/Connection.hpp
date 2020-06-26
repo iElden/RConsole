@@ -17,10 +17,8 @@
 namespace RC::Network
 {
 	class Connection {
-	private:
-		sf::TcpSocket _sock;
-
 	protected:
+		sf::TcpSocket _sock;
 		static void _checkSFMLStatus(const sf::Socket::Status &status);
 
 	public:

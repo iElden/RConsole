@@ -3,12 +3,13 @@
 //
 
 #include "ServerConnection.hpp"
+#include "../network/Utils.hpp"
 
 namespace RC::Network
 {
 	void ServerConnection::connect(const std::string &ip, unsigned short port)
 	{
-
+		Connection::_checkSFMLStatus(this->_sock.connect(ip, port));
 	}
 
 	void ServerConnection::sendPong()
@@ -106,6 +107,15 @@ namespace RC::Network
 
 	void ServerConnection::sendHello(const std::string &username, const std::string &password)
 	{
+		PacketHello packet{
+			sizeof(packet) - sizeof(packet.dataSize),
+			HELLO,
+			{},
+			{}
+		};
 
+		Utils::copyToBuffer(packet.username, username, sizeof(packet.username));
+		Utils::copyToBuffer(packet.password, password, sizeof(packet.password));
+		this->sendData(packet);
 	}
 }
