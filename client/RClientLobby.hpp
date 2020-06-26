@@ -9,6 +9,7 @@
 
 #include <vector>
 #include "RPlayer.hpp"
+#include "../network/RPackets.hpp"
 
 namespace RC {
 	class RClientLobby {
@@ -20,6 +21,7 @@ namespace RC {
 		void addPlayer(int id, std::string &name);
 		void removePlayer(RPlayer &player);
 		void removePlayer(int id);
+		operator Network::NLobby();
 	};
 }
 
