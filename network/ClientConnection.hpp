@@ -15,6 +15,7 @@ namespace RC::Network
 {
 	//! Represent a connection to a Client.
 	class ClientConnection : public Connection {
+	public:
 		void host(unsigned short port);
 
 		void sendOlleh(uint32_t id);

@@ -13,12 +13,13 @@ namespace RC::Network
 {
 	//! Represent a connection to a Server.
 	class ServerConnection : public Connection {
+	public:
 		void connect(const std::string &ip, unsigned short port);
 
 		void sendHello(const std::string &username, const std::string &password);
 		void sendPong();
 		void sendJoinLobby(uint32_t id);
-		void sendCreateLobby(const NLobby &lobby);
+		void sendCreateLobby();
 		void sendDeleteLobby();
 		void sendLeaveLobby();
 		void sendLobbyListRequest();

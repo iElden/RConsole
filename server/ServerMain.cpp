@@ -2,14 +2,12 @@
 ** EPITECH PROJECT, 2020
 ** RConsole
 ** File description:
-** main.cpp
+** Server.cpp
 */
 
 #include "ServerMain.hpp"
 
-int main()
+void RC::Server::Main::run()
 {
-	RC::Server::Main main;
-
-	main.run();
+	puts("Hello !");
 }

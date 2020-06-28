@@ -33,12 +33,11 @@ namespace RC::Network
 		this->sendData(packet);
 	}
 
-	void ServerConnection::sendCreateLobby(const NLobby &lobby)
+	void ServerConnection::sendCreateLobby()
 	{
 		PacketCreateLobby packet{
 			sizeof(packet) - sizeof(packet.dataSize),
-			CREATE_LOBBY,
-			lobby
+			CREATE_LOBBY
 		};
 
 		this->sendData(packet);

@@ -132,7 +132,6 @@ namespace RC::Network
 	struct PACKED PacketCreateLobby {
 		uint64_t dataSize;
 		Opcode code;
-		NLobby lobby;
 	};
 
 	struct PACKED PacketChooseGame {

@@ -36,6 +36,6 @@ add_executable(
 		server
 		server/main.cpp
 		${NETWORK_SRC}
-)
+		server/ServerMain.cpp server/ServerMain.hpp server/Client.cpp server/Client.hpp server/exc.hpp server/Lobby.cpp server/Lobby.hpp server/ClientList.cpp server/ClientList.hpp server/LobbyList.cpp server/LobbyList.hpp)
 
 target_link_libraries(server sfml-network sfml-system)
