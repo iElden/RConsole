@@ -18,24 +18,35 @@ set(
 )
 
 add_executable(
-		client
-		client/main.cpp
-		${NETWORK_SRC}
-		client/RPlayer.hpp
-		client/RPlayer.cpp
-		client/RClientLobby.cpp
-		client/RClientLobby.hpp
-		client/RClient.cpp
-		client/RClient.hpp
+	client
+	client/main.cpp
+	${NETWORK_SRC}
+	client/RPlayer.hpp
+	client/RPlayer.cpp
+	client/RClientLobby.cpp
+	client/RClientLobby.hpp
+	client/RClient.cpp
+	client/RClient.hpp
 )
 
 target_link_libraries(client sfml-network sfml-system)
 
 
 add_executable(
-		server
-		server/main.cpp
-		${NETWORK_SRC}
-		server/ServerMain.cpp server/ServerMain.hpp server/Client.cpp server/Client.hpp server/exc.hpp server/Lobby.cpp server/Lobby.hpp server/ClientList.cpp server/ClientList.hpp server/LobbyList.cpp server/LobbyList.hpp)
+	server
+	server/main.cpp
+	${NETWORK_SRC}
+	server/ServerMain.cpp
+	server/ServerMain.hpp
+	server/Client.cpp
+	server/Client.hpp
+	server/exc.hpp
+	server/Lobby.cpp
+	server/Lobby.hpp
+	server/ClientList.cpp
+	server/ClientList.hpp
+	server/LobbyList.cpp
+	server/LobbyList.hpp
+)
 
 target_link_libraries(server sfml-network sfml-system)
