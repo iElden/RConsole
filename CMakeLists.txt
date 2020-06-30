@@ -25,11 +25,11 @@ add_executable(
 	client/RPlayer.cpp
 	client/RClientLobby.cpp
 	client/RClientLobby.hpp
-	client/RClient.cpp
-	client/RClient.hpp
-)
+	client/NetworkClient.cpp
+	client/NetworkClient.hpp
+	client/Client.cpp client/Client.hpp client/Exceptions.hpp)
 
-target_link_libraries(client sfml-network sfml-system)
+target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system)
 
 
 add_executable(
