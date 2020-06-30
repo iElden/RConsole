@@ -8,7 +8,7 @@
 
 #include <string>
 
-namespace RC
+namespace RC::Client
 {
 	class ClientException : public std::exception {
 	private:

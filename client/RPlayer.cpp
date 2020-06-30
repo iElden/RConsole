@@ -7,19 +7,22 @@
 
 #include "RPlayer.hpp"
 
-RC::RPlayer::RPlayer(int id, std::string &name):
-	id(id),
-	name(name),
-	state(CONNECTING),
-	ping(-1)
-{}
-
-bool RC::RPlayer::operator==(const RPlayer &other) const noexcept
+namespace RC::Client
 {
-	return this->id == other.id;
-}
+	RPlayer::RPlayer(int id, std::string &name) :
+		id(id),
+		name(name),
+		state(CONNECTING),
+		ping(-1)
+	{}
 
-const std::string &RC::RPlayer::getName() const noexcept
-{
-	return name;
+	bool RPlayer::operator==(const RPlayer &other) const noexcept
+	{
+		return this->id == other.id;
+	}
+
+	const std::string &RPlayer::getName() const noexcept
+	{
+		return name;
+	}
 }

@@ -11,7 +11,8 @@
 #include "RPlayer.hpp"
 #include "../network/RPackets.hpp"
 
-namespace RC {
+namespace RC::Client
+{
 	class RClientLobby {
 	public:
 		int id;

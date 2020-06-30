@@ -12,7 +12,7 @@
 #include "RClientLobby.hpp"
 #include "../network/ClientConnection.hpp"
 
-namespace RC
+namespace RC::Client
 {
 	class NetworkClient : Network::ClientConnection {
 	private:

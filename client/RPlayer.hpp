@@ -10,8 +10,8 @@
 
 #include <string>
 
-namespace RC {
-
+namespace RC::Client
+{
 	enum RPlayerState {
 		CONNECTED,
 		CONNECTING,

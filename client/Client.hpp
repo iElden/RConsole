@@ -8,7 +8,7 @@
 
 #include "NetworkClient.hpp"
 
-namespace RC
+namespace RC::Client
 {
 	class Client {
 	private:

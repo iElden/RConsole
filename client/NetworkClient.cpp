@@ -8,7 +8,7 @@
 #include "NetworkClient.hpp"
 #include "Exceptions.hpp"
 
-namespace RC
+namespace RC::Client
 {
 	bool NetworkClient::isInLobby() const noexcept
 	{
