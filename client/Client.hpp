@@ -6,16 +6,23 @@
 #define RCONSOLE_CLIENT_HPP
 
 
+#include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
 #include "NetworkClient.hpp"
 
 namespace RC::Client
 {
 	class Client {
 	private:
+		sf::RenderWindow _window;
+		tgui::Gui _gui;
 		NetworkClient _client;
 
+		void _handleWindowEvents();
+
 	public:
-		Client() = default;
+		Client();
+		int run();
 	};
 }
 

@@ -24,6 +24,11 @@ namespace RC::Client
 	public:
 		NotInLobbyException(): ClientException("You are not in a lobby") {};
 	};
+
+	class ConnectException : public ClientException {
+	public:
+		ConnectException(const std::string &&reason): ClientException("Cannot connect to the server: " + reason) {};
+	};
 }
 
 

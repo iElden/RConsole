@@ -11,16 +11,17 @@
 #include <optional>
 #include "RClientLobby.hpp"
 #include "../network/ClientConnection.hpp"
+#include "../network/ServerConnection.hpp"
 
 namespace RC::Client
 {
-	class NetworkClient : Network::ClientConnection {
+	class NetworkClient : Network::ServerConnection {
 	private:
 		std::optional<RPlayer> _me = std::nullopt;
 		std::optional<RClientLobby> _myLobby = std::nullopt;
 
 	public:
-		void connect(const std::string &ip, unsigned port);
+		void connect(const std::string &ip, unsigned port, const std::string &username, const std::string &password);
 		bool isInLobby() const noexcept;
 		const RPlayer &getPlayer() const;
 		const RClientLobby &getLobby() const; // raise if not in lobby

@@ -27,7 +27,7 @@ add_executable(
 	client/RClientLobby.hpp
 	client/NetworkClient.cpp
 	client/NetworkClient.hpp
-	client/Client.cpp client/Client.hpp client/Exceptions.hpp)
+	client/Client.cpp client/Client.hpp client/Exceptions.hpp client/Utils.hpp client/Utils.cpp)
 
 target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system)
 

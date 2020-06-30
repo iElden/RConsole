@@ -5,9 +5,11 @@
 ** main.cpp
 */
 
-#include <stdio.h>
+#include "Client.hpp"
 
 int main()
 {
-	puts("Hello client");
+	RC::Client::Client client;
+
+	return client.run();
 }
