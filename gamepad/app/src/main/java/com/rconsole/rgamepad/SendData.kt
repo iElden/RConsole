@@ -6,17 +6,16 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-class SendData internal constructor(private val ip: String, private val id: Int) :
-    AsyncTask<Void?, Void?, Void?>() {
-    override fun doInBackground(vararg v: Void?): Void? {
+class SendData(private var ip: String, private var id: Int, private var msg: String, private var f: () -> Unit) : AsyncTask<Void?, Void?, Void?>() {
+    override fun doInBackground(vararg params: Void?): Void? {
         try {
             val address = InetAddress.getByName(ip)
-            val s = "Test."
-            val msg = s.toByteArray()
-            val packet = DatagramPacket(msg, msg.size, address, id)
+            val bytes = msg.toByteArray()
+            val packet = DatagramPacket(bytes, bytes.size, address, id)
             val socket = DatagramSocket()
             socket.send(packet)
             socket.close()
+            f()
         } catch (e: Exception) {
             Log.e("BG", e.toString())
         }

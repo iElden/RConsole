@@ -1,31 +1,21 @@
 package com.rconsole.rgamepad
 
+import android.app.Activity
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.format.Formatter
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.doAsyncResult
-import java.io.IOException
-import java.lang.Exception
-import java.lang.ref.WeakReference
-import java.net.InetAddress
 
 class MainActivity : AppCompatActivity() {
 
-    private fun getButton(id: Int): Button {
-        return findViewById(id)
-    }
-
+    private var ip: String = ""
+    private var id: Int = 0
 
     private fun vibrate() {
         val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -33,20 +23,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initGamepadButtons() {
-        val buttons = arrayOf(
-            getButton(R.id.buttonA),
-            getButton(R.id.buttonB),
-            getButton(R.id.buttonX),
-            getButton(R.id.buttonY),
-            getButton(R.id.buttonUp),
-            getButton(R.id.buttonDown),
-            getButton(R.id.buttonLeft),
-            getButton(R.id.buttonRight)
+        val buttons = arrayOf<Button>(
+            findViewById(R.id.buttonA),
+            findViewById(R.id.buttonB),
+            findViewById(R.id.buttonX),
+            findViewById(R.id.buttonY),
+            findViewById(R.id.buttonUp),
+            findViewById(R.id.buttonDown),
+            findViewById(R.id.buttonLeft),
+            findViewById(R.id.buttonRight)
         )
 
         for (button in buttons) {
             button.setOnTouchListener(Repeater(400, 100, View.OnClickListener {
-                Log.i("Test", "$button")
+                SendData(ip, id, button.toString()) {}.execute()
                 vibrate()
             }))
         }
@@ -59,11 +49,20 @@ class MainActivity : AppCompatActivity() {
 
     fun connectToClient(view: View) {
 
-        val ip = findViewById<EditText>(R.id.clientIP) // Client IP address
-        val id = findViewById<EditText>(R.id.clientID) // Client Socket
+        val inputIp = findViewById<EditText>(R.id.clientIP).text.toString() // Client IP address
+        val inputId = findViewById<EditText>(R.id.clientID).text.toString() // Client Socket
 
-        if (id.length() != 0 && ip.length() != 0) {
-            SendData(ip.text.toString(), id.text.toString().toInt()).execute()
+        if (inputIp.isNotEmpty() && inputId.isNotEmpty()) {
+            ip = inputIp
+            id = inputId.toInt()
+
+            SendData(ip, id, "Hello") {
+                runOnUiThread {
+                    setContentView(R.layout.gamepad_activity)
+                    initGamepadButtons()
+                }
+            }.execute()
+
             // Send HELLO to the client using the ID
             // Wait for the response.
             // If waiting > 5s: error
@@ -77,5 +76,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        SendData(ip, id, "stop") {}.execute()
     }
 }
