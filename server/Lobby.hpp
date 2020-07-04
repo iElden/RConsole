@@ -17,8 +17,14 @@ namespace RC::Server {
 	};
 
 	class Lobby {
+	public:
+		uint32_t id;
 		ClientList players;
-		LobbyState state;
+		LobbyState state = WAITING_FOR_PLAYER;
+
+		Lobby(uint32_t id, std::shared_ptr<Client> &owner);
+		Network::NLobby toNLobby();
+		bool operator==(const Lobby &other) const noexcept {return this->id == other.id;};
 	};
 }
 

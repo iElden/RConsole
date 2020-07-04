@@ -16,6 +16,9 @@ namespace RC::Server {
 	private:
 		std::vector<std::shared_ptr<Client>> _clients = {};
 
+	public:
+		ClientList() = default;
+		ClientList(std::shared_ptr<Client> &lobby_owner);
 		// Overload Iterator
 		auto begin() {return this->_clients.begin();};
 		auto end() {return this->_clients.end();};

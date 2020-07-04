@@ -16,12 +16,23 @@ namespace RC::Server {
 		std::string _msg;
 
 	public:
-		ServerException(const std::string &&msg): _msg(msg) {};
+		ServerException(const std::string &msg): _msg(msg) {};
 		const char *what() const noexcept override { return this->_msg.c_str(); };
 	};
 
+	class AlreadyInLobby : public ServerException {
+	public:
+		AlreadyInLobby(): ServerException("You are already in a lobby, please leave first.") {};
+	};
+
 	class NotFound : public ServerException {
-		NotFound(const std::string &msg): ServerException(msg) {};
+	public:
+		NotFound(const std::string &&msg): ServerException(msg) {};
+	};
+
+	class LobbyNotFound : public NotFound {
+	public:
+		LobbyNotFound(): NotFound("Lobby was not Found") {};
 	};
 }
 

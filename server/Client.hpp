@@ -14,6 +14,8 @@ namespace RC::Server {
 	public:
 		uint32_t id;
 		Network::ClientConnection connection;
+
+		bool operator==(const Client &other) const noexcept {return this->id == other.id;};
 	};
 }
 
