@@ -38,8 +38,8 @@ namespace RC::Client
 					if (p > UINT16_MAX)
 						throw std::invalid_argument("");
 					this->_client.connect(ip->getText(), p, username->getText(), password->getText());
-					connect->setVisible(true);
-					disconnect->setVisible(false);
+					connect->setVisible(false);
+					disconnect->setVisible(true);
 				} catch (std::invalid_argument &e) {
 					error->setText("Port is invalid");
 					return;
@@ -59,6 +59,10 @@ namespace RC::Client
 
 		openConnectWindow();
 		connect->onClick.connect(openConnectWindow);
+		disconnect->onClick.connect([this, connect, openConnectWindow]{
+			this->_client.disconnect();
+			openConnectWindow();
+		});
 	}
 
 	int Client::run()

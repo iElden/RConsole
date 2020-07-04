@@ -9,7 +9,7 @@
 
 namespace RC::Client
 {
-	RPlayer::RPlayer(int id, std::string &name) :
+	RPlayer::RPlayer(unsigned id, const std::string &name) :
 		id(id),
 		name(name),
 		state(CONNECTING),

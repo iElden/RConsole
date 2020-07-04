@@ -122,4 +122,9 @@ namespace RC::Network
 		Utils::copyToBuffer(packet.password, password, sizeof(packet.password));
 		this->sendData(packet);
 	}
+
+	void ServerConnection::disconnect()
+	{
+		this->_sock.disconnect();
+	}
 }

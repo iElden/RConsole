@@ -21,13 +21,13 @@ namespace RC::Client
 
 	class RPlayer {
 	private:
-		int id;
+		unsigned id;
 		std::string name;
 	public:
 		RPlayerState state;
 		int ping;
 
-		RPlayer(int id, std::string &name);
+		RPlayer(unsigned id, const std::string &name);
 		bool operator==(const RPlayer& other) const noexcept;
 		const std::string &getName() const noexcept;
 	};

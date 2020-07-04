@@ -15,6 +15,7 @@ namespace RC::Network
 	class ServerConnection : public Connection {
 	public:
 		void connect(const std::string &ip, unsigned short port);
+		void disconnect();
 
 		void sendHello(const std::string &username, const std::string &password);
 		void sendPong();

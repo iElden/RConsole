@@ -22,6 +22,7 @@ namespace RC::Client
 
 	public:
 		void connect(const std::string &ip, unsigned port, const std::string &username, const std::string &password);
+		void disconnect();
 		bool isInLobby() const noexcept;
 		const RPlayer &getPlayer() const;
 		const RClientLobby &getLobby() const; // raise if not in lobby

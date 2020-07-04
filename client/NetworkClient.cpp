@@ -32,10 +32,22 @@ namespace RC::Client
 
 		if (packet.header.code == Network::ERROR)
 			throw ConnectException(packet.error.error);
+		else if (packet.header.code != Network::OLLEH)
+			throw ConnectException("Handshake with the server failed");
+
+		this->_me.emplace(RPlayer(packet.olleh.id, username));
 	}
 
 	const RPlayer &NetworkClient::getPlayer() const
 	{
 		return *this->_me;
+	}
+
+	void NetworkClient::disconnect()
+	{
+		try {
+			this->sendGoodbye();
+		} catch (...) {}
+		ServerConnection::disconnect();
 	}
 }
