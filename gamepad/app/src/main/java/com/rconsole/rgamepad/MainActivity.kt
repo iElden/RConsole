@@ -1,16 +1,15 @@
 package com.rconsole.rgamepad
 
-import android.app.Activity
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         for (button in buttons) {
             button.setOnTouchListener(Repeater(400, 100, View.OnClickListener {
-                SendData(ip, id, button.toString()) {}.execute()
+                SendData(ip, id).execute(AsyncParams(button.toString(), applicationContext ))
                 vibrate()
             }))
         }
@@ -45,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_activity)
+
     }
 
     fun connectToClient(view: View) {
@@ -56,19 +56,18 @@ class MainActivity : AppCompatActivity() {
             ip = inputIp
             id = inputId.toInt()
 
-            SendData(ip, id, "Hello") {
-                runOnUiThread {
-                    setContentView(R.layout.gamepad_activity)
-                    initGamepadButtons()
+            SendData(ip, id, after = {
+                if (it != null) {
+                    Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show()
+                } else {
+                    ReceiveData(id, after = {
+                        runOnUiThread {
+                            setContentView(R.layout.gamepad_activity)
+                            initGamepadButtons()
+                        }
+                    }).execute()
                 }
-            }.execute()
-
-            // Send HELLO to the client using the ID
-            // Wait for the response.
-            // If waiting > 5s: error
-            // Else : launch gamepad
-            // Test entered id (s)
-
+            }).execute(AsyncParams("Hello", applicationContext))
         } else {
             Toast.makeText(
                 applicationContext,
@@ -79,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
+        SendData(ip, id).execute(AsyncParams("Stop", applicationContext))
         super.onStop()
-        SendData(ip, id, "stop") {}.execute()
     }
 }

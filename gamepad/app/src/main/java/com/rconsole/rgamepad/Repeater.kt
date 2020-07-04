@@ -1,7 +1,6 @@
 package com.rconsole.rgamepad
 
 
-import android.annotation.SuppressLint
 import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
