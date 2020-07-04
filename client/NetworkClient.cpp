@@ -45,9 +45,6 @@ namespace RC::Client
 
 	void NetworkClient::disconnect()
 	{
-		try {
-			this->sendGoodbye();
-		} catch (...) {}
-		ServerConnection::disconnect();
+		Connection::disconnect();
 	}
 }

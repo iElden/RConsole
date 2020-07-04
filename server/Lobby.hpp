@@ -22,9 +22,9 @@ namespace RC::Server {
 		ClientList players;
 		LobbyState state = WAITING_FOR_PLAYER;
 
-		Lobby(uint32_t id, std::shared_ptr<Client> &owner);
+		Lobby(uint32_t id, const std::shared_ptr<Client> &owner);
 		Network::NLobby toNLobby();
-		Lobby &join(std::shared_ptr<Client> &client);
+		Lobby &join(const std::shared_ptr<Client> &client);
 		void leave(Client &client);
 		std::vector<Network::NPlayer> getNPlayers();
 		bool operator==(const Lobby &other) const noexcept {return this->id == other.id;};

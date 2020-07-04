@@ -30,7 +30,7 @@ namespace RC::Server {
 		return nullptr;
 	}
 
-	std::shared_ptr<Lobby> LobbyList::createLobby(std::shared_ptr<Client> &owner)
+	std::shared_ptr<Lobby> LobbyList::createLobby(const std::shared_ptr<Client> &owner)
 	{
 		std::shared_ptr<Lobby> lobby_ptr = this->getLobbyPtrByClient(*owner);
 		if (lobby_ptr != nullptr) {

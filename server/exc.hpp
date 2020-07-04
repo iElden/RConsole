@@ -20,6 +20,16 @@ namespace RC::Server {
 		const char *what() const noexcept override { return this->_msg.c_str(); };
 	};
 
+	class InvalidHandshake : public ServerException {
+	public:
+		InvalidHandshake(): ServerException("Invalid handshake.") {};
+	};
+
+	class InvalidVersion : public ServerException {
+	public:
+		InvalidVersion(): ServerException("The server version doesn't match.") {};
+	};
+
 	class AlreadyInLobby : public ServerException {
 	public:
 		AlreadyInLobby(): ServerException("You are already in a lobby, please leave first.") {};

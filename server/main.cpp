@@ -11,5 +11,5 @@ int main()
 {
 	RC::Server::Main main;
 
-	main.run();
+	main.run(10800);
 }

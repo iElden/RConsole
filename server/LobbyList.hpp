@@ -22,7 +22,7 @@ namespace RC::Server {
 		Lobby &getLobbyByClient(Client &client);
 		std::shared_ptr<Lobby> getLobbyPtrById(uint32_t) noexcept;
 		Lobby &getLobbyById(uint32_t id);
-		std::shared_ptr<Lobby> createLobby(std::shared_ptr<Client> &owner);
+		std::shared_ptr<Lobby> createLobby(const std::shared_ptr<Client> &owner);
 		void delLobby(Lobby &lobby);
 		std::vector<Network::NLobby> getNLobbies() const;
 		// Overload Iterator

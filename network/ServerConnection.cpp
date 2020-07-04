@@ -114,6 +114,7 @@ namespace RC::Network
 		PacketHello packet{
 			sizeof(packet) - sizeof(packet.dataSize),
 			HELLO,
+			CURRENT_VERSION,
 			{},
 			{}
 		};
@@ -121,10 +122,5 @@ namespace RC::Network
 		Utils::copyToBuffer(packet.username, username, sizeof(packet.username));
 		Utils::copyToBuffer(packet.password, password, sizeof(packet.password));
 		this->sendData(packet);
-	}
-
-	void ServerConnection::disconnect()
-	{
-		this->_sock.disconnect();
 	}
 }

@@ -8,6 +8,7 @@
 #include <cstring>
 #include "Connection.hpp"
 #include "Exceptions.hpp"
+#include "Utils.hpp"
 
 namespace RC::Network
 {
@@ -33,7 +34,14 @@ namespace RC::Network
 
 	void Connection::sendError(const std::string &error)
 	{
+		PacketError packet{
+			sizeof(packet) - sizeof(packet.dataSize),
+			ERROR,
+			{}
+		};
 
+		Utils::copyToBuffer(packet.error, error, sizeof(packet.error));
+		this->sendData(packet);
 	}
 
 	void Connection::sendGameEvent(const void *data, uint64_t size)
@@ -98,5 +106,13 @@ namespace RC::Network
 		case sf::Socket::Status::Done:
 			break;
 		}
+	}
+
+	void Connection::disconnect()
+	{
+		try {
+			this->sendGoodbye();
+		} catch (...) {}
+		this->_sock.disconnect();
 	}
 }

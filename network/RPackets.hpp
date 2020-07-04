@@ -12,6 +12,7 @@
 #define MAX_USERNAME 64
 #define MAX_PASSWORD 64
 #define MAX_MESSAGE 64
+#define CURRENT_VERSION 0
 
 namespace RC::Network
 {
@@ -46,6 +47,7 @@ namespace RC::Network
 	struct PACKED PacketHello {
 		uint64_t dataSize;
 		Opcode code;
+		uint32_t version;
 		char username[MAX_USERNAME];
 		char password[MAX_PASSWORD];
 	};

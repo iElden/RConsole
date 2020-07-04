@@ -7,7 +7,7 @@
 
 #include "ClientList.hpp"
 
-RC::Server::ClientList::ClientList(std::shared_ptr<RC::Server::Client> &lobby_owner)
+RC::Server::ClientList::ClientList(const std::shared_ptr<RC::Server::Client> &lobby_owner)
 {
 	this->_clients.push_back(lobby_owner);
 }

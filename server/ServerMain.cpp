@@ -5,42 +5,54 @@
 ** Server.cpp
 */
 
+#include <cassert>
+#include <iostream>
 #include "ServerMain.hpp"
-namespace RC::Server {
-	void Main::run()
+
+namespace RC::Server
+{
+	void Main::run(unsigned short port)
 	{
-		puts("Hello !");
+		while (true) {
+			std::cout << "Waiting for new client." << std::endl;
+			this->clients._clients.emplace_back(new Client(port, *this));
+		}
 	}
 
-	void Main::onCreateLobby(std::shared_ptr<Client> &client)
+	void Main::onCreateLobby(const std::shared_ptr<Client> &client)
 	{
 		std::shared_ptr<Lobby> lobby = lobbies.createLobby(client);
 		client->connection.sendLobbyCreated(lobby->toNLobby());
 	}
 
-	void Main::onDeleteLobby(std::shared_ptr<Client> &client)
+	void Main::onDeleteLobby(const std::shared_ptr<Client> &client)
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 		this->lobbies.delLobby(lobby);
 		client->connection.sendOk();
 	}
 
-	void Main::onJoinLobby(std::shared_ptr<Client> &client, uint32_t lobby_id)
+	void Main::onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id)
 	{
 		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
 		lobby.join(client);
 		client->connection.sendLobbyJoined(lobby.getNPlayers());
 	}
 
-	void Main::onLeaveLobby(std::shared_ptr<Client> &client)
+	void Main::onLeaveLobby(const std::shared_ptr<Client> &client)
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 		lobby.leave(*client);
 		client->connection.sendOk();
 	}
 
-	void Main::onLobbyListRequest(std::shared_ptr<Client> &client)
+	void Main::onLobbyListRequest(const std::shared_ptr<Client> &client)
 	{
 		client->connection.sendLobbyList(this->lobbies.getNLobbies());
+	}
+
+	void Main::onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet)
+	{
+		//assert(client.use_count() >= 2);
 	}
 }

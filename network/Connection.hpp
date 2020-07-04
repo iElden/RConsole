@@ -22,6 +22,8 @@ namespace RC::Network
 		static void _checkSFMLStatus(const sf::Socket::Status &status);
 
 	public:
+		void disconnect();
+
 		void sendOk();
 		void sendError(const std::string &error);
 		void sendGoodbye();

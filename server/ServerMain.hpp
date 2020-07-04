@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <memory>
+#include <thread>
 #include "ClientList.hpp"
 #include "LobbyList.hpp"
 
@@ -16,17 +17,21 @@ namespace RC::Server {
 	class Main {
 		ClientList clients;
 		LobbyList lobbies;
+		std::thread _waitingThread;
 
-		void onCreateLobby(std::shared_ptr<Client> &client);
-		void onJoinLobby(std::shared_ptr<Client> &client, uint32_t lobby_id);
-		void onDeleteLobby(std::shared_ptr<Client> &client);
-		void onLeaveLobby(std::shared_ptr<Client> &client);
-		void onLobbyListRequest(std::shared_ptr<Client> &client);
-		void onLobbyStateRequest(std::shared_ptr<Client> &client);
-		void onSetReady(std::shared_ptr<Client> &client);
-		void onChooseGame(std::shared_ptr<Client> &client);
+		void onCreateLobby(const std::shared_ptr<Client> &client);
+		void onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id);
+		void onDeleteLobby(const std::shared_ptr<Client> &client);
+		void onLeaveLobby(const std::shared_ptr<Client> &client);
+		void onLobbyListRequest(const std::shared_ptr<Client> &client);
+		void onLobbyStateRequest(const std::shared_ptr<Client> &client);
+		void onSetReady(const std::shared_ptr<Client> &client);
+		void onChooseGame(const std::shared_ptr<Client> &client);
+
 	public:
-		void run();
+		void run(unsigned short port);
+
+		void onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet);
 	};
 }
 
