@@ -24,4 +24,23 @@ namespace RC::Server {
 		this->lobbies.delLobby(lobby);
 		client->connection.sendOk();
 	}
+
+	void Main::onJoinLobby(std::shared_ptr<Client> &client, uint32_t lobby_id)
+	{
+		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
+		lobby.join(client);
+		client->connection.sendLobbyJoined(lobby.getNPlayers());
+	}
+
+	void Main::onLeaveLobby(std::shared_ptr<Client> &client)
+	{
+		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
+		lobby.leave(*client);
+		client->connection.sendOk();
+	}
+
+	void Main::onLobbyListRequest(std::shared_ptr<Client> &client)
+	{
+		client->connection.sendLobbyList(this->lobbies.getNLobbies());
+	}
 }
