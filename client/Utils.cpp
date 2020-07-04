@@ -99,4 +99,30 @@ namespace RC::Client::Utils
 		return "Unknown exception";
 #endif
 	}
+
+	tgui::ChildWindow::Ptr openWindowWithFocus(tgui::Gui &gui, tgui::Layout width, tgui::Layout height)
+	{
+		auto panel = tgui::Panel::create({"100%", "100%"});
+
+		panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+		gui.add(panel);
+
+		auto window = tgui::ChildWindow::create();
+		window->setSize(width, height);
+		window->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
+		gui.add(window);
+
+		window->setFocused(true);
+
+		const bool tabUsageEnabled = gui.isTabKeyUsageEnabled();
+		auto closeWindow = [&gui, window, panel, tabUsageEnabled]{
+			gui.remove(window);
+			gui.remove(panel);
+			gui.setTabKeyUsageEnabled(tabUsageEnabled);
+		};
+
+		panel->connect("Clicked", closeWindow);
+		window->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
+		return window;
+	}
 }
