@@ -4,12 +4,17 @@
 
 #include "ServerConnection.hpp"
 #include "../network/Utils.hpp"
+#include "Exceptions.hpp"
 
 namespace RC::Network
 {
 	void ServerConnection::connect(const std::string &ip, unsigned short port)
 	{
-		Connection::_checkSFMLStatus(this->_sock.connect(ip, port));
+		try {
+			Connection::_checkSFMLStatus(this->_sock.connect(ip, port));
+		} catch (...) {
+			throw ConnectException(ip, port);
+		}
 	}
 
 	void ServerConnection::sendPong()

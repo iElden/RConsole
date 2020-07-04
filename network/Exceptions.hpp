@@ -40,6 +40,12 @@ namespace RC::Network
 		InvalidPacketSizeException(size_t got, size_t expected):
 		NetworkException("The packet had an invalid size. Expected " + std::to_string(expected) + " bytes but got " + std::to_string(got) + " bytes") {};
 	};
+
+	class ConnectException : public NetworkException {
+	public:
+		ConnectException(const std::string &ip, unsigned short port):
+			NetworkException("Cannot connect to " + ip + ":" + std::to_string(port)) {};
+	};
 }
 
 

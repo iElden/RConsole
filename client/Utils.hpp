@@ -23,7 +23,17 @@ namespace RC::Client::Utils
 	//! @note On Non-Windows systems, it will simulate the Windows dialog box. Only MB_ICONERROR and MB_OK are simulated on those systems.
 	int	dispMsg(const std::string &title, const std::string &content, int variate);
 
+	//! @brief Get the last Exception Name
+	//! @details Return the last type of Exception name
+	//! @return std::string The last Exception name
 	std::string getLastExceptionName();
+
+	//! @brief Display a focused window.
+	//! @param gui The gui handling the window.
+	//! @param width The width of the window.
+	//! @param height The height of the window.
+	//! @return A pointer to the window
+	tgui::ChildWindow::Ptr openWindowWithFocus(tgui::Gui &gui, tgui::Layout width, tgui::Layout height);
 }
 
 #endif //RCONSOLE_UTILS_HPP

@@ -11,12 +11,61 @@ namespace RC::Client
 		_window({640, 480}, "RConsole"),
 		_gui(this->_window)
 	{
+		this->_gui.loadWidgetsFromFile("gui/mainPage.gui");
+
+		auto connect = this->_gui.get<tgui::Button>("Connect");
+		auto disconnect = this->_gui.get<tgui::Button>("Disconnect");
+		auto openConnectWindow = [this, connect, disconnect]{
+			auto window = Utils::openWindowWithFocus(this->_gui, 200, 170);
+
+			connect->setVisible(true);
+			disconnect->setVisible(false);
+			window->setTitle("Connect to server");
+			window->loadWidgetsFromFile("gui/connect.gui");
+
+			auto ip = window->get<tgui::EditBox>("IP");
+			auto port = window->get<tgui::EditBox>("Port");
+			auto error = window->get<tgui::TextBox>("Error");
+			auto password = window->get<tgui::EditBox>("Password");
+			auto username = window->get<tgui::EditBox>("Username");
+			auto ok = window->get<tgui::Button>("OK");
+			auto cancel = window->get<tgui::Button>("Cancel");
+
+			ok->onClick.connect([this, window, connect, disconnect, ip, port, password, username, error]{
+				try {
+					unsigned long p = std::stoul(port->getText().toAnsiString());
+
+					if (p > UINT16_MAX)
+						throw std::invalid_argument("");
+					this->_client.connect(ip->getText(), p, username->getText(), password->getText());
+					connect->setVisible(true);
+					disconnect->setVisible(false);
+				} catch (std::invalid_argument &e) {
+					error->setText("Port is invalid");
+					return;
+				} catch (std::out_of_range &e) {
+					error->setText("Port is invalid");
+					return;
+				} catch (std::exception &e) {
+					error->setText(e.what());
+					return;
+				}
+				window->close();
+			});
+			cancel->onClick.connect([window]{
+				window->close();
+			});
+		};
+
+		openConnectWindow();
+		connect->onClick.connect(openConnectWindow);
 	}
 
 	int Client::run()
 	{
 		try {
 			while (this->_window.isOpen()) {
+				this->_window.clear();
 				this->_handleWindowEvents();
 				this->_gui.draw();
 				this->_window.display();
