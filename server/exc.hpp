@@ -25,6 +25,11 @@ namespace RC::Server {
 		InvalidHandshake(): ServerException("Invalid handshake.") {};
 	};
 
+	class BindFailed : public ServerException {
+	public:
+		BindFailed(unsigned short port): ServerException("Binding to port " + std::to_string(port) + " failed.") {};
+	};
+
 	class InvalidVersion : public ServerException {
 	public:
 		InvalidVersion(): ServerException("The server version doesn't match.") {};

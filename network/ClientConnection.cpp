@@ -11,11 +11,8 @@
 
 namespace RC::Network
 {
-	void ClientConnection::host(unsigned short port)
+	void ClientConnection::host(sf::TcpListener &listener)
 	{
-		sf::TcpListener listener;
-
-		Connection::_checkSFMLStatus(listener.listen(port));
 		Connection::_checkSFMLStatus(listener.accept(this->_sock));
 	}
 

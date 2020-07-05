@@ -16,7 +16,7 @@ namespace RC::Network
 	//! Represent a connection to a Client.
 	class ClientConnection : public Connection {
 	public:
-		void host(unsigned short port);
+		void host(sf::TcpListener &listener);
 
 		void sendOlleh(uint32_t id);
 		void sendPing(uint32_t lastPing);

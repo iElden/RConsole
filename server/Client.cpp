@@ -12,13 +12,13 @@
 
 namespace RC::Server
 {
-	Client::Client(unsigned short port, Main &main)
+	Client::Client(sf::TcpListener &listener, Main &main)
 	{
 		Network::Packet packet;
 
 		while (true) {
+			this->connection.host(listener);
 			try {
-				this->connection.host(port);
 				this->connection.receiveNextPacket(packet);
 
 				if (packet.header.code != Network::HELLO)

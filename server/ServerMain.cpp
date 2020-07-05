@@ -8,14 +8,20 @@
 #include <cassert>
 #include <iostream>
 #include "ServerMain.hpp"
+#include "exc.hpp"
 
 namespace RC::Server
 {
 	void Main::run(unsigned short port)
 	{
+		sf::TcpListener listener;
+
+		if (listener.listen(port) != sf::Socket::Status::Done)
+			throw BindFailed(port);
+
 		while (true) {
 			std::cout << "Waiting for new client." << std::endl;
-			this->clients._clients.emplace_back(new Client(port, *this));
+			this->clients._clients.emplace_back(new Client(listener, *this));
 		}
 	}
 

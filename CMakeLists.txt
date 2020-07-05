@@ -49,4 +49,4 @@ add_executable(
 	server/LobbyList.hpp
 )
 
-target_link_libraries(server sfml-network sfml-system)
+target_link_libraries(server sfml-network sfml-system pthread)

@@ -25,7 +25,7 @@ namespace RC::Server
 		std::string username = "client-" + std::to_string(this->id);
 		Network::ClientConnection connection;
 
-		Client(unsigned short port, Main &main);
+		Client(sf::TcpListener &listener, Main &main);
 		~Client();
 		void getUser(const std::string &username, const std::string &password);
 		operator Network::NPlayer() const;
