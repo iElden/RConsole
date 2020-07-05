@@ -92,9 +92,11 @@ EditBox.Password {
 }
 
 TextBox.Error {
+    Enabled = false;
     HorizontalScrollbarPolicy = Never;
     MaximumCharacters = 0;
     Position = (10, 100);
+    ReadOnly = true;
     Size = (180, 35);
     Text = "";
     TextSize = 13;
