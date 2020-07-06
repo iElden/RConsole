@@ -142,6 +142,12 @@ namespace RC::Network
 		NLobby lobbies[0];
 	};
 
+	struct PACKED PacketLobbyStateRequest {
+		uint64_t dataSize;
+		Opcode code;
+		uint32_t id;
+	};
+
 	struct PACKED PacketError {
 		uint64_t dataSize;
 		Opcode code;
@@ -200,6 +206,7 @@ namespace RC::Network
 		PacketOlleh olleh;
 		PacketKicked kicked;
 		PacketPing ping;
+		PacketLobbyStateRequest lobbyStateRequest;
 		PacketLobbyJoined lobbyJoined;
 		PacketLobbyState lobbyState;
 		PacketLobbyCreated lobbyCreated;

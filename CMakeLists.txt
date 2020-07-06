@@ -34,7 +34,7 @@ add_executable(
 	client/Utils.cpp
 )
 
-target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system)
+target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
 
 
 add_executable(

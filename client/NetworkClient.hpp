@@ -24,11 +24,24 @@ namespace RC::Client
 		bool _connected = false;
 		std::map<std::string, std::vector<std::function<void (const Network::Packet &)>>> _handlers;
 
+		void _onGoodbye(const Network::Packet &packet);
+		void _onPing(const Network::Packet &packet);
+		void _onLobbyList(const Network::Packet &packet);
+		void _onLobbyCreated(const Network::Packet &packet);
+		void _onLobbyDeleted(const Network::Packet &packet);
+		void _onLobbyJoined(const Network::Packet &packet);
+		void _onLobbyState(const Network::Packet &packet);
+		void _onPlayerReady(const Network::Packet &packet);
+		void _onPlayerJoined(const Network::Packet &packet);
+
 	public:
+		NetworkClient();
+
 		void connect(const std::string &ip, unsigned port, const std::string &username, const std::string &password);
 		void disconnectWithError(const std::string &error);
 		void disconnect();
-		void connect(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		bool isConnected() const;
+		void attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
 		bool emit(std::string signalName, const Network::Packet &packet);
 		bool isInLobby() const noexcept;
 		const Player &getPlayer() const;

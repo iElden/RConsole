@@ -78,11 +78,12 @@ namespace RC::Network
 		this->sendData(packet);
 	}
 
-	void ServerConnection::sendLobbyStateRequest()
+	void ServerConnection::sendLobbyStateRequest(uint32_t id)
 	{
-		PacketHeader packet{
+		PacketLobbyStateRequest packet{
 			sizeof(packet) - sizeof(packet.dataSize),
-			LOBBY_STATE_REQUEST
+			LOBBY_STATE_REQUEST,
+			id
 		};
 
 		this->sendData(packet);

@@ -15,7 +15,7 @@ namespace RC::Client
 {
 	class Lobby {
 	public:
-		int id;
+		size_t id;
 		std::vector<Player> players;
 
 		void addPlayer(Player &player);

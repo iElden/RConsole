@@ -8,12 +8,14 @@
 
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
+#include <thread>
 #include "NetworkClient.hpp"
 
 namespace RC::Client
 {
 	class Client {
 	private:
+		std::thread _clientThread;
 		sf::RenderWindow _window;
 		tgui::Gui _gui;
 		NetworkClient _client;
@@ -22,6 +24,7 @@ namespace RC::Client
 
 	public:
 		Client();
+		~Client();
 		int run();
 	};
 }
