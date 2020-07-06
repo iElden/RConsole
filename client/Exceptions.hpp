@@ -29,6 +29,16 @@ namespace RC::Client
 	public:
 		ConnectException(const std::string &&reason): ClientException("Cannot connect to the server: " + reason) {};
 	};
+
+	class ServerErrorException : public ClientException {
+	public:
+		ServerErrorException(const std::string &&reason): ClientException("Cannot connect to the server: " + reason) {};
+	};
+
+	class InvalidOpcodeException : public ClientException {
+	public:
+		InvalidOpcodeException(uint8_t op): ClientException("Unrecognized opcode: " + std::to_string(op)) {};
+	};
 }
 
 

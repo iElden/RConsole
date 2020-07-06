@@ -7,6 +7,7 @@
 
 
 #include <cstdint>
+#include <map>
 
 #define PACKED __attribute((packed))
 #define MAX_USERNAME 64
@@ -42,6 +43,34 @@ namespace RC::Network
 		CHOOSE_GAME,
 		GAME_START,
 		GAME_EVENT
+	};
+
+	const std::map<Opcode, std::string> opcodeToString{
+		{ HELLO,               "HELLO"},
+		{ OLLEH,               "OLLEH" },
+		{ PING,                "PING" },
+		{ PONG,                "PONG" },
+		{ GOODBYE,             "GOODBYE" },
+		{ KICKED,              "KICKED" },
+		{ JOIN_LOBBY,          "JOIN_LOBBY" },
+		{ CREATE_LOBBY,        "CREATE_LOBBY" },
+		{ DELETE_LOBBY,        "DELETE_LOBBY" },
+		{ LEAVE_LOBBY,         "LEAVE_LOBBY" },
+		{ LOBBY_JOINED,        "LOBBY_JOINED" },
+		{ LOBBY_CREATED,       "LOBBY_CREATED" },
+		{ LOBBY_DELETED,       "LOBBY_DELETED" },
+		{ PLAYER_JOINED,       "PLAYER_JOINED" },
+		{ OK,                  "OK" },
+		{ ERROR,               "ERROR" },
+		{ LOBBY_LIST_REQUEST,  "LOBBY_LIST_REQUEST" },
+		{ LOBBY_LIST,          "LOBBY_LIST" },
+		{ LOBBY_STATE_REQUEST, "LOBBY_STATE_REQUEST" },
+		{ LOBBY_STATE,         "LOBBY_STATE" },
+		{ PLAYER_READY,        "PLAYER_READY" },
+		{ SET_READY,           "SET_READY" },
+		{ CHOOSE_GAME,         "CHOOSE_GAME" },
+		{ GAME_START,          "GAME_START" },
+		{ GAME_EVENT,          "GAME_EVENT" },
 	};
 
 	struct PACKED PacketHello {
@@ -113,6 +142,12 @@ namespace RC::Network
 		NLobby lobbies[0];
 	};
 
+	struct PACKED PacketLobbyStateRequest {
+		uint64_t dataSize;
+		Opcode code;
+		uint32_t id;
+	};
+
 	struct PACKED PacketError {
 		uint64_t dataSize;
 		Opcode code;
@@ -171,6 +206,7 @@ namespace RC::Network
 		PacketOlleh olleh;
 		PacketKicked kicked;
 		PacketPing ping;
+		PacketLobbyStateRequest lobbyStateRequest;
 		PacketLobbyJoined lobbyJoined;
 		PacketLobbyState lobbyState;
 		PacketLobbyCreated lobbyCreated;

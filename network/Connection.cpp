@@ -49,7 +49,7 @@ namespace RC::Network
 		char *buffer = new char[size + sizeof(PacketGameEvent)];
 		auto *packet = reinterpret_cast<PacketGameEvent *>(buffer);
 
-		packet->code = GAME_START;
+		packet->code = GAME_EVENT;
 		packet->dataSize = size + sizeof(PacketGameEvent) - sizeof(packet->dataSize);
 		std::memcpy(&packet->gameData, data, size);
 		try {

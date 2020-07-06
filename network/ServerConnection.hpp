@@ -23,7 +23,7 @@ namespace RC::Network
 		void sendDeleteLobby();
 		void sendLeaveLobby();
 		void sendLobbyListRequest();
-		void sendLobbyStateRequest();
+		void sendLobbyStateRequest(uint32_t id);
 		void sendSetReady();
 		void sendChooseGame(uint32_t id);
 	};

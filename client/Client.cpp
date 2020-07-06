@@ -38,6 +38,11 @@ namespace RC::Client
 					if (p > UINT16_MAX)
 						throw std::invalid_argument("");
 					this->_client.connect(ip->getText(), p, username->getText(), password->getText());
+					if (this->_clientThread.joinable())
+						this->_clientThread.join();
+					this->_clientThread = std::thread([this]{
+						this->_client.run();
+					});
 					connect->setVisible(false);
 					disconnect->setVisible(true);
 				} catch (std::invalid_argument &e) {
@@ -63,6 +68,14 @@ namespace RC::Client
 			this->_client.disconnect();
 			openConnectWindow();
 		});
+	}
+
+	Client::~Client()
+	{
+		if (this->_client.isConnected())
+			this->_client.disconnect();
+		if (this->_clientThread.joinable())
+			this->_clientThread.join();
 	}
 
 	int Client::run()

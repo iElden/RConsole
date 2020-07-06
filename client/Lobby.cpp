@@ -5,4 +5,4 @@
 ** RClientLobby.cpp
 */
 
-#include "RClientLobby.hpp"
+#include "Lobby.hpp"
