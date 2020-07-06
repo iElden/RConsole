@@ -5,23 +5,23 @@
 ** RPlayer.cpp
 */
 
-#include "RPlayer.hpp"
+#include "Player.hpp"
 
 namespace RC::Client
 {
-	RPlayer::RPlayer(unsigned id, const std::string &name) :
+	Player::Player(unsigned id, const std::string &name) :
 		id(id),
 		name(name),
 		state(CONNECTING),
 		ping(-1)
 	{}
 
-	bool RPlayer::operator==(const RPlayer &other) const noexcept
+	bool Player::operator==(const Player &other) const noexcept
 	{
 		return this->id == other.id;
 	}
 
-	const std::string &RPlayer::getName() const noexcept
+	const std::string &Player::getName() const noexcept
 	{
 		return name;
 	}

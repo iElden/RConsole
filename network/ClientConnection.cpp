@@ -125,7 +125,7 @@ namespace RC::Network
 		auto *packet = reinterpret_cast<PacketLobbyList *>(buffer);
 
 		packet->dataSize = size - sizeof(packet->dataSize);
-		packet->code = LOBBY_STATE;
+		packet->code = LOBBY_LIST;
 		packet->nbLobby = lobbies.size();
 		std::memcpy(packet->lobbies, lobbies.data(), lobbies.size() * sizeof(NPlayer));
 		this->sendRawData(packet, size);

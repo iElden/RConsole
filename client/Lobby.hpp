@@ -4,27 +4,27 @@
 ** File description:
 ** RClientLobby.hpp
 */
-#ifndef RCONSOLE_RCLIENTLOBBY_HPP
-#define RCONSOLE_RCLIENTLOBBY_HPP
+#ifndef RCONSOLE_LOBBY_HPP
+#define RCONSOLE_LOBBY_HPP
 
 #include <vector>
-#include "RPlayer.hpp"
+#include "Player.hpp"
 #include "../network/RPackets.hpp"
 
 namespace RC::Client
 {
-	class RClientLobby {
+	class Lobby {
 	public:
 		int id;
-		std::vector<RPlayer> players;
+		std::vector<Player> players;
 
-		void addPlayer(RPlayer &player);
+		void addPlayer(Player &player);
 		void addPlayer(int id, std::string &name);
-		void removePlayer(RPlayer &player);
+		void removePlayer(Player &player);
 		void removePlayer(int id);
 		operator Network::NLobby();
 	};
 }
 
 
-#endif //RCONSOLE_RCLIENTLOBBY_HPP
+#endif //RCONSOLE_LOBBY_HPP

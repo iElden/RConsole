@@ -9,7 +9,8 @@
 #define RCONSOLE_NETWORKCLIENT_HPP
 
 #include <optional>
-#include "RClientLobby.hpp"
+#include <functional>
+#include "Lobby.hpp"
 #include "../network/ClientConnection.hpp"
 #include "../network/ServerConnection.hpp"
 
@@ -17,15 +18,24 @@ namespace RC::Client
 {
 	class NetworkClient : Network::ServerConnection {
 	private:
-		std::optional<RPlayer> _me = std::nullopt;
-		std::optional<RClientLobby> _myLobby = std::nullopt;
+		std::optional<Player> _me = std::nullopt;
+		std::optional<Lobby> _myLobby = std::nullopt;
+		std::vector<Lobby> _lobbies;
+		bool _connected = false;
+		std::map<std::string, std::vector<std::function<void (const Network::Packet &)>>> _handlers;
 
 	public:
 		void connect(const std::string &ip, unsigned port, const std::string &username, const std::string &password);
+		void disconnectWithError(const std::string &error);
 		void disconnect();
+		void connect(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		bool emit(std::string signalName, const Network::Packet &packet);
 		bool isInLobby() const noexcept;
-		const RPlayer &getPlayer() const;
-		const RClientLobby &getLobby() const; // raise if not in lobby
+		const Player &getPlayer() const;
+		const Lobby &getLobby() const; // raise if not in lobby
+		const std::vector<Lobby> &getLobbyList() const;
+		void handlePacket(const Network::Packet &packet, const std::function<void(const std::string &)> &onError);
+		void run(const std::function<void(const std::string &)> &onError = {});
 	};
 }
 

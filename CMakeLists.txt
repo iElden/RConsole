@@ -21,13 +21,18 @@ add_executable(
 	client
 	client/main.cpp
 	${NETWORK_SRC}
-	client/RPlayer.hpp
-	client/RPlayer.cpp
-	client/RClientLobby.cpp
-	client/RClientLobby.hpp
+	client/Player.hpp
+	client/Player.cpp
+	client/Lobby.cpp
+	client/Lobby.hpp
 	client/NetworkClient.cpp
 	client/NetworkClient.hpp
-	client/Client.cpp client/Client.hpp client/Exceptions.hpp client/Utils.hpp client/Utils.cpp)
+	client/Client.cpp
+	client/Client.hpp
+	client/Exceptions.hpp
+	client/Utils.hpp
+	client/Utils.cpp
+)
 
 target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system)
 

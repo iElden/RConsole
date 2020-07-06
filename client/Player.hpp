@@ -5,8 +5,8 @@
 ** RPlayer.hpp
 */
 
-#ifndef RCONSOLE_RPLAYER_HPP
-#define RCONSOLE_RPLAYER_HPP
+#ifndef RCONSOLE_PLAYER_HPP
+#define RCONSOLE_PLAYER_HPP
 
 #include <string>
 
@@ -19,7 +19,7 @@ namespace RC::Client
 		LAGGING
 	};
 
-	class RPlayer {
+	class Player {
 	private:
 		unsigned id;
 		std::string name;
@@ -27,10 +27,10 @@ namespace RC::Client
 		RPlayerState state;
 		int ping;
 
-		RPlayer(unsigned id, const std::string &name);
-		bool operator==(const RPlayer& other) const noexcept;
+		Player(unsigned id, const std::string &name);
+		bool operator==(const Player& other) const noexcept;
 		const std::string &getName() const noexcept;
 	};
 }
 
-#endif //RCONSOLE_RPLAYER_HPP
+#endif //RCONSOLE_PLAYER_HPP

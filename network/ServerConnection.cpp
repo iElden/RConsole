@@ -102,7 +102,7 @@ namespace RC::Network
 	{
 		PacketChooseGame packet{
 			sizeof(packet) - sizeof(packet.dataSize),
-			GAME_START,
+			CHOOSE_GAME,
 			id
 		};
 
