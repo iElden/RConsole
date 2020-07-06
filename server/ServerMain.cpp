@@ -22,7 +22,7 @@ namespace RC::Server
 		while (true) {
 			std::cout << "Waiting for new client." << std::endl;
 
-			auto c = this->clients._clients.emplace_back(new Client(listener));
+			auto c = this->clients.createClient(listener);
 
 			c->attach("packet_received", [this, c](const Network::Packet &packet){
 				this->onPacketReceived(c, packet);
