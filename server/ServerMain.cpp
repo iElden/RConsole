@@ -21,7 +21,12 @@ namespace RC::Server
 
 		while (true) {
 			std::cout << "Waiting for new client." << std::endl;
-			this->clients._clients.emplace_back(new Client(listener, *this));
+
+			auto c = this->clients._clients.emplace_back(new Client(listener));
+
+			c->attach("packet_received", [this, c](const Network::Packet &packet){
+				this->onPacketReceived(c, packet);
+			});
 		}
 	}
 
@@ -59,6 +64,6 @@ namespace RC::Server
 
 	void Main::onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet)
 	{
-		//assert(client.use_count() >= 2);
+		assert(client.use_count() >= 2);
 	}
 }

@@ -12,7 +12,7 @@
 
 namespace RC::Server
 {
-	Client::Client(sf::TcpListener &listener, Main &main)
+	Client::Client(sf::TcpListener &listener)
 	{
 		Network::Packet packet;
 
@@ -29,21 +29,8 @@ namespace RC::Server
 
 				this->getUser(packet.hello.username, packet.hello.password);
 				this->connection.sendOlleh(this->id);
-				this->_thread = std::thread([this, &main]{
-					Network::Packet packet;
-
-					while (!this->_destroyed) {
-						try {
-							std::cout << "Wait for client " << this->id << " packet." << std::endl;
-							this->connection.receiveNextPacket(packet);
-							main.onPacketReceived(std::shared_ptr<Client>(this), packet);
-						} catch (std::exception &e) {
-							std::cerr << "Client disconnected because had error: " << e.what() << std::endl;
-							this->connection.sendError(e.what());
-							this->connection.disconnect();
-							this->_destroyed = true;
-						}
-					}
+				this->_thread = std::thread([this]{
+					this->_run();
 				});
 				break;
 			} catch (std::exception &e) {
@@ -74,5 +61,54 @@ namespace RC::Server
 	{
 		this->username = username;
 		this->id = 0;
+	}
+
+	void Client::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
+	{
+		std::transform(
+			signalName.begin(),
+			signalName.end(),
+			signalName.begin(),
+			[](unsigned char c){
+				return std::tolower(c);
+			}
+		);
+		this->_handlers[signalName].push_back(handler);
+	}
+
+	bool Client::emit(std::string signalName, const Network::Packet &packet)
+	{
+		std::transform(
+			signalName.begin(),
+			signalName.end(),
+			signalName.begin(),
+			[](unsigned char c){
+				return std::tolower(c);
+			}
+		);
+		for (auto &handler : this->_handlers[signalName])
+			if (handler)
+				handler(packet);
+		return this->_handlers[signalName].empty();
+	}
+
+	void Client::_run()
+	{
+		Network::Packet packet;
+
+		while (!this->_destroyed) {
+			try {
+				std::cout << "Wait for client " << this->id << " packet." << std::endl;
+				this->connection.receiveNextPacket(packet);
+				this->emit("packet_received", packet);
+			} catch (std::exception &e) {
+				std::cerr << "Client disconnected because had error: " << e.what() << std::endl;
+				try {
+					this->connection.sendError(e.what());
+				} catch (...) {}
+				this->connection.disconnect();
+				this->_destroyed = true;
+			}
+		}
 	}
 }
