@@ -21,44 +21,49 @@ namespace RC::Server
 
 		while (true) {
 			std::cout << "Waiting for new client." << std::endl;
-			this->clients._clients.emplace_back(new Client(listener, *this));
+			this->clients.createClient(listener, *this);
 		}
 	}
 
-	void Main::onCreateLobby(const std::shared_ptr<Client> &client)
+	void Main::onCreateLobby(Client &client)
 	{
-		std::shared_ptr<Lobby> lobby = lobbies.createLobby(client);
-		client->connection.sendLobbyCreated(lobby->toNLobby());
+		std::shared_ptr<Lobby> lobby = lobbies.createLobby(this->getClientPtr(client));
+		client.connection.sendLobbyCreated(lobby->toNLobby());
 	}
 
-	void Main::onDeleteLobby(const std::shared_ptr<Client> &client)
+	void Main::onDeleteLobby(Client &client)
 	{
-		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
+		Lobby &lobby = this->lobbies.getLobbyByClient(client);
 		this->lobbies.delLobby(lobby);
-		client->connection.sendOk();
+		client.connection.sendOk();
 	}
 
-	void Main::onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id)
+	void Main::onJoinLobby(Client &client, uint32_t lobby_id)
 	{
 		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
-		lobby.join(client);
-		client->connection.sendLobbyJoined(lobby.getNPlayers());
+		lobby.join(this->getClientPtr(client));
+		client.connection.sendLobbyJoined(lobby.getNPlayers());
 	}
 
-	void Main::onLeaveLobby(const std::shared_ptr<Client> &client)
+	void Main::onLeaveLobby(Client &client)
 	{
-		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
-		lobby.leave(*client);
-		client->connection.sendOk();
+		Lobby &lobby = this->lobbies.getLobbyByClient(client);
+		lobby.leave(client);
+		client.connection.sendOk();
 	}
 
-	void Main::onLobbyListRequest(const std::shared_ptr<Client> &client)
+	void Main::onLobbyListRequest(Client &client)
 	{
-		client->connection.sendLobbyList(this->lobbies.getNLobbies());
+		client.connection.sendLobbyList(this->lobbies.getNLobbies());
 	}
 
-	void Main::onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet)
+	void Main::onPacketReceived(Client &client, const Network::Packet &packet)
 	{
 		//assert(client.use_count() >= 2);
+	}
+
+	std::shared_ptr<Client> &Main::getClientPtr(const Client &client)
+	{
+		return this->clients.getClientPtr(client);
 	}
 }

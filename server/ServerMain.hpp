@@ -19,19 +19,21 @@ namespace RC::Server {
 		LobbyList lobbies;
 		std::thread _waitingThread;
 
-		void onCreateLobby(const std::shared_ptr<Client> &client);
-		void onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id);
-		void onDeleteLobby(const std::shared_ptr<Client> &client);
-		void onLeaveLobby(const std::shared_ptr<Client> &client);
-		void onLobbyListRequest(const std::shared_ptr<Client> &client);
-		void onLobbyStateRequest(const std::shared_ptr<Client> &client);
-		void onSetReady(const std::shared_ptr<Client> &client);
-		void onChooseGame(const std::shared_ptr<Client> &client);
+		void onCreateLobby(Client &client);
+		void onJoinLobby(Client &client, uint32_t lobby_id);
+		void onDeleteLobby(Client &client);
+		void onLeaveLobby(Client &client);
+		void onLobbyListRequest(Client &client);
+		void onLobbyStateRequest(Client &client);
+		void onSetReady(Client &client);
+		void onChooseGame(Client &client);
+
+		std::shared_ptr<Client> &getClientPtr(const Client &client);
 
 	public:
 		void run(unsigned short port);
 
-		void onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet);
+		void onPacketReceived(Client &client, const Network::Packet &packet);
 	};
 }
 

@@ -12,7 +12,8 @@
 
 namespace RC::Server
 {
-	Client::Client(sf::TcpListener &listener, Main &main)
+	Client::Client(int id, sf::TcpListener &listener, Main &main):
+		id(id)
 	{
 		Network::Packet packet;
 
@@ -36,7 +37,7 @@ namespace RC::Server
 						try {
 							std::cout << "Wait for client " << this->id << " packet." << std::endl;
 							this->connection.receiveNextPacket(packet);
-							main.onPacketReceived(std::shared_ptr<Client>(this), packet);
+							main.onPacketReceived(*this, packet);
 						} catch (std::exception &e) {
 							std::cerr << "Client disconnected because had error: " << e.what() << std::endl;
 							this->connection.sendError(e.what());
@@ -70,9 +71,8 @@ namespace RC::Server
 		return np;
 	}
 
-	void Client::getUser(const std::string &username, const std::string &)
+	void Client::getUser(const std::string &username_, const std::string &)
 	{
-		this->username = username;
-		this->id = 0;
+		this->username = username_;
 	}
 }

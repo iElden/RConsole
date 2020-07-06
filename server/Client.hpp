@@ -22,10 +22,10 @@ namespace RC::Server
 	public:
 		uint32_t id;
 		uint32_t ping = 0;
-		std::string username = "client-" + std::to_string(this->id);
+		std::string username = "Guest";
 		Network::ClientConnection connection;
 
-		Client(sf::TcpListener &listener, Main &main);
+		Client(int id, sf::TcpListener &listener, Main &main);
 		~Client();
 		void getUser(const std::string &username, const std::string &password);
 		operator Network::NPlayer() const;

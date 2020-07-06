@@ -14,11 +14,13 @@
 namespace RC::Server
 {
 	class ClientList {
-	public:
+		int max_id = 0;
 		std::vector<std::shared_ptr<Client>> _clients = {};
-
+	public:
+		Client &createClient(sf::TcpListener &listener, Main &main);
 		ClientList() = default;
 		ClientList(const std::shared_ptr<Client> &lobby_owner);
+		std::shared_ptr<Client> &getClientPtr(const Client &client);
 		// Overload Iterator
 		auto begin() {return this->_clients.begin();};
 		auto end() {return this->_clients.end();};
