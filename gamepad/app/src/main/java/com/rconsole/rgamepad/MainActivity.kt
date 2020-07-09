@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var lastID = ""
 
     private var send: DatagramSocket? = null
-    private var receive: DatagramSocket? = null
+    //private var receive: DatagramSocket? = null
 
 
     private fun vibrate() {
@@ -63,8 +63,10 @@ class MainActivity : AppCompatActivity() {
     private fun receive(timeout: Int = 2000): String {
         val buffer = ByteArray(1000)
         val packet = DatagramPacket(buffer, 0, buffer.size)
-        receive?.soTimeout = timeout
-        receive?.receive(packet)
+        //receive?.soTimeout = timeout
+        send?.soTimeout = timeout
+        //receive?.receive(packet)
+        send?.receive(packet)
         return String(buffer, 0, buffer.size)
     }
 
@@ -91,19 +93,16 @@ class MainActivity : AppCompatActivity() {
         val inputIp = findViewById<EditText>(R.id.clientIP).text.toString() // Client IP address
         val inputId = findViewById<EditText>(R.id.clientID).text.toString() // Client Socket
 
-
-
         if (inputIp.isNotEmpty() && inputId.isNotEmpty()) {
             ip = inputIp
             id = inputId.toInt()
 
             try {
-                println("Oui...")
                 if (lastID != inputId) {
                     send?.close()
-                    receive?.close()
+                    //receive?.close()
                     send = DatagramSocket(id)
-                    receive = DatagramSocket(id + 1)
+                    //receive = DatagramSocket(id + 1)
                     lastID = inputId
                 }
 
@@ -156,7 +155,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         send?.close()
-        receive?.close()
+        //receive?.close()
         super.onStop()
     }
 }
