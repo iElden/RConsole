@@ -4,18 +4,18 @@ project(RConsole)
 set(CMAKE_CXX_STANDARD 20)
 
 set(
-	NETWORK_SRC
-	network/RPackets.hpp
-	network/Utils.hpp
-	network/Utils.cpp
-	network/Connection.cpp
-	network/Connection.hpp
-	network/Exceptions.hpp
-	network/ClientConnection.cpp
-	network/ClientConnection.hpp
-	network/ServerConnection.cpp
-	network/ServerConnection.hpp
-)
+		NETWORK_SRC
+		network/RPackets.hpp
+		network/Utils.hpp
+		network/Utils.cpp
+		network/Connection.cpp
+		network/Connection.hpp
+		network/Exceptions.hpp
+		network/ClientConnection.cpp
+		network/ClientConnection.hpp
+		network/ServerConnection.cpp
+		network/ServerConnection.hpp
+		games/pong/PongPackets.hpp games/pong/Utils.cpp games/pong/Utils.hpp)
 
 add_executable(
 	client
@@ -38,20 +38,20 @@ target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-sy
 
 
 add_executable(
-	server
-	server/main.cpp
-	${NETWORK_SRC}
-	server/ServerMain.cpp
-	server/ServerMain.hpp
-	server/Client.cpp
-	server/Client.hpp
-	server/exc.hpp
-	server/Lobby.cpp
-	server/Lobby.hpp
-	server/ClientList.cpp
-	server/ClientList.hpp
-	server/LobbyList.cpp
-	server/LobbyList.hpp
-)
+		server
+		server/main.cpp
+		${NETWORK_SRC}
+		server/ServerMain.cpp
+		server/ServerMain.hpp
+		server/Client.cpp
+		server/Client.hpp
+		server/exc.hpp
+		server/Lobby.cpp
+		server/Lobby.hpp
+		server/ClientList.cpp
+		server/ClientList.hpp
+		server/LobbyList.cpp
+		server/LobbyList.hpp
+		games/pong/Game.cpp games/pong/Game.hpp games/pong/GameObject.cpp games/pong/GameObject.hpp)
 
 target_link_libraries(server sfml-network sfml-system pthread)
