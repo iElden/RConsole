@@ -1,6 +1,10 @@
 package com.rconsole.rgamepad
 
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -16,17 +20,24 @@ import java.io.StringWriter
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import java.nio.ByteBuffer
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.experimental.xor
+import kotlin.reflect.typeOf
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private var ip: String = ""
     private var id: Int = 0
     private lateinit var address: InetAddress
     private var lastID = ""
+    private var data = ByteArray(15)
+
+    private lateinit var sensorManager: SensorManager
+    private lateinit var gyroscope: Sensor
+    private lateinit var accelerometer: Sensor
 
     private var socket: DatagramSocket? = null
 
@@ -36,6 +47,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        this.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.let {
+            this.gyroscope = it
+        }
+        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let {
+            this.accelerometer = it
+        }
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_activity)
     }
@@ -88,7 +108,10 @@ class MainActivity : AppCompatActivity() {
 
             for (button in buttons) {
                 button.setOnTouchListener { view, me ->
-                    packet[0] = packet[0].or(button.tag.toString().toInt().toByte())
+                    data[0] = data[0].or(button.tag.toString().toInt().toByte())
+                    //packet[0] = packet[0].or(button.tag.toString().toInt().toByte())
+                    view.performClick()
+                    button.performClick()
                     return@setOnTouchListener true
                 }
             }
@@ -98,11 +121,11 @@ class MainActivity : AppCompatActivity() {
 
                     if (same(msg[0], 0x02)) {
                         if (same(msg[1], 0x00)) {
-                            vibrate() // Have to play with bit manipulation.
+                            //vibrate() // Have to play with bit manipulation.
                         }
                     }
-                    send(Packet(3.toByte(), packet))
-                    packet = ByteArray(14)
+                    send(Packet(3.toByte(), data))
+                    data[0] = 0
                 } catch (e: Exception) {
                     err(e)
                 }
@@ -177,5 +200,41 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         socket?.close()
         super.onStop()
+    }
+
+    override fun onResume() {
+        this.sensorManager.registerListener(
+            this, accelerometer,
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+        super.onResume()
+    }
+
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+    }
+
+    // Float to byte to change.
+    override fun onSensorChanged(event: SensorEvent?) {
+        when (event?.sensor?.type) {
+            Sensor.TYPE_ACCELEROMETER -> {
+                var x = event.values[0]
+                var y = event.values[1]
+                var z = event.values[2]
+
+                Log.i("X", x.toString())
+                Log.i("Y", y.toString())
+                Log.i("Z", z.toString())
+
+                var xbyte = ByteBuffer.allocate(4).putFloat(x).array()
+                var ybyte = ByteBuffer.allocate(4).putFloat(y).array()
+                var zbyte = ByteBuffer.allocate(4).putFloat(z).array()
+
+                for (i in 0..3) {
+                    data[i + 1] = xbyte[i]
+                    data[i + 5] = ybyte[i]
+                    data[i + 9] = zbyte[i]
+                }
+            }
+        }
     }
 }
