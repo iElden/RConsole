@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "Utils.hpp"
+#include "Controller/Exceptions.hpp"
 
 namespace RC::Client
 {
@@ -84,10 +85,13 @@ namespace RC::Client
 
 	Client::~Client()
 	{
+		this->_controllerConnecting = false;
 		if (this->_client.isConnected())
 			this->_client.disconnect();
 		if (this->_clientThread.joinable())
 			this->_clientThread.join();
+		if (this->_controllerConnectThread.joinable())
+			this->_controllerConnectThread.join();
 	}
 
 	int Client::run()
@@ -158,6 +162,8 @@ namespace RC::Client
 					remoteConnect->setVisible(false);
 					remoteDisconnect->setVisible(true);
 					window->close();
+				}, [error](const std::string &str){
+					error->setText(str);
 				});
 			} catch (std::invalid_argument &e) {
 				error->setText("Port is invalid");
@@ -169,14 +175,13 @@ namespace RC::Client
 				error->setText(e.what());
 				return;
 			}
-			window->close();
 		});
 		cancel->onClick.connect([window]{
 			window->close();
 		});
 	}
 
-	void Client::_addController(unsigned short port, const std::function<void()> &onConnected)
+	void Client::_addController(unsigned short port, const std::function<void()> &onConnected, const std::function<void(const std::string &msg)> &onError)
 	{
 		auto window = Utils::openWindowWithFocus(this->_gui, 180, 60);
 
@@ -185,21 +190,27 @@ namespace RC::Client
 
 		auto cancel = window->get<tgui::Button>("Cancel");
 
+		this->_controllerConnecting = false;
+		if (this->_controllerConnectThread.joinable())
+			this->_controllerConnectThread.join();
 		this->_controllerConnecting = true;
-		this->_controllerConnectThread = std::thread([this, port, window, onConnected]{
+		this->_controllerConnectThread = std::thread([this, port, window, onConnected, onError]{
 			while (this->_controllerConnecting) {
 				try {
 					this->_setController(port);
 					onConnected();
 					this->_controllerConnecting = false;
-				} catch (...) {}
+					window->close();
+				} catch (Controller::TimeOutException &) {
+				} catch (std::exception &e) {
+					onError(e.what());
+					window->close();
+				}
 			}
 			window->close();
 		});
 		window->onClose.connect([this]{
 			this->_controllerConnecting = false;
-			if (this->_controllerConnectThread.joinable())
-				this->_controllerConnectThread.join();
 		});
 		cancel->onClick.connect([window]{
 			window->close();
