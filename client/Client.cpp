@@ -3,6 +3,8 @@
 //
 
 #include "Client.hpp"
+
+#include <memory>
 #include "Utils.hpp"
 
 namespace RC::Client
@@ -15,6 +17,8 @@ namespace RC::Client
 
 		auto connect = this->_gui.get<tgui::Button>("Connect");
 		auto disconnect = this->_gui.get<tgui::Button>("Disconnect");
+		auto remoteConnect = this->_gui.get<tgui::Button>("RemoteConnect");
+		auto remoteDisconnect = this->_gui.get<tgui::Button>("RemoteDisconnect");
 		auto openConnectWindow = [this, connect, disconnect]{
 			auto window = Utils::openWindowWithFocus(this->_gui, 200, 170);
 
@@ -68,6 +72,14 @@ namespace RC::Client
 			this->_client.disconnect();
 			openConnectWindow();
 		});
+		remoteConnect->onClick.connect([this, remoteConnect, remoteDisconnect]{
+			this->_openControllerConnectWindow(remoteConnect, remoteDisconnect);
+		});
+		remoteDisconnect->onClick.connect([this, remoteConnect, remoteDisconnect]{
+			remoteConnect->setVisible(true);
+			remoteDisconnect->setVisible(false);
+			this->_disconnectController();
+		});
 	}
 
 	Client::~Client()
@@ -108,5 +120,89 @@ namespace RC::Client
 				return;
 			}
 		}
+	}
+
+	void Client::_setController(unsigned short port)
+	{
+		this->_controller = std::make_unique<Controller::Controller>(port);
+	}
+
+	void Client::_disconnectController()
+	{
+		if (this->_controller)
+			try {
+				this->_controller->disconnect();
+			} catch (...) {}
+		this->_controller.reset(nullptr);
+	}
+
+	void Client::_openControllerConnectWindow(tgui::Button::Ptr remoteConnect, tgui::Button::Ptr remoteDisconnect)
+	{
+		auto window = Utils::openWindowWithFocus(this->_gui, 150, 120);
+
+		window->setTitle("Connect to server");
+		window->loadWidgetsFromFile("gui/controller.gui");
+
+		auto port = window->get<tgui::EditBox>("Port");
+		auto error = window->get<tgui::TextBox>("Error");
+		auto ok = window->get<tgui::Button>("OK");
+		auto cancel = window->get<tgui::Button>("Cancel");
+
+		ok->onClick.connect([this, window, remoteConnect, remoteDisconnect, port, error]{
+			try {
+				unsigned long p = std::stoul(port->getText().toAnsiString());
+
+				if (p > UINT16_MAX)
+					throw std::invalid_argument("");
+				this->_addController(p, [window, remoteConnect, remoteDisconnect]{
+					remoteConnect->setVisible(false);
+					remoteDisconnect->setVisible(true);
+					window->close();
+				});
+			} catch (std::invalid_argument &e) {
+				error->setText("Port is invalid");
+				return;
+			} catch (std::out_of_range &e) {
+				error->setText("Port is invalid");
+				return;
+			} catch (std::exception &e) {
+				error->setText(e.what());
+				return;
+			}
+			window->close();
+		});
+		cancel->onClick.connect([window]{
+			window->close();
+		});
+	}
+
+	void Client::_addController(unsigned short port, const std::function<void()> &onConnected)
+	{
+		auto window = Utils::openWindowWithFocus(this->_gui, 180, 60);
+
+		window->setTitle("Connecting to server");
+		window->loadWidgetsFromFile("gui/connecting.gui");
+
+		auto cancel = window->get<tgui::Button>("Cancel");
+
+		this->_controllerConnecting = true;
+		this->_controllerConnectThread = std::thread([this, port, window, onConnected]{
+			while (this->_controllerConnecting) {
+				try {
+					this->_setController(port);
+					onConnected();
+					this->_controllerConnecting = false;
+				} catch (...) {}
+			}
+			window->close();
+		});
+		window->onClose.connect([this]{
+			this->_controllerConnecting = false;
+			if (this->_controllerConnectThread.joinable())
+				this->_controllerConnectThread.join();
+		});
+		cancel->onClick.connect([window]{
+			window->close();
+		});
 	}
 }

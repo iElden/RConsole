@@ -15,6 +15,9 @@ set(
 	network/ClientConnection.hpp
 	network/ServerConnection.cpp
 	network/ServerConnection.hpp
+	games/pong/PongPackets.hpp
+	games/pong/Utils.cpp
+	games/pong/Utils.hpp
 )
 
 add_executable(
@@ -32,6 +35,10 @@ add_executable(
 	client/Exceptions.hpp
 	client/Utils.hpp
 	client/Utils.cpp
+	client/Controller/Controller.cpp
+	client/Controller/Controller.hpp
+	client/Controller/Exceptions.hpp
+	client/Controller/Packet.hpp
 )
 
 target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
@@ -52,6 +59,10 @@ add_executable(
 	server/ClientList.hpp
 	server/LobbyList.cpp
 	server/LobbyList.hpp
+	games/pong/Game.cpp
+	games/pong/Game.hpp
+	games/pong/GameObject.cpp
+	games/pong/GameObject.hpp
 )
 
 target_link_libraries(server sfml-network sfml-system pthread)

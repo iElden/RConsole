@@ -21,7 +21,8 @@ Renderer.1 {
 }
 
 Button.Connect {
-    Position = (500, 20);
+    Position = (500, 10);
+    Size = (130, 42);
     Text = "Connect to server";
     TextSize = 13;
     renderer = &1;
@@ -46,4 +47,21 @@ ScrollablePanel.ScrollablePanel1 {
         bordercolor = black;
         texturebackground = None;
     }
+}
+
+Button.RemoteConnect {
+    Position = (500, 60);
+    Size = (130, 42);
+    Text = "Connect to\ncontroller";
+    TextSize = 13;
+    renderer = &1;
+}
+
+Button.RemoteDisconnect {
+    Position = (500, 60);
+    Size = (130, 42);
+    Text = "Disconnect from\ncontroller";
+    TextSize = 13;
+    Visible = false;
+    renderer = &1;
 }
