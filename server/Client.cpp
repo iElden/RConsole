@@ -12,7 +12,7 @@
 
 namespace RC::Server
 {
-	Client::Client(sf::TcpListener &listener)
+	Client::Client(uint32_t id, sf::TcpListener &listener)
 	{
 		Network::Packet packet;
 

@@ -8,6 +8,7 @@
 #define RCONSOLE_CLIENT_HPP
 
 #include <thread>
+#include <functional>
 #include "../network/ClientConnection.hpp"
 
 namespace RC::Server
@@ -25,10 +26,10 @@ namespace RC::Server
 	public:
 		uint32_t id;
 		uint32_t ping = 0;
-		std::string username = "client-" + std::to_string(this->id);
+		std::string username = "Guest";
 		Network::ClientConnection connection;
 
-		Client(sf::TcpListener &listener);
+		Client(uint32_t id, sf::TcpListener &listener);
 		~Client();
 		void getUser(const std::string &username, const std::string &password);
 		operator Network::NPlayer() const;
