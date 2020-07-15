@@ -44,6 +44,7 @@ namespace RC::Client
 		void attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
 		bool emit(std::string signalName, const Network::Packet &packet);
 		bool isInLobby() const noexcept;
+		void makeLobby();
 		const Player &getPlayer() const;
 		const Lobby &getLobby() const; // raise if not in lobby
 		const std::vector<Lobby> &getLobbyList() const;

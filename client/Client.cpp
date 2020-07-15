@@ -20,6 +20,7 @@ namespace RC::Client
 		auto disconnect = this->_gui.get<tgui::Button>("Disconnect");
 		auto remoteConnect = this->_gui.get<tgui::Button>("RemoteConnect");
 		auto remoteDisconnect = this->_gui.get<tgui::Button>("RemoteDisconnect");
+		auto newLobby = this->_gui.get<tgui::Button>("NewLobby");
 		auto openConnectWindow = [this, connect, disconnect]{
 			auto window = Utils::openWindowWithFocus(this->_gui, 200, 170);
 
@@ -81,6 +82,11 @@ namespace RC::Client
 			remoteDisconnect->setVisible(false);
 			this->_disconnectController();
 		});
+		newLobby->onClick.connect([this]{
+			this->_client.makeLobby();
+		});
+
+		this->_hookNetworkHandler();
 	}
 
 	Client::~Client()
@@ -215,5 +221,27 @@ namespace RC::Client
 		cancel->onClick.connect([window]{
 			window->close();
 		});
+	}
+
+	void Client::_hookNetworkHandler()
+	{
+		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_LIST), [this](const Network::Packet &packet){
+			this->_handleLobbyListPacket(packet);
+		});
+	}
+
+	void Client::_handleLobbyListPacket(const Network::Packet &packet)
+	{
+		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
+
+		panel->removeAllWidgets();
+		for (int i = 0; i < packet.lobbyList.nbLobby; i++) {
+			auto &lobby = packet.lobbyList.lobbies[i];
+			auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
+
+			button->setSize({440, 40});
+			button->setPosition({10, 50 * i});
+			panel->add(button);
+		}
 	}
 }
