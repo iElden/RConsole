@@ -1,40 +1,38 @@
 package com.rconsole.rgamepad
 
 import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rconsole.rgamepad.Utils.Opcodes
 import java.net.DatagramSocket
 import java.net.InetAddress
-import java.nio.ByteBuffer
-import kotlin.experimental.and
+import java.net.SocketTimeoutException
 import kotlin.experimental.or
 
 
-class MainActivity : AppCompatActivity(), SensorEventListener /* See for custom SensorEventListener */ {
+class MainActivity : AppCompatActivity() {
 
-    private var ip: String = ""
+    private var lastId: Int = 0
     private var id: Int = 0
-    private lateinit var address: InetAddress
-    private var lastID = ""
+    private var ip: String = ""
+
+    private var error: String = ""
     private var data = ByteArray(15)
 
-    private lateinit var sensorManager: SensorManager
-    private lateinit var gyroscope: Sensor
-    private lateinit var accelerometer: Sensor
-    private lateinit var gameRotationVector: Sensor
+    private lateinit var buttons: Array<Button>
+    private lateinit var textIP: EditText
+    private lateinit var textID: EditText
+    private lateinit var connect: Button
 
-    private var socket: DatagramSocket? = null
+    private var socket: DatagramSocket = DatagramSocket(null)
+    private lateinit var address: InetAddress
+    private var response: ByteArray = ByteArray(2)
 
     private fun vibrate() {
         val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -42,28 +40,18 @@ class MainActivity : AppCompatActivity(), SensorEventListener /* See for custom 
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        this.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.let {
-            this.gyroscope = it
-        }
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let {
-            this.accelerometer = it
-        }
-        sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.let {
-            this.gameRotationVector = it
-        }
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register_activity)
+        setContentView(R.layout.gamepad_activity)
+
+        this.socket.reuseAddress = true
+
+        findViews()
+        initButtons()
+        setGamepadStatus(false)
     }
 
-    // May be correct. :x
-    private fun same(byte: Byte, other: Byte): Boolean {
-        return byte.and(other) == other
-    }
-
-    private fun initButtons() {
-        val buttons = arrayOf<Button>(
+    private fun findViews() {
+        this.buttons = arrayOf(
             findViewById(R.id.buttonA),
             findViewById(R.id.buttonB),
             findViewById(R.id.buttonX),
@@ -73,11 +61,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener /* See for custom 
             findViewById(R.id.buttonLeft),
             findViewById(R.id.buttonRight)
         )
+        this.textID = findViewById(R.id.clientID)
+        this.textIP = findViewById(R.id.clientIP)
+        this.connect = findViewById(R.id.connect)
+    }
 
-        for (button in buttons) {
-            button.setOnTouchListener { view, me ->
+    private fun initButtons() {
+        for (button in this.buttons) {
+            button.setOnTouchListener { view, _ ->
                 this.data[0] = this.data[0].or(button.tag.toString().toInt().toByte())
-                //packet[0] = packet[0].or(button.tag.toString().toInt().toByte())
                 view.performClick()
                 button.performClick()
                 return@setOnTouchListener true
@@ -85,109 +77,107 @@ class MainActivity : AppCompatActivity(), SensorEventListener /* See for custom 
         }
     }
 
-    private fun gamepadLoop() {
-        Thread {
-            initButtons()
-            while (true) {
-                try {
-                    var msg = Network.receive(socket,10000)
+    private fun setGamepadStatus(enable: Boolean) {
+        for (button in this.buttons) {
+            button.isEnabled = enable
+        }
+        this.textIP.isEnabled = !enable
+        this.textID.isEnabled = !enable
+        this.connect.isEnabled = !enable
+    }
 
-                    if (same(msg[0], 0x02)) {
-                        if (same(msg[1], 0x00)) {
-                            vibrate()
-                        }
-                    }
-                    Network.send(socket, Packet(3.toByte(), data), address, id)
-                    data[0] = 0
-                } catch (e: Exception) { Utils.err("TH-GamepadLoop", e) }
-            }
-        }.start()
+    private fun getInput() {
+        val inputIP = this.textIP.text.toString()
+        val inputID = this.textID.text.toString()
+
+        if (inputIP.isEmpty() || inputID.isEmpty()) {
+            this.error = "You must fill IP and ID."
+            throw Exception(this.error)
+        }
+        this.ip = inputIP
+        this.id = inputID.toInt()
+    }
+
+    private fun initNetwork() {
+        if (this.lastId != this.id) {
+            this.socket = DatagramSocket(this.id)
+            this.lastId = this.id
+        }
+        this.address = InetAddress.getByName(ip)
+    }
+
+    private fun send(packet: Packet) {
+        Network.send(socket, packet, address, id)
+    }
+
+    private fun receive(timeout: Int = 2000): ByteArray {
+        return Network.receive(socket, timeout)
     }
 
     private fun run() {
-        val btn = findViewById<Button>(R.id.connect)
+        try {
+            runOnUiThread {
+                findViewById<Button>(R.id.connect).isEnabled = false
+            }
+            getInput()
+            initNetwork()
+            send(Packet(Opcodes.HELLO))
 
-        val inputIp = findViewById<EditText>(R.id.clientIP).text.toString() // Client IP address
-        val inputId = findViewById<EditText>(R.id.clientID).text.toString() // Client Socket
+            this.response = receive(10000)
+            if (this.response[0] != Opcodes.OLLEH.byte) {
+                throw Exception("Incorrect response. Try an other client.")
+            }
 
-        if (inputIp.isNotEmpty() && inputId.isNotEmpty()) {
-            try {
-                ip = inputIp
-                id = inputId.toInt()
+            runOnUiThread {
+                setGamepadStatus(true)
+            }
+            while (!this.socket.isClosed) {
+                try {
+                    this.response = receive()
 
-                if (lastID != inputId || socket?.isClosed!!) {
-                    socket?.close()
-                    socket = DatagramSocket(id)
-                    lastID = inputId
-                }
-
-                address = InetAddress.getByName(ip)
-
-                Network.send(socket, Packet(0.toByte()), address, id)
-
-                runOnUiThread { btn.isEnabled = false }
-                val msg = Network.receive(socket)
-                runOnUiThread { btn.isEnabled = true }
-
-                if (same(msg[0], 0x01)) {
-                    runOnUiThread {
-                        setContentView(R.layout.gamepad_activity)
-                        gamepadLoop()
+                    if (this.response[0] == Opcodes.GOODBYE.byte) {
+                        runOnUiThread {
+                            setGamepadStatus(false)
+                        }
+                        break
                     }
-                } else { throw RException("Bad response, try an other client.") }
-            } catch (e: Exception) {
-                Utils.err("TH-run", e)
-                runOnUiThread {
-                    Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_SHORT).show()
-                    btn.isEnabled = true
+                    if (this.response[0] == Opcodes.INPUT_REQ.byte) {
+                        send(Packet(Opcodes.INPUTS, data))
+                    }
+                } catch (e: SocketTimeoutException) {
+
+                } catch (e: Exception) {
+                    Utils.err("LOOP", e)
                 }
             }
-        } else { runOnUiThread { Toast.makeText(applicationContext, "You must enter the client IP and ID.", Toast.LENGTH_LONG).show() } }
+            throw Exception("Disconnected from client.")
+
+        } catch (e: Exception) {
+            Utils.err("RUN", e)
+            runOnUiThread {
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                setGamepadStatus(false)
+            }
+        }
     }
 
     fun connectToClient(_unused_: View) {
-        try {
-            Thread { run() }.start()
-        } catch (e: Exception) { }
+        Thread { run() }.start()
     }
 
     override fun onStop() {
-        this.sensorManager.unregisterListener(this)
-        socket?.close()
         super.onStop()
+        socket.close()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        socket.close()
     }
 
     override fun onResume() {
-        this.sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
-        this.sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL)
-        this.sensorManager.registerListener(this, gameRotationVector, SensorManager.SENSOR_DELAY_NORMAL)
         super.onResume()
-    }
-
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
-
-    // Float to byte to change and sensor type.
-    override fun onSensorChanged(event: SensorEvent?) {
-        when (event?.sensor?.type) {
-            Sensor.TYPE_GAME_ROTATION_VECTOR -> {
-                var x = event.values[0]
-                var y = event.values[1]
-                var z = event.values[2]
-
-                Log.i("X", x.toString())
-                Log.i("Y", y.toString())
-                Log.i("Z", z.toString())
-
-                var xbyte = ByteBuffer.allocate(4).putFloat(x).array()
-                var ybyte = ByteBuffer.allocate(4).putFloat(y).array()
-                var zbyte = ByteBuffer.allocate(4).putFloat(z).array()
-
-                for (i in 0..3) {
-                    data[i + 1] = xbyte[i]
-                    data[i + 5] = ybyte[i]
-                    data[i + 9] = zbyte[i]
-                }
-            }
-        }
+        socket.close()
+        setGamepadStatus(false)
     }
 }

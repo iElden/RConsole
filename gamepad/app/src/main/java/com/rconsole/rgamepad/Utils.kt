@@ -12,4 +12,13 @@ object Utils {
         val exceptionAsString = sw.toString()
         Log.e(tag, exceptionAsString)
     }
+
+    enum class Opcodes(val byte: Byte) {
+        HELLO(0),
+        OLLEH(1),
+        INPUT_REQ(2),
+        INPUTS(3),
+        GOODBYE(4)
+    }
+
 }

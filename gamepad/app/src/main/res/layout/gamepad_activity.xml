@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="horizontal"
-    android:gravity="center"
+    android:gravity="center|center_horizontal"
     >
 
     <GridLayout
@@ -63,13 +63,60 @@
             android:tag="8"/>
     </GridLayout>
 
+    <LinearLayout
+        android:id="@+id/connection"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_toStartOf="@+id/buttons"
+        android:layout_toEndOf="@id/pad"
+        android:orientation="vertical">
+
+        <!--<Button
+            android:id="@+id/buttonY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:tag="128"
+            android:text="@string/y" />-->
+
+        <EditText
+            android:id="@+id/clientIP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/client_ip_long"
+            android:hint="@string/client_ip_short"
+            android:inputType="text"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/clientID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/client_id_long"
+            android:hint="@string/client_id_short"
+            android:inputType="text"
+            android:singleLine="true"
+            />
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/connect"
+            android:onClick="connectToClient"
+
+            />
+    </LinearLayout>
+
     <GridLayout
         android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_gravity="center"
-        android:layout_marginTop="-5dp"
         android:columnCount="3"
         android:rowCount="3">
 
