@@ -26,7 +26,7 @@ namespace RC::Pong::Network {
 	};
 
 	struct PACKED Racket {
-		int pos;
+		Position pos;
 		int size;
 		Direction1D direction;
 		float speed;
@@ -36,6 +36,8 @@ namespace RC::Pong::Network {
 		Ball ball;
 		Racket racket1;
 		Racket racket2;
+
+
 		PacketUpdate(const Ball &b, const Racket &r1, const Racket &r2):
 			ball(b), racket1(r1), racket2(r2){};
 	};

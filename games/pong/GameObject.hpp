@@ -14,24 +14,26 @@ namespace RC::Pong {
 		int x;
 		int y;
 
-		operator Network::Position() const;
+		operator Network::Position() const noexcept ;
 	};
 
+	class Racket;
 	struct Ball {
 		Vector2 pos;
 		float speed;
 		float angle;
 
-		operator Network::Ball() const;
+		operator Network::Ball() const noexcept;
+		void update(const Racket &r1, const Racket &r2) noexcept;
 	};
 
 	struct Racket {
-		int x;
+		Vector2 pos;
 		int size;
 		Direction1D direction1D;
 		float speed;
 
-		operator Network::Racket() const;
+		operator Network::Racket() const noexcept;
 	};
 }
 
