@@ -161,6 +161,9 @@ namespace RC::Client
 		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_CREATED), [this](const Network::Packet &packet){
 			this->_handleLobbyCreatedPacket(packet);
 		});
+		this->_client.attach(Network::opcodeToString.at(Network::ERROR), [this](const Network::Packet &packet){
+			this->_handleErrorPacket(packet);
+		});
 	}
 
 	void Client::_loadMainPage()
@@ -272,10 +275,33 @@ namespace RC::Client
 		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
 
 		button->setSize({460, 40});
-		button->setPosition({20, 10 + 50 * panel->getWidgetNames().size()});
+		button->setPosition({10, 10 + 50 * panel->getWidgetNames().size()});
 		button->onClick.connect([this, lobby]{
 			this->_client.sendJoinLobby(lobby.id);
 		});
 		panel->add(button);
+	}
+
+	void Client::_handleErrorPacket(const Network::Packet &packet)
+	{
+		auto win = Utils::msgWin("Server error", packet.error.error, MB_ICONERROR);
+		auto panel = tgui::Panel::create({"100%", "100%"});
+
+		panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
+		this->_gui.add(panel);
+
+		win->setPosition("(&.w - w) / 2", "(&.h - h) / 2");
+		win->setFocused(true);
+
+		const bool tabUsageEnabled = this->_gui.isTabKeyUsageEnabled();
+		auto closeWindow = [this, win, panel, tabUsageEnabled]{
+			this->_gui.remove(win);
+			this->_gui.remove(panel);
+			this->_gui.setTabKeyUsageEnabled(tabUsageEnabled);
+		};
+
+		panel->connect("Clicked", closeWindow);
+		win->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
+		this->_gui.add(win);
 	}
 }

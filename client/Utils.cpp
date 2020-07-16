@@ -12,6 +12,97 @@
 
 namespace RC::Client::Utils
 {
+	void	msgWin(tgui::ChildWindow::Ptr gui, const std::string &title, const std::string &content, int variate, const std::function<void()> &onClose)
+	{
+		auto button = tgui::Button::create("OK");
+		auto text = tgui::TextBox::create();
+		auto font = tgui::getGlobalFont();
+		auto pic = tgui::Picture::create("gui/error.png");
+
+		gui->add(button, "ok");
+		gui->add(text);
+
+		button->setPosition("&.w - w - 10", "&.h - h - 10");
+		button->connect("Pressed", [onClose]{
+			onClose();
+		});
+
+		text->setText(content);
+		text->setPosition(52, 10);
+		text->setSize("ok.x - 62", "ok.y - 20");
+		text->setReadOnly();
+		text->getRenderer()->setBorderColor("transparent");
+		text->getRenderer()->setBackgroundColor("transparent");
+
+		pic->setPosition(10, 10);
+		pic->setSize(32, 32);
+
+		if (variate & MB_ICONERROR)
+			gui->add(pic);
+	}
+
+	tgui::ChildWindow::Ptr	msgWin(const std::string &title, const std::string &content, int variate)
+	{
+		auto button = tgui::Button::create("OK");
+		auto text = tgui::TextBox::create();
+		auto font = tgui::getGlobalFont();
+		const auto startWidth = button->getSize().x + 102;
+		unsigned width = startWidth;
+		unsigned height = button->getSize().y + 60;
+		float currentWidth = startWidth;
+		auto size = text->getTextSize();
+
+		for (char c : content) {
+			currentWidth += font.getGlyph(c, size, false).advance;
+			width = std::max(static_cast<unsigned>(currentWidth), width);
+			if (c == '\n' || c == '\r')
+				currentWidth = startWidth;
+			if (c == '\n' || c == '\v')
+				height += size;
+			if (currentWidth >= 700) {
+				currentWidth = startWidth;
+				height += size;
+			}
+		}
+
+		auto win = tgui::ChildWindow::create(title);
+		sf::Event event;
+
+		win->setSize({std::min(700U, width), std::min(220U, height)});
+		msgWin(win, title, content, variate, [win]{ win->close(); });
+
+		return win;
+	}
+
+	void	dispMsg(tgui::Gui &gui, const std::string &title, const std::string &content, int variate, const std::function<void()> &onClose)
+	{
+		auto button = tgui::Button::create("OK");
+		auto text = tgui::TextBox::create();
+		auto font = tgui::getGlobalFont();
+		auto pic = tgui::Picture::create("gui/error.png");
+
+		gui.add(button, "ok");
+		gui.add(text);
+
+		button->setPosition("&.w - w - 10", "&.h - h - 10");
+		button->connect("Pressed", [onClose]{
+			onClose();
+		});
+
+		text->setText(content);
+		text->setPosition(52, 10);
+		text->setSize("ok.x - 62", "ok.y - 20");
+		text->setReadOnly();
+		text->getRenderer()->setBorderColor("transparent");
+		text->getRenderer()->setBackgroundColor("transparent");
+
+		pic->setPosition(10, 10);
+		pic->setSize(32, 32);
+
+		if (variate & MB_ICONERROR)
+			gui.add(pic);
+	}
+
 	int	dispMsg(const std::string &title, const std::string &content, int variate)
 	{
 		auto button = tgui::Button::create("OK");
@@ -39,31 +130,9 @@ namespace RC::Client::Utils
 		}
 
 		sf::RenderWindow win{{std::min(700U, width), std::min(220U, height)}, title, sf::Style::Titlebar | sf::Style::Close};
-		auto pic = tgui::Picture::create("gui/error.png");
 		sf::Event event;
 
-		gui.setTarget(win);
-		gui.add(button, "ok");
-		gui.add(text);
-
-		button->setPosition("&.w - w - 10", "&.h - h - 10");
-		button->connect("Pressed", [&win]{
-			win.close();
-		});
-
-		text->setText(content);
-		text->setPosition(52, 10);
-		text->setSize("ok.x - 62", "ok.y - 20");
-		text->setReadOnly();
-		text->getRenderer()->setBorderColor("transparent");
-		text->getRenderer()->setBackgroundColor("transparent");
-
-		pic->setPosition(10, 10);
-		pic->setSize(32, 32);
-
-		if (variate & MB_ICONERROR)
-			gui.add(pic);
-
+		dispMsg(gui, title, content, variate, [&win]{ win.close(); });
 		while (win.isOpen()) {
 			while (win.pollEvent(event)) {
 				if (event.type == sf::Event::Closed)

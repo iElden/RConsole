@@ -96,7 +96,8 @@ namespace RC::Client
 		switch (packet.header.code) {
 		case Network::ERROR:
 			if (!this->emit("error", packet))
-				throw ServerErrorException(packet.error.error);
+				//throw ServerErrorException(packet.error.error);
+			return;
 			return;
 		case Network::GOODBYE:
 			this->disconnect();
