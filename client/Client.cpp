@@ -14,7 +14,7 @@ namespace RC::Client
 		_window({640, 480}, "RConsole"),
 		_gui(this->_window)
 	{
-		this->_window.setFramerateLimit(20);
+		this->_window.setFramerateLimit(60);
 		this->_loadMainPage();
 
 		this->_hookNetworkHandler();
