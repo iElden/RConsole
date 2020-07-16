@@ -39,7 +39,7 @@ namespace RC::Client::Utils
 		}
 
 		sf::RenderWindow win{{std::min(700U, width), std::min(220U, height)}, title, sf::Style::Titlebar | sf::Style::Close};
-		auto pic = tgui::Picture::create("icons/error.png");
+		auto pic = tgui::Picture::create("gui/error.png");
 		sf::Event event;
 
 		gui.setTarget(win);

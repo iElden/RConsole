@@ -24,6 +24,7 @@ namespace RC::Client
 		NetworkClient _client;
 		std::unique_ptr<Controller::Controller> _controller;
 
+		void _loadMainPage();
 		void _hookNetworkHandler();
 		void _handleWindowEvents();
 		void _setController(unsigned short port);
