@@ -24,11 +24,16 @@ namespace RC::Client
 		NetworkClient _client;
 		std::unique_ptr<Controller::Controller> _controller;
 
+		void _loadMainPage();
+		void _hookNetworkHandler();
 		void _handleWindowEvents();
 		void _setController(unsigned short port);
 		void _disconnectController();
 		void _openControllerConnectWindow(tgui::Button::Ptr remoteConnect, tgui::Button::Ptr remoteDisconnect);
 		void _addController(unsigned short port, const std::function<void()> &onConnected, const std::function<void(const std::string &msg)> &onError);
+		void _handleLobbyListPacket(const Network::Packet &packet);
+		void _handleLobbyCreatedPacket(const Network::Packet &packet);
+		void _handleErrorPacket(const Network::Packet &packet);
 
 	public:
 		Client();

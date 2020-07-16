@@ -37,7 +37,7 @@ Button.Disconnect {
     renderer = &1;
 }
 
-ScrollablePanel.ScrollablePanel1 {
+ScrollablePanel.Lobbies {
     ContentSize = (0, 0);
     Position = (10, 10);
     Size = (480, 460);
@@ -63,5 +63,13 @@ Button.RemoteDisconnect {
     Text = "Disconnect from\ncontroller";
     TextSize = 13;
     Visible = false;
+    renderer = &1;
+}
+
+Button.NewLobby {
+    Position = (500, 110);
+    Size = (130, 22);
+    Text = "Create a lobby";
+    TextSize = 13;
     renderer = &1;
 }

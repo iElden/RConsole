@@ -16,7 +16,7 @@
 
 namespace RC::Client
 {
-	class NetworkClient : Network::ServerConnection {
+	class NetworkClient : public Network::ServerConnection {
 	private:
 		std::optional<Player> _me = std::nullopt;
 		std::optional<Lobby> _myLobby = std::nullopt;

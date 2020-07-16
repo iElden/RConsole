@@ -63,6 +63,6 @@ add_executable(
 	games/pong/Game.hpp
 	games/pong/GameObject.cpp
 	games/pong/GameObject.hpp
-)
+	games/pong/Player.cpp games/pong/Player.hpp)
 
 target_link_libraries(server sfml-network sfml-system pthread)

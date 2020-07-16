@@ -35,6 +35,11 @@ namespace RC::Server {
 		InvalidVersion(): ServerException("The server version doesn't match.") {};
 	};
 
+	class InvalidOpcodeException : public ServerException {
+	public:
+		InvalidOpcodeException(uint8_t op): ServerException("Unrecognized opcode: " + std::to_string(op)) {};
+	};
+
 	class AlreadyInLobby : public ServerException {
 	public:
 		AlreadyInLobby(): ServerException("You are already in a lobby, please leave first.") {};

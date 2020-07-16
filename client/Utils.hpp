@@ -6,11 +6,7 @@
 #define RCONSOLE_UTILS_HPP
 
 #include <string>
-#ifndef _WIN32
 #define MB_ICONERROR 1
-#else
-#include <windows.h>
-#endif
 
 namespace RC::Client::Utils
 {
@@ -22,6 +18,9 @@ namespace RC::Client::Utils
 	//! @return The button clicked by the user.
 	//! @note On Non-Windows systems, it will simulate the Windows dialog box. Only MB_ICONERROR and MB_OK are simulated on those systems.
 	int	dispMsg(const std::string &title, const std::string &content, int variate);
+	void	dispMsg(tgui::Gui &gui, const std::string &title, const std::string &content, int variate, const std::function<void()> &onClose);
+	tgui::ChildWindow::Ptr	msgWin(const std::string &title, const std::string &content, int variate);
+	void	msgWin(tgui::ChildWindow::Ptr gui, const std::string &title, const std::string &content, int variate, const std::function<void()> &onClose);
 
 	//! @brief Get the last Exception Name
 	//! @details Return the last type of Exception name
