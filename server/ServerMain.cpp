@@ -77,7 +77,6 @@ namespace RC::Server
 
 		using namespace RC::Network;
 
-		printf("opcode %d\n", packet.header.code);
 		try {
 			switch (packet.header.code) {
 			case Opcode::GOODBYE:
