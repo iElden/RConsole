@@ -28,6 +28,8 @@ namespace RC::Server {
 		void onSetReady(const std::shared_ptr<Client> &client);
 		void onChooseGame(const std::shared_ptr<Client> &client);
 
+		void broadcastLobbyCreated(Network::NLobby id);
+
 	public:
 		void run(unsigned short port);
 

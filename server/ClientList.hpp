@@ -21,6 +21,9 @@ namespace RC::Server
 		ClientList(const std::shared_ptr<Client> &lobby_owner);
 
 		std::shared_ptr<Client> &createClient(sf::TcpListener &listener);
+		void remove(const Client &client);
+		void add(const std::shared_ptr<Client> &client);
+		bool isEmpty() const noexcept {return this->_clients.empty();};
 		// Overload Iterator
 		auto begin() {return this->_clients.begin();};
 		auto end() {return this->_clients.end();};
