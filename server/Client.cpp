@@ -14,20 +14,20 @@ namespace RC::Server
 {
 	Client::Client(uint32_t id, sf::TcpListener &listener)
 	{
-		Network::Packet packet;
+		Network::Packet *packet = nullptr;
 
 		while (true) {
 			this->connection.host(listener);
 			try {
 				this->connection.receiveNextPacket(packet);
 
-				if (packet.header.code != Network::HELLO)
+				if (packet->header.code != Network::HELLO)
 					throw InvalidHandshake();
 
-				if (packet.hello.version != CURRENT_VERSION)
+				if (packet->hello.version != CURRENT_VERSION)
 					throw InvalidVersion();
 
-				this->getUser(packet.hello.username, packet.hello.password);
+				this->getUser(packet->hello.username, packet->hello.password);
 				this->connection.sendOlleh(this->id);
 				this->_thread = std::thread([this]{
 					this->_run();
@@ -94,13 +94,13 @@ namespace RC::Server
 
 	void Client::_run()
 	{
-		Network::Packet packet;
+		Network::Packet *packet;
 
 		while (!this->_destroyed) {
 			try {
 				std::cout << "Wait for client " << this->id << " packet." << std::endl;
 				this->connection.receiveNextPacket(packet);
-				this->emit("packet_received", packet);
+				this->emit("packet_received", *packet);
 			} catch (std::exception &e) {
 				std::cerr << "Client disconnected because had error: " << e.what() << std::endl;
 				try {

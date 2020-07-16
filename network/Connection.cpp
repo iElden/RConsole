@@ -61,7 +61,7 @@ namespace RC::Network
 		delete[] buffer;
 	}
 
-	void Connection::receiveNextPacket(Packet &buffer)
+	void Connection::receiveNextPacket(Packet *&buffer)
 	{
 		size_t readSize;
 		uint64_t packetSize;
@@ -74,9 +74,11 @@ namespace RC::Network
 			)
 		);
 
+		delete[] buffer;
+		buffer = reinterpret_cast<Packet *>(new char[packetSize + 4]);
 		Connection::_checkSFMLStatus(
 			this->_sock.receive(
-				&buffer.header.code,
+				&buffer->header.code,
 				packetSize,
 				readSize
 			)
@@ -85,7 +87,7 @@ namespace RC::Network
 		if (readSize != packetSize)
 			throw InvalidPacketSizeException(readSize, packetSize);
 
-		buffer.header.dataSize = packetSize;
+		buffer->header.dataSize = packetSize;
 	}
 
 	void Connection::sendRawData(const void *data, size_t size)

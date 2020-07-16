@@ -34,7 +34,7 @@ namespace RC::Network
 			this->sendRawData(&data, sizeof(T));
 		};
 		void sendRawData(const void *packet, size_t size);
-		void receiveNextPacket(Packet &buffer);
+		void receiveNextPacket(Packet *&buffer);
 	};
 }
 
