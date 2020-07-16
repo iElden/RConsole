@@ -127,7 +127,7 @@ namespace RC::Network
 		packet->dataSize = size - sizeof(packet->dataSize);
 		packet->code = LOBBY_LIST;
 		packet->nbLobby = lobbies.size();
-		std::memcpy(packet->lobbies, lobbies.data(), lobbies.size() * sizeof(NPlayer));
+		std::memcpy(packet->lobbies, lobbies.data(), lobbies.size() * sizeof(NLobby));
 		this->sendRawData(packet, size);
 	}
 
