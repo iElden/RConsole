@@ -214,4 +214,14 @@ namespace RC::Client
 	{
 
 	}
+
+	void NetworkClient::makeLobby()
+	{
+		this->sendCreateLobby();
+	}
+
+	void NetworkClient::joinLobby(uint8_t id)
+	{
+		this->sendJoinLobby(id);
+	}
 }

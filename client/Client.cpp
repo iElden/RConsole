@@ -240,7 +240,7 @@ namespace RC::Client
 			this->_disconnectController();
 		});
 		newLobby->onClick.connect([this]{
-			this->_client.sendCreateLobby();
+			this->_client.makeLobby();
 		});
 
 		if (!this->_client.isConnected())
@@ -263,7 +263,7 @@ namespace RC::Client
 			button->setSize({460, 40});
 			button->setPosition({10, 10 + 50 * i});
 			button->onClick.connect([this, lobby]{
-				this->_client.sendJoinLobby(lobby.id);
+				this->_client.joinLobby(lobby.id);
 			});
 			panel->add(button);
 		}
@@ -278,7 +278,7 @@ namespace RC::Client
 		button->setSize({460, 40});
 		button->setPosition({10, 10 + 50 * panel->getWidgetNames().size()});
 		button->onClick.connect([this, lobby]{
-			this->_client.sendJoinLobby(lobby.id);
+			this->_client.joinLobby(lobby.id);
 		});
 		panel->add(button);
 	}
