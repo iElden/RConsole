@@ -28,6 +28,7 @@ namespace RC::Server {
 		void leave(Client &client);
 		std::vector<Network::NPlayer> getNPlayers();
 		bool operator==(const Lobby &other) const noexcept {return this->id == other.id;};
+		bool isEmpty() const noexcept {return this->players.isEmpty();};
 	};
 }
 

@@ -30,11 +30,12 @@ namespace RC::Server {
 
 	Lobby &Lobby::join(const std::shared_ptr<Client> &client)
 	{
+		this->players.add(client);
 		return *this;
 	}
 
 	void Lobby::leave(Client &client)
 	{
-
+		this->players.remove(client);
 	}
 }
