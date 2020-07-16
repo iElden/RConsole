@@ -12,7 +12,8 @@
 
 namespace RC::Server
 {
-	Client::Client(uint32_t id, sf::TcpListener &listener)
+	Client::Client(uint32_t id, sf::TcpListener &listener):
+	id(id)
 	{
 		Network::Packet packet;
 
@@ -57,10 +58,9 @@ namespace RC::Server
 		return np;
 	}
 
-	void Client::getUser(const std::string &username, const std::string &)
+	void Client::getUser(const std::string &username_, const std::string &)
 	{
-		this->username = username;
-		this->id = 0;
+		this->username = username_;
 	}
 
 	void Client::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
