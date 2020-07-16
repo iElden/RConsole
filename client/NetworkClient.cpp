@@ -212,9 +212,4 @@ namespace RC::Client
 	{
 
 	}
-
-	void NetworkClient::makeLobby()
-	{
-		this->sendCreateLobby();
-	}
 }

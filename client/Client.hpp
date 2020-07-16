@@ -32,6 +32,7 @@ namespace RC::Client
 		void _openControllerConnectWindow(tgui::Button::Ptr remoteConnect, tgui::Button::Ptr remoteDisconnect);
 		void _addController(unsigned short port, const std::function<void()> &onConnected, const std::function<void(const std::string &msg)> &onError);
 		void _handleLobbyListPacket(const Network::Packet &packet);
+		void _handleLobbyCreatedPacket(const Network::Packet &packet);
 
 	public:
 		Client();

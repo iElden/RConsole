@@ -158,21 +158,9 @@ namespace RC::Client
 		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_LIST), [this](const Network::Packet &packet){
 			this->_handleLobbyListPacket(packet);
 		});
-	}
-
-	void Client::_handleLobbyListPacket(const Network::Packet &packet)
-	{
-		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
-
-		panel->removeAllWidgets();
-		for (int i = 0; i < packet.lobbyList.nbLobby; i++) {
-			auto &lobby = packet.lobbyList.lobbies[i];
-			auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
-
-			button->setSize({440, 40});
-			button->setPosition({10, 50 * i});
-			panel->add(button);
-		}
+		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_CREATED), [this](const Network::Packet &packet){
+			this->_handleLobbyCreatedPacket(packet);
+		});
 	}
 
 	void Client::_loadMainPage()
@@ -248,7 +236,7 @@ namespace RC::Client
 			this->_disconnectController();
 		});
 		newLobby->onClick.connect([this]{
-			this->_client.makeLobby();
+			this->_client.sendCreateLobby();
 		});
 
 		if (!this->_client.isConnected())
@@ -257,5 +245,37 @@ namespace RC::Client
 		newLobby->setVisible(this->_client.isConnected());
 		remoteConnect->setVisible(!this->_client.isConnected());
 		remoteDisconnect->setVisible(this->_client.isConnected());
+	}
+
+	void Client::_handleLobbyListPacket(const Network::Packet &packet)
+	{
+		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
+
+		panel->removeAllWidgets();
+		for (int i = 0; i < packet.lobbyList.nbLobby; i++) {
+			auto &lobby = packet.lobbyList.lobbies[i];
+			auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
+
+			button->setSize({460, 40});
+			button->setPosition({10, 10 + 50 * i});
+			button->onClick.connect([this, lobby]{
+				this->_client.sendJoinLobby(lobby.id);
+			});
+			panel->add(button);
+		}
+	}
+
+	void Client::_handleLobbyCreatedPacket(const Network::Packet &packet)
+	{
+		auto &lobby = packet.lobbyCreated.lobby;
+		auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
+		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
+
+		button->setSize({460, 40});
+		button->setPosition({20, 10 + 50 * panel->getWidgetNames().size()});
+		button->onClick.connect([this, lobby]{
+			this->_client.sendJoinLobby(lobby.id);
+		});
+		panel->add(button);
 	}
 }

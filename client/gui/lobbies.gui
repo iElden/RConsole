@@ -40,7 +40,7 @@ Button.Leave {
 }
 
 Picture.Picture1 {
-    Position = (20, 20);
+    Position = (10, 30);
     Size = (20, 20);
 
     Renderer {
