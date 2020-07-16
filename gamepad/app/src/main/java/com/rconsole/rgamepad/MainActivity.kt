@@ -167,17 +167,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        if (this::address.isInitialized) {
+            Thread { send(Packet(Opcodes.GOODBYE)) }.start()
+        }
         socket.close()
     }
 
     override fun onPause() {
         super.onPause()
-        socket.close()
+        if (this::address.isInitialized) {
+            Thread { send(Packet(Opcodes.GOODBYE)) }.start()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        socket.close()
         setGamepadStatus(false)
     }
 }
