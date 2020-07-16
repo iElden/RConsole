@@ -85,6 +85,7 @@ EditBox.Username {
 EditBox.Password {
     DefaultText = Password;
     MaximumCharacters = 32;
+    PasswordCharacter = "*";
     Position = (10, 70);
     Size = (180, 22);
     TextSize = 13;
