@@ -66,7 +66,6 @@ namespace RC::Client::Utils
 		}
 
 		auto win = tgui::ChildWindow::create(title);
-		sf::Event event;
 
 		win->setSize({std::min(700U, width), std::min(220U, height)});
 		msgWin(win, title, content, variate, [win]{ win->close(); });
@@ -132,6 +131,7 @@ namespace RC::Client::Utils
 		sf::RenderWindow win{{std::min(700U, width), std::min(220U, height)}, title, sf::Style::Titlebar | sf::Style::Close};
 		sf::Event event;
 
+		gui.setTarget(win);
 		dispMsg(gui, title, content, variate, [&win]{ win.close(); });
 		while (win.isOpen()) {
 			while (win.pollEvent(event)) {

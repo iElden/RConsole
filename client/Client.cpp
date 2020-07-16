@@ -14,6 +14,7 @@ namespace RC::Client
 		_window({640, 480}, "RConsole"),
 		_gui(this->_window)
 	{
+		this->_window.setFramerateLimit(20);
 		this->_loadMainPage();
 
 		this->_hookNetworkHandler();
@@ -178,6 +179,7 @@ namespace RC::Client
 		auto openConnectWindow = [this, connect, disconnect, newLobby]{
 			auto window = Utils::openWindowWithFocus(this->_gui, 200, 170);
 
+			this->_gui.get<tgui::Panel>("Lobbies")->removeAllWidgets();
 			connect->setVisible(true);
 			disconnect->setVisible(false);
 			newLobby->setVisible(false);
@@ -235,7 +237,6 @@ namespace RC::Client
 		remoteDisconnect->onClick.connect([this, remoteConnect, remoteDisconnect, newLobby]{
 			remoteConnect->setVisible(true);
 			remoteDisconnect->setVisible(false);
-			newLobby->setVisible(false);
 			this->_disconnectController();
 		});
 		newLobby->onClick.connect([this]{
