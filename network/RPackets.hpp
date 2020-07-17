@@ -183,19 +183,19 @@ namespace RC::Network
 		uint32_t gameSelected;
 	};
 
-	struct PacketGameEvent {
+	struct PACKED PacketGameEvent {
 		uint64_t dataSize;
 		Opcode code;
 		char gameData[0];
 	};
 
-	struct PacketPlayerReady {
+	struct PACKED PacketPlayerReady {
 		uint64_t dataSize;
 		Opcode code;
 		uint32_t id;
 	};
 
-	struct PacketHeader {
+	struct PACKED PacketHeader {
 		uint64_t dataSize;
 		Opcode code;
 	};

@@ -75,7 +75,7 @@ namespace RC::Network
 		);
 
 		delete[] buffer;
-		buffer = reinterpret_cast<Packet *>(new char[packetSize + 4]);
+		buffer = reinterpret_cast<Packet *>(new char[packetSize + sizeof(buffer->header.dataSize)]);
 		Connection::_checkSFMLStatus(
 			this->_sock.receive(
 				&buffer->header.code,
