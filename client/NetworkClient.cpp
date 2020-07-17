@@ -38,18 +38,18 @@ namespace RC::Client
 
 	void NetworkClient::connect(const std::string &ip, unsigned int port, const std::string &username, const std::string &password)
 	{
-		Network::Packet packet;
+		Network::Packet *packet = nullptr;
 
 		ServerConnection::connect(ip, port);
 		this->sendHello(username, password);
 		this->receiveNextPacket(packet);
 
-		if (packet.header.code == Network::ERROR)
-			throw ConnectException(packet.error.error);
-		else if (packet.header.code != Network::OLLEH)
+		if (packet->header.code == Network::ERROR)
+			throw ConnectException(packet->error.error);
+		else if (packet->header.code != Network::OLLEH)
 			throw ConnectException("Handshake with the server failed");
 
-		this->_me.emplace(Player(packet.olleh.id, username));
+		this->_me.emplace(Player(packet->olleh.id, username));
 		this->_connected = true;
 
 		this->sendLobbyListRequest();
@@ -73,12 +73,12 @@ namespace RC::Client
 
 	void NetworkClient::run(const std::function<void(const std::string &)> &onError)
 	{
-		Network::Packet packet;
+		Network::Packet *packet = nullptr;
 
 		try {
 			while (this->_connected) {
 				this->receiveNextPacket(packet);
-				this->handlePacket(packet, onError);
+				this->handlePacket(*packet, onError);
 			}
 		} catch (std::exception &e) {
 			std::cerr << "Connection aborted." << std::endl << e.what() << std::endl;
@@ -95,10 +95,10 @@ namespace RC::Client
 	{
 		switch (packet.header.code) {
 		case Network::ERROR:
-			if (!this->emit("error", packet))
-				//throw ServerErrorException(packet.error.error);
-			return;
-			return;
+			//if (!this->emit("error", packet))
+			//	throw ServerErrorException(packet.error.error);
+			//return;
+			break;
 		case Network::GOODBYE:
 			this->disconnect();
 			break;
@@ -155,6 +155,7 @@ namespace RC::Client
 				return std::tolower(c);
 			}
 		);
+
 		for (auto &handler : this->_handlers[signalName])
 			if (handler)
 				handler(packet);
@@ -212,5 +213,15 @@ namespace RC::Client
 	void NetworkClient::_onPlayerJoined(const Network::Packet &packet)
 	{
 
+	}
+
+	void NetworkClient::makeLobby()
+	{
+		this->sendCreateLobby();
+	}
+
+	void NetworkClient::joinLobby(uint8_t id)
+	{
+		this->sendJoinLobby(id);
 	}
 }

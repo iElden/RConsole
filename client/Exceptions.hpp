@@ -39,6 +39,11 @@ namespace RC::Client
 	public:
 		InvalidOpcodeException(uint8_t op): ClientException("Unrecognized opcode: " + std::to_string(op)) {};
 	};
+
+	class WtfException : public ClientException {
+	public:
+		WtfException(): ClientException("Wtf ?") {};
+	};
 }
 
 
