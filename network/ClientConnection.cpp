@@ -105,7 +105,7 @@ namespace RC::Network
 		this->sendData(packet);
 	}
 
-	void ClientConnection::sendLobbyJoined(const std::vector<NPlayer> &players)
+	void ClientConnection::sendLobbyJoined(const NLobby &lobby, const std::vector<NPlayer> &players)
 	{
 		size_t size = sizeof(PacketLobbyJoined) + players.size() * sizeof(NPlayer);
 		char *buffer = new char[size];
@@ -113,6 +113,7 @@ namespace RC::Network
 
 		packet->dataSize = size - sizeof(packet->dataSize);
 		packet->code = LOBBY_JOINED;
+		packet->lobby = lobby;
 		packet->playerCount = players.size();
 		std::memcpy(packet->players, players.data(), players.size() * sizeof(NPlayer));
 		this->sendRawData(packet, size);

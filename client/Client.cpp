@@ -167,6 +167,17 @@ namespace RC::Client
 		});
 	}
 
+	void Client::_loadLobbyPage()
+	{
+		this->_gui.loadWidgetsFromFile("gui/lobby.gui");
+
+		auto leave = this->_gui.get<tgui::Button>("Leave");
+
+		leave->onClick.connect([this]{
+			this->_client.leaveLobby();
+		});
+	}
+
 	void Client::_loadMainPage()
 	{
 		this->_gui.loadWidgetsFromFile("gui/mainPage.gui");

@@ -41,9 +41,11 @@ namespace RC::Client
 		void disconnectWithError(const std::string &error);
 		void disconnect();
 		bool isConnected() const;
-		void attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		unsigned attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		void detach(std::string signalName, unsigned id);
 		bool emit(std::string signalName, const Network::Packet &packet);
 		void makeLobby();
+		void leaveLobby();
 		void joinLobby(uint8_t id);
 		bool isInLobby() const noexcept;
 		const Player &getPlayer() const;

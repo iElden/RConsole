@@ -34,7 +34,7 @@ namespace RC::Server
 	{
 		Lobby &lobby = lobbies.createLobby(client);
 		this->broadcastLobbyCreated(lobby.toNLobby());
-		client->connection.sendLobbyJoined(lobby.getNPlayers());
+		client->connection.sendLobbyJoined(lobby.toNLobby(), lobby.getNPlayers());
 	}
 
 	void Main::onDeleteLobby(const std::shared_ptr<Client> &client)
@@ -48,7 +48,7 @@ namespace RC::Server
 	{
 		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
 		lobby.join(client);
-		client->connection.sendLobbyJoined(lobby.getNPlayers());
+		client->connection.sendLobbyJoined(lobby.toNLobby(), lobby.getNPlayers());
 	}
 
 	void Main::onLeaveLobby(const std::shared_ptr<Client> &client)

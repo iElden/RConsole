@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include <memory>
 #include "NetworkClient.hpp"
 #include "Exceptions.hpp"
 
@@ -132,7 +133,7 @@ namespace RC::Client
 		this->disconnect();
 	}
 
-	void NetworkClient::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
+	unsigned NetworkClient::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
 	{
 		std::transform(
 			signalName.begin(),
@@ -142,7 +143,30 @@ namespace RC::Client
 				return std::tolower(c);
 			}
 		);
-		this->_handlers[signalName].push_back(handler);
+
+		auto &vec = this->_handlers[signalName];
+		auto it = vec.begin();
+
+		for (; it < vec.end() && *it; it++);
+		if (it == vec.end())
+			vec.push_back(handler);
+		else
+			*it = handler;
+		return vec.begin() - it;
+	}
+
+	void NetworkClient::detach(std::string signalName, unsigned int id)
+	{
+		std::transform(
+			signalName.begin(),
+			signalName.end(),
+			signalName.begin(),
+			[](unsigned char c){
+				return std::tolower(c);
+			}
+		);
+
+		this->_handlers.at(signalName).at(id) = nullptr;
 	}
 
 	bool NetworkClient::emit(std::string signalName, const Network::Packet &packet)
@@ -197,7 +221,9 @@ namespace RC::Client
 
 	void NetworkClient::_onLobbyJoined(const Network::Packet &packet)
 	{
-
+		this->_myLobby = Lobby{packet.lobbyJoined.lobby.id};
+		for (int i = 0; i < packet.lobbyJoined.playerCount; i++)
+			this->_myLobby->addPlayer(packet.lobbyJoined.players[i].id, packet.lobbyJoined.players[i].username);
 	}
 
 	void NetworkClient::_onLobbyState(const Network::Packet &packet)
@@ -223,5 +249,22 @@ namespace RC::Client
 	void NetworkClient::joinLobby(uint8_t id)
 	{
 		this->sendJoinLobby(id);
+	}
+
+	void NetworkClient::leaveLobby()
+	{
+		auto ids = std::make_shared<std::pair<unsigned, unsigned>>(0, 0);
+
+		ids->first = this->attach(Network::opcodeToString.at(Network::OK), [this, ids](const Network::Packet &packet){
+			this->emit("lobbyLeft", packet);
+			this->_myLobby.reset();
+			this->detach(Network::opcodeToString.at(Network::OK), ids->first);
+			this->detach(Network::opcodeToString.at(Network::ERROR), ids->second);
+		});
+		ids->second = this->attach(Network::opcodeToString.at(Network::ERROR), [this, ids](const Network::Packet &packet){
+			this->detach(Network::opcodeToString.at(Network::OK), ids->first);
+			this->detach(Network::opcodeToString.at(Network::ERROR), ids->second);
+		});
+		this->sendLeaveLobby();
 	}
 }

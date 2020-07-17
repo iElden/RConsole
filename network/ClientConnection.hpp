@@ -21,7 +21,7 @@ namespace RC::Network
 		void sendOlleh(uint32_t id);
 		void sendPing(uint32_t lastPing);
 		void sendKicked(const std::string &reason);
-		void sendLobbyJoined(const std::vector<NPlayer> &players);
+		void sendLobbyJoined(const NLobby &lobby, const std::vector<NPlayer> &players);
 		void sendLobbyCreated(const NLobby &lobby);
 		void sendLobbyDeleted(const NLobby &lobby);
 		void sendPlayerJoined(const NPlayer &player);
