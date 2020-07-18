@@ -43,19 +43,25 @@ namespace RC::Client
 	{
 		Network::Packet *packet = nullptr;
 
-		ServerConnection::connect(ip, port);
-		this->sendHello(username, password);
-		this->receiveNextPacket(packet);
+		try {
+			ServerConnection::connect(ip, port);
+			this->sendHello(username, password);
+			this->receiveNextPacket(packet);
 
-		if (packet->header.code == Network::ERROR)
-			throw ConnectException(packet->error.error);
-		else if (packet->header.code != Network::OLLEH)
-			throw ConnectException("Handshake with the server failed");
+			if (packet->header.code == Network::ERROR)
+				throw ConnectException(packet->error.error);
+			else if (packet->header.code != Network::OLLEH)
+				throw ConnectException("Handshake with the server failed");
 
-		this->_me.emplace(Player(packet->olleh.id, username));
-		this->_connected = true;
+			this->_me.emplace(Player(packet->olleh.id, username));
+			this->_connected = true;
 
-		this->sendLobbyListRequest();
+			this->sendLobbyListRequest();
+		} catch (...) {
+			delete packet;
+			throw;
+		}
+		delete packet;
 	}
 
 	const Player &NetworkClient::getPlayer() const
@@ -88,6 +94,7 @@ namespace RC::Client
 
 			std::cerr << "Connection aborted." << std::endl << excName << ": " << e.what() << std::endl;
 			this->disconnectWithError(e.what());
+			delete packet;
 			packet = reinterpret_cast<Network::Packet *>(
 				new char[std::strlen(e.what()) + excName.size() + sizeof(Network::PacketHeader) + 3]
 			);
@@ -98,6 +105,7 @@ namespace RC::Client
 			this->emit("clientError", *packet);
 			delete packet;
 		}
+		delete packet;
 	}
 
 	bool NetworkClient::isConnected() const
@@ -107,7 +115,6 @@ namespace RC::Client
 
 	void NetworkClient::handlePacket(const Network::Packet &packet, const std::function<void(const std::string &)> &onError)
 	{
-		std::cout << "Received " << Network::opcodeToString.at(packet.header.code) << std::endl;
 		switch (packet.header.code) {
 		case Network::ERROR:
 			//if (!this->emit("error", packet))
@@ -235,7 +242,6 @@ namespace RC::Client
 
 	void NetworkClient::_onLobbyJoined(const Network::Packet &packet)
 	{
-		std::cout << "Adding lobby" << std::endl;
 		this->_myLobby = Lobby{packet.lobbyJoined.lobby.id};
 		for (int i = 0; i < packet.lobbyJoined.playerCount; i++)
 			this->_myLobby->addPlayer(packet.lobbyJoined.players[i].id, packet.lobbyJoined.players[i].username);
