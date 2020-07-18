@@ -94,7 +94,7 @@ namespace RC::Server
 
 	void Client::_run()
 	{
-		Network::Packet *packet;
+		Network::Packet *packet = nullptr;
 
 		while (!this->_destroyed) {
 			try {
@@ -110,5 +110,6 @@ namespace RC::Server
 				this->_destroyed = true;
 			}
 		}
+		delete packet;
 	}
 }
