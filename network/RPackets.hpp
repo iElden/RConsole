@@ -61,6 +61,7 @@ namespace RC::Network
 		{ LOBBY_CREATED,       "LOBBY_CREATED" },
 		{ LOBBY_DELETED,       "LOBBY_DELETED" },
 		{ PLAYER_JOINED,       "PLAYER_JOINED" },
+		{ PLAYER_LEFT,         "PLAYER_LEFT" },
 		{ OK,                  "OK" },
 		{ ERROR,               "ERROR" },
 		{ LOBBY_LIST_REQUEST,  "LOBBY_LIST_REQUEST" },

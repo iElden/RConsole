@@ -98,7 +98,7 @@ namespace RC::Server
 				this->onLobbyListRequest(client);
 				break;
 			case LOBBY_STATE_REQUEST:
-				this->onLobbyStateRequest(client);
+				this->onLobbyStateRequest(client, packet.lobbyStateRequest.id);
 				break;
 			default:
 				throw InvalidOpcodeException(packet.header.code);

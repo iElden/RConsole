@@ -107,6 +107,7 @@ namespace RC::Client
 
 	void NetworkClient::handlePacket(const Network::Packet &packet, const std::function<void(const std::string &)> &onError)
 	{
+		std::cout << "Received " << Network::opcodeToString.at(packet.header.code) << std::endl;
 		switch (packet.header.code) {
 		case Network::ERROR:
 			//if (!this->emit("error", packet))
@@ -158,14 +159,14 @@ namespace RC::Client
 		);
 
 		auto &vec = this->_handlers[signalName];
-		auto it = vec.begin();
+		size_t i = 0;
 
-		for (; it < vec.end() && *it; it++);
-		if (it == vec.end())
+		for (; i < vec.size() && vec[i]; i++);
+		if (i == vec.size())
 			vec.push_back(handler);
 		else
-			*it = handler;
-		return vec.begin() - it;
+			vec[i] = handler;
+		return i;
 	}
 
 	void NetworkClient::detach(std::string signalName, unsigned int id)
@@ -270,6 +271,7 @@ namespace RC::Client
 		auto ids = std::make_shared<std::pair<unsigned, unsigned>>(0, 0);
 
 		ids->first = this->attach(Network::opcodeToString.at(Network::OK), [this, ids](const Network::Packet &packet){
+			std::cout << "Detaching " << ids->first << " and " << ids->second << std::endl;
 			this->emit("lobbyLeft", packet);
 			this->_myLobby.reset();
 			this->detach(Network::opcodeToString.at(Network::OK), ids->first);
