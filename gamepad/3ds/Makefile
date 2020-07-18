@@ -21,7 +21,7 @@ IP3DS := 192.168.1.11
 #---------------------------------------------------------------------------------
 BUILD := build
 OUTPUT := output
-SOURCES := source
+SOURCES := sources
 DATA := data
 INCLUDES := $(SOURCES) include
 ROMFS := romfs
