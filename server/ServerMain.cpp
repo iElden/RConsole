@@ -65,9 +65,9 @@ namespace RC::Server
 		client->connection.sendLobbyList(this->lobbies.getNLobbies());
 	}
 
-	void Main::onLobbyStateRequest(const std::shared_ptr<Client> &client)
+	void Main::onLobbyStateRequest(const std::shared_ptr<Client> &client, uint32_t id)
 	{
-		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
+		Lobby &lobby = this->lobbies.getLobbyById(id);
 		client->connection.sendLobbyState(lobby.getNPlayers());
 	}
 
@@ -113,6 +113,27 @@ namespace RC::Server
 	{
 		for (std::shared_ptr<Client> &cl : this->clients) {
 			cl->connection.sendLobbyCreated(id);
+		}
+	}
+
+	void Main::broadcastLobbyDeleted(Network::NLobby id)
+	{
+		for (std::shared_ptr<Client> &cl : this->clients) {
+			cl->connection.sendLobbyDeleted(id);
+		}
+	}
+
+	void Main::broadcastPlayerJoined(Network::NLobby lobby, Network::NPlayer player)
+	{
+		for (std::shared_ptr<Client> &cl : this->clients) {
+			cl->connection.sendPlayerJoined(lobby, player);
+		}
+	}
+
+	void Main::broadcastPlayerLeft(Network::NLobby lobby, Network::NPlayer player)
+	{
+		for (std::shared_ptr<Client> &cl : this->clients) {
+			cl->connection.sendPlayerLeft(lobby, player);
 		}
 	}
 }

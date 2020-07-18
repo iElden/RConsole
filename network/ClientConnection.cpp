@@ -60,12 +60,25 @@ namespace RC::Network
 		this->sendData(packet);
 	}
 
-	void ClientConnection::sendPlayerJoined(const NPlayer &player)
+	void ClientConnection::sendPlayerJoined(const NLobby &lobby, const NPlayer &player)
 	{
 		PacketPlayerJoined packet{
 			sizeof(packet) - sizeof(packet.dataSize),
 			PLAYER_JOINED,
+			lobby,
 			player
+		};
+
+		this->sendData(packet);
+	}
+
+	void ClientConnection::sendPlayerLeft(const NLobby &lobby, const NPlayer &player)
+	{
+		PacketPlayerLeft packet{
+				sizeof(packet) - sizeof(packet.dataSize),
+				PLAYER_LEFT,
+				lobby,
+				player
 		};
 
 		this->sendData(packet);

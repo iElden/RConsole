@@ -24,11 +24,13 @@ namespace RC::Server {
 		void onDeleteLobby(const std::shared_ptr<Client> &client);
 		void onLeaveLobby(const std::shared_ptr<Client> &client);
 		void onLobbyListRequest(const std::shared_ptr<Client> &client);
-		void onLobbyStateRequest(const std::shared_ptr<Client> &client);
+		void onLobbyStateRequest(const std::shared_ptr<Client> &client, uint32_t id);
 		void onSetReady(const std::shared_ptr<Client> &client);
 		void onChooseGame(const std::shared_ptr<Client> &client);
-
 		void broadcastLobbyCreated(Network::NLobby id);
+		void broadcastLobbyDeleted(Network::NLobby id);
+		void broadcastPlayerJoined(Network::NLobby id, Network::NPlayer player);
+		void broadcastPlayerLeft(Network::NLobby id, Network::NPlayer player);
 
 	public:
 		void run(unsigned short port);

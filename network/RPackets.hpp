@@ -13,7 +13,7 @@
 #define MAX_USERNAME 64
 #define MAX_PASSWORD 64
 #define MAX_MESSAGE 64
-#define CURRENT_VERSION 0
+#define CURRENT_VERSION 1
 
 namespace RC::Network
 {
@@ -32,6 +32,7 @@ namespace RC::Network
 		LOBBY_CREATED,
 		LOBBY_DELETED,
 		PLAYER_JOINED,
+		PLAYER_LEFT,
 		OK,
 		ERROR,
 		LOBBY_LIST_REQUEST,
@@ -157,6 +158,14 @@ namespace RC::Network
 	struct PACKED PacketPlayerJoined {
 		uint64_t dataSize;
 		Opcode code;
+		NLobby lobby;
+		NPlayer player;
+	};
+
+	struct PACKED PacketPlayerLeft {
+		uint64_t dataSize;
+		Opcode code;
+		NLobby lobby;
 		NPlayer player;
 	};
 
@@ -214,6 +223,7 @@ namespace RC::Network
 		PacketLobbyList lobbyList;
 		PacketError error;
 		PacketPlayerJoined playerJoined;
+		PacketPlayerJoined playerLeft;
 		PacketPlayerReady playerReady;
 		PacketJoinLobby joinLobby;
 		PacketCreateLobby createLobby;

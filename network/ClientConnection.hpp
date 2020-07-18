@@ -24,7 +24,8 @@ namespace RC::Network
 		void sendLobbyJoined(const std::vector<NPlayer> &players);
 		void sendLobbyCreated(const NLobby &lobby);
 		void sendLobbyDeleted(const NLobby &lobby);
-		void sendPlayerJoined(const NPlayer &player);
+		void sendPlayerJoined(const NLobby &lobby, const NPlayer &player);
+		void sendPlayerLeft(const NLobby &lobby, const NPlayer &player);
 		void sendLobbyList(const std::vector<NLobby> &lobbies);
 		void sendLobbyState(const std::vector<NPlayer> &players);
 		void sendPlayerReady(uint32_t id);
