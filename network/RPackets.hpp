@@ -113,15 +113,16 @@ namespace RC::Network
 		NPlayer players[0];
 	};
 
+	struct PACKED NLobby {
+		uint32_t id;
+	};
+
 	struct PACKED PacketLobbyJoined {
 		uint64_t dataSize;
 		Opcode code;
+		NLobby lobby;
 		uint32_t playerCount;
 		NPlayer players[0];
-	};
-
-	struct PACKED NLobby {
-		uint32_t id;
 	};
 
 	struct PACKED PacketLobbyCreated {

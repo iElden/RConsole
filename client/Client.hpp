@@ -25,6 +25,7 @@ namespace RC::Client
 		std::unique_ptr<Controller::Controller> _controller;
 
 		void _loadMainPage();
+		void _loadLobbyPage();
 		void _hookNetworkHandler();
 		void _handleWindowEvents();
 		void _setController(unsigned short port);
@@ -33,7 +34,7 @@ namespace RC::Client
 		void _addController(unsigned short port, const std::function<void()> &onConnected, const std::function<void(const std::string &msg)> &onError);
 		void _handleLobbyListPacket(const Network::Packet &packet);
 		void _handleLobbyCreatedPacket(const Network::Packet &packet);
-		void _handleErrorPacket(const Network::Packet &packet);
+		void _handleErrorPacket(const Network::Packet &packet, const std::string &title);
 
 	public:
 		Client();

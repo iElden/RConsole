@@ -19,10 +19,11 @@ namespace RC::Client
 		std::vector<Player> players;
 
 		void addPlayer(Player &player);
-		void addPlayer(int id, std::string &name);
+		void addPlayer(int id, const std::string &name);
 		void removePlayer(Player &player);
 		void removePlayer(int id);
 		operator Network::NLobby();
+
 	};
 }
 

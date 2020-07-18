@@ -6,22 +6,25 @@
 */
 
 #include <iostream>
+#include <memory>
+#include <cstring>
 #include "NetworkClient.hpp"
 #include "Exceptions.hpp"
+#include "Utils.hpp"
 
 namespace RC::Client
 {
 	NetworkClient::NetworkClient()
 	{
-		this->attach("Goodbye",      [this](const Network::Packet &packet){ this->_onGoodbye(packet); });
-		this->attach("Ping",         [this](const Network::Packet &packet){ this->_onPing(packet); });
-		this->attach("LobbyList",    [this](const Network::Packet &packet){ this->_onLobbyList(packet); });
-		this->attach("LobbyCreated", [this](const Network::Packet &packet){ this->_onLobbyCreated(packet); });
-		this->attach("LobbyDeleted", [this](const Network::Packet &packet){ this->_onLobbyDeleted(packet); });
-		this->attach("LobbyJoined",  [this](const Network::Packet &packet){ this->_onLobbyJoined(packet); });
-		this->attach("LobbyState",   [this](const Network::Packet &packet){ this->_onLobbyState(packet); });
-		this->attach("PlayerReady",  [this](const Network::Packet &packet){ this->_onPlayerReady(packet); });
-		this->attach("PlayerJoined", [this](const Network::Packet &packet){ this->_onPlayerJoined(packet); });
+		this->attach("Goodbye",       [this](const Network::Packet &packet){ this->_onGoodbye(packet); });
+		this->attach("Ping",          [this](const Network::Packet &packet){ this->_onPing(packet); });
+		this->attach("Lobby_List",    [this](const Network::Packet &packet){ this->_onLobbyList(packet); });
+		this->attach("Lobby_Created", [this](const Network::Packet &packet){ this->_onLobbyCreated(packet); });
+		this->attach("Lobby_Deleted", [this](const Network::Packet &packet){ this->_onLobbyDeleted(packet); });
+		this->attach("Lobby_Joined",  [this](const Network::Packet &packet){ this->_onLobbyJoined(packet); });
+		this->attach("Lobby_State",   [this](const Network::Packet &packet){ this->_onLobbyState(packet); });
+		this->attach("Player_Ready",  [this](const Network::Packet &packet){ this->_onPlayerReady(packet); });
+		this->attach("Player_Joined", [this](const Network::Packet &packet){ this->_onPlayerJoined(packet); });
 	}
 
 	bool NetworkClient::isInLobby() const noexcept
@@ -38,18 +41,18 @@ namespace RC::Client
 
 	void NetworkClient::connect(const std::string &ip, unsigned int port, const std::string &username, const std::string &password)
 	{
-		Network::Packet packet;
+		Network::Packet *packet = nullptr;
 
 		ServerConnection::connect(ip, port);
 		this->sendHello(username, password);
 		this->receiveNextPacket(packet);
 
-		if (packet.header.code == Network::ERROR)
-			throw ConnectException(packet.error.error);
-		else if (packet.header.code != Network::OLLEH)
+		if (packet->header.code == Network::ERROR)
+			throw ConnectException(packet->error.error);
+		else if (packet->header.code != Network::OLLEH)
 			throw ConnectException("Handshake with the server failed");
 
-		this->_me.emplace(Player(packet.olleh.id, username));
+		this->_me.emplace(Player(packet->olleh.id, username));
 		this->_connected = true;
 
 		this->sendLobbyListRequest();
@@ -73,16 +76,27 @@ namespace RC::Client
 
 	void NetworkClient::run(const std::function<void(const std::string &)> &onError)
 	{
-		Network::Packet packet;
+		Network::Packet *packet = nullptr;
 
 		try {
 			while (this->_connected) {
 				this->receiveNextPacket(packet);
-				this->handlePacket(packet, onError);
+				this->handlePacket(*packet, onError);
 			}
 		} catch (std::exception &e) {
-			std::cerr << "Connection aborted." << std::endl << e.what() << std::endl;
+			std::string excName = Utils::getLastExceptionName();
+
+			std::cerr << "Connection aborted." << std::endl << excName << ": " << e.what() << std::endl;
 			this->disconnectWithError(e.what());
+			packet = reinterpret_cast<Network::Packet *>(
+				new char[std::strlen(e.what()) + excName.size() + sizeof(Network::PacketHeader) + 3]
+			);
+
+			packet->header.code = Network::ERROR;
+			packet->header.dataSize = std::strlen(e.what()) + sizeof(Network::PacketHeader) + 1;
+			strcpy(packet->error.error, (excName + ": " + e.what()).c_str());
+			this->emit("clientError", *packet);
+			delete packet;
 		}
 	}
 
@@ -95,10 +109,10 @@ namespace RC::Client
 	{
 		switch (packet.header.code) {
 		case Network::ERROR:
-			if (!this->emit("error", packet))
-				//throw ServerErrorException(packet.error.error);
-			return;
-			return;
+			//if (!this->emit("error", packet))
+			//	throw ServerErrorException(packet.error.error);
+			//return;
+			break;
 		case Network::GOODBYE:
 			this->disconnect();
 			break;
@@ -132,7 +146,7 @@ namespace RC::Client
 		this->disconnect();
 	}
 
-	void NetworkClient::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
+	unsigned NetworkClient::attach(std::string signalName, const std::function<void(const Network::Packet &)> &handler)
 	{
 		std::transform(
 			signalName.begin(),
@@ -142,7 +156,30 @@ namespace RC::Client
 				return std::tolower(c);
 			}
 		);
-		this->_handlers[signalName].push_back(handler);
+
+		auto &vec = this->_handlers[signalName];
+		auto it = vec.begin();
+
+		for (; it < vec.end() && *it; it++);
+		if (it == vec.end())
+			vec.push_back(handler);
+		else
+			*it = handler;
+		return vec.begin() - it;
+	}
+
+	void NetworkClient::detach(std::string signalName, unsigned int id)
+	{
+		std::transform(
+			signalName.begin(),
+			signalName.end(),
+			signalName.begin(),
+			[](unsigned char c){
+				return std::tolower(c);
+			}
+		);
+
+		this->_handlers.at(signalName).at(id) = nullptr;
 	}
 
 	bool NetworkClient::emit(std::string signalName, const Network::Packet &packet)
@@ -155,6 +192,7 @@ namespace RC::Client
 				return std::tolower(c);
 			}
 		);
+
 		for (auto &handler : this->_handlers[signalName])
 			if (handler)
 				handler(packet);
@@ -196,7 +234,10 @@ namespace RC::Client
 
 	void NetworkClient::_onLobbyJoined(const Network::Packet &packet)
 	{
-
+		std::cout << "Adding lobby" << std::endl;
+		this->_myLobby = Lobby{packet.lobbyJoined.lobby.id};
+		for (int i = 0; i < packet.lobbyJoined.playerCount; i++)
+			this->_myLobby->addPlayer(packet.lobbyJoined.players[i].id, packet.lobbyJoined.players[i].username);
 	}
 
 	void NetworkClient::_onLobbyState(const Network::Packet &packet)
@@ -212,5 +253,32 @@ namespace RC::Client
 	void NetworkClient::_onPlayerJoined(const Network::Packet &packet)
 	{
 
+	}
+
+	void NetworkClient::makeLobby()
+	{
+		this->sendCreateLobby();
+	}
+
+	void NetworkClient::joinLobby(uint8_t id)
+	{
+		this->sendJoinLobby(id);
+	}
+
+	void NetworkClient::leaveLobby()
+	{
+		auto ids = std::make_shared<std::pair<unsigned, unsigned>>(0, 0);
+
+		ids->first = this->attach(Network::opcodeToString.at(Network::OK), [this, ids](const Network::Packet &packet){
+			this->emit("lobbyLeft", packet);
+			this->_myLobby.reset();
+			this->detach(Network::opcodeToString.at(Network::OK), ids->first);
+			this->detach(Network::opcodeToString.at(Network::ERROR), ids->second);
+		});
+		ids->second = this->attach(Network::opcodeToString.at(Network::ERROR), [this, ids](const Network::Packet &packet){
+			this->detach(Network::opcodeToString.at(Network::OK), ids->first);
+			this->detach(Network::opcodeToString.at(Network::ERROR), ids->second);
+		});
+		this->sendLeaveLobby();
 	}
 }

@@ -20,27 +20,10 @@ Renderer.1 {
     texturehover = None;
 }
 
-Button.Connect {
-    Position = (500, 10);
-    Size = (130, 42);
-    Text = "Connect to server";
-    TextSize = 13;
-    renderer = &1;
-}
-
-Button.Disconnect {
-    Position = (500, 10);
-    Size = (133, 42);
-    Text = "Disconnect from\nserver";
-    TextSize = 13;
-    Visible = false;
-    renderer = &1;
-}
-
 ScrollablePanel.Lobbies {
     ContentSize = (0, 0);
     Position = (10, 10);
-    Size = (480, 460);
+    Size = (&.w - 160, &.h - 20);
 
     Renderer {
         backgroundcolor = white;
@@ -49,8 +32,25 @@ ScrollablePanel.Lobbies {
     }
 }
 
+Button.Connect {
+    Position = ((lobbies.x + lobbies.w) + 10, 10);
+    Size = (130, 42);
+    Text = "Connect to server";
+    TextSize = 13;
+    renderer = &1;
+}
+
+Button.Disconnect {
+    Position = ((lobbies.x + lobbies.w) + 10, 10);
+    Size = (133, 42);
+    Text = "Disconnect from\nserver";
+    TextSize = 13;
+    Visible = false;
+    renderer = &1;
+}
+
 Button.RemoteConnect {
-    Position = (500, 60);
+    Position = ((lobbies.x + lobbies.w) + 10, 60);
     Size = (130, 42);
     Text = "Connect to\ncontroller";
     TextSize = 13;
@@ -58,7 +58,7 @@ Button.RemoteConnect {
 }
 
 Button.RemoteDisconnect {
-    Position = (500, 60);
+    Position = ((lobbies.x + lobbies.w) + 10, 60);
     Size = (130, 42);
     Text = "Disconnect from\ncontroller";
     TextSize = 13;
@@ -67,7 +67,7 @@ Button.RemoteDisconnect {
 }
 
 Button.NewLobby {
-    Position = (500, 110);
+    Position = ((lobbies.x + lobbies.w) + 10, 110);
     Size = (130, 22);
     Text = "Create a lobby";
     TextSize = 13;

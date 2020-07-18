@@ -6,6 +6,8 @@
 #define RCONSOLE_UTILS_HPP
 
 #include <string>
+#include <TGUI/TGUI.hpp>
+
 #define MB_ICONERROR 1
 
 namespace RC::Client::Utils

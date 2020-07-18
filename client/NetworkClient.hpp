@@ -16,7 +16,7 @@
 
 namespace RC::Client
 {
-	class NetworkClient : public Network::ServerConnection {
+	class NetworkClient : Network::ServerConnection {
 	private:
 		std::optional<Player> _me = std::nullopt;
 		std::optional<Lobby> _myLobby = std::nullopt;
@@ -41,8 +41,12 @@ namespace RC::Client
 		void disconnectWithError(const std::string &error);
 		void disconnect();
 		bool isConnected() const;
-		void attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		unsigned attach(std::string signalName, const std::function<void (const Network::Packet &)> &handler);
+		void detach(std::string signalName, unsigned id);
 		bool emit(std::string signalName, const Network::Packet &packet);
+		void makeLobby();
+		void leaveLobby();
+		void joinLobby(uint8_t id);
 		bool isInLobby() const noexcept;
 		const Player &getPlayer() const;
 		const Lobby &getLobby() const; // raise if not in lobby
