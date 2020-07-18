@@ -27,6 +27,9 @@ namespace RC::Server
 			c->attach("packet_received", [this, c](const Network::Packet &packet){
 				this->onPacketReceived(c, packet);
 			});
+			c->attach("disconnected", [this, c](const Network::Packet &){
+				this->onDisconnect(c);
+			});
 		}
 	}
 
@@ -82,6 +85,7 @@ namespace RC::Server
 	void Main::onDisconnect(const std::shared_ptr<Client> &client)
 	{
 		std::shared_ptr<Lobby> lobby = this->lobbies.getLobbyPtrByClient(*client);
+
 		if (lobby) {
 			lobby->players.remove(*client);
 		}

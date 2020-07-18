@@ -13,7 +13,7 @@
 #define MAX_USERNAME 64
 #define MAX_PASSWORD 64
 #define MAX_MESSAGE 64
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 namespace RC::Network
 {

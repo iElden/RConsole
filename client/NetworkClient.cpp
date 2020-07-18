@@ -246,7 +246,16 @@ namespace RC::Client
 
 	void NetworkClient::_onLobbyDeleted(const Network::Packet &packet)
 	{
-
+		this->_lobbies.erase(
+			std::remove_if(
+				this->_lobbies.begin(),
+				this->_lobbies.end(),
+				[&packet](Lobby &lobby){
+					return lobby.id == packet.lobbyDeleted.lobby.id;
+				}
+			),
+			this->_lobbies.end()
+		);
 	}
 
 	void NetworkClient::_onLobbyJoined(const Network::Packet &packet)

@@ -86,7 +86,7 @@ namespace RC::Server
 				return std::tolower(c);
 			}
 		);
-		for (auto &handler : this->_handlers[signalName])
+		for (auto handler : this->_handlers[signalName])
 			if (handler)
 				handler(packet);
 		return this->_handlers[signalName].empty();
@@ -108,6 +108,7 @@ namespace RC::Server
 				} catch (...) {}
 				this->connection.disconnect();
 				this->_destroyed = true;
+				this->emit("disconnected", *packet);
 			}
 		}
 		delete[] packet;
