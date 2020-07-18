@@ -57,6 +57,9 @@ namespace RC::Client
 			switch (event.type) {
 			case sf::Event::Closed:
 				return this->_window.close();
+			case sf::Event::Resized:
+				this->_window.setView(sf::View{sf::FloatRect(0, 0, event.size.width, event.size.height)});
+				return this->_gui.setView(sf::View{sf::FloatRect(0, 0, event.size.width, event.size.height)});
 			default:
 				return;
 			}
@@ -163,16 +166,37 @@ namespace RC::Client
 			this->_handleLobbyCreatedPacket(packet);
 		});
 		this->_client.attach(Network::opcodeToString.at(Network::ERROR), [this](const Network::Packet &packet){
-			this->_handleErrorPacket(packet);
+			this->_handleErrorPacket(packet, "Server error");
+		});
+		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_JOINED), [this](const Network::Packet &packet){
+			this->_loadLobbyPage();
+		});
+		this->_client.attach("clientError", [this](const Network::Packet &packet){
+			this->_loadMainPage();
+			this->_handleErrorPacket(packet, "Client error");
+		});
+		this->_client.attach("lobbyLeft", [this](const Network::Packet &){
+			this->_loadMainPage();
 		});
 	}
 
 	void Client::_loadLobbyPage()
 	{
-		this->_gui.loadWidgetsFromFile("gui/lobby.gui");
+		this->_gui.loadWidgetsFromFile("gui/lobbies.gui");
 
 		auto leave = this->_gui.get<tgui::Button>("Leave");
+		auto panel = this->_gui.get<tgui::Panel>("Players");
+		auto &lobby = this->_client.getLobby();
 
+		for (int i = 0; i < lobby.players.size(); i++) {
+			auto &player = lobby.players[i];
+			auto button = tgui::Button::create(player.getName());
+
+			button->setSize({"&.w - 30 - picture1.x - picture1.w", 40});
+			button->setEnabled(false);
+			button->setPosition({"picture1.x + picture1.w + 10", 10 + 50 * i});
+			panel->add(button);
+		}
 		leave->onClick.connect([this]{
 			this->_client.leaveLobby();
 		});
@@ -271,7 +295,7 @@ namespace RC::Client
 			auto &lobby = packet.lobbyList.lobbies[i];
 			auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
 
-			button->setSize({460, 40});
+			button->setSize({"&.w - 20", 40});
 			button->setPosition({10, 10 + 50 * i});
 			button->onClick.connect([this, lobby]{
 				this->_client.joinLobby(lobby.id);
@@ -294,9 +318,9 @@ namespace RC::Client
 		panel->add(button);
 	}
 
-	void Client::_handleErrorPacket(const Network::Packet &packet)
+	void Client::_handleErrorPacket(const Network::Packet &packet, const std::string &title)
 	{
-		auto win = Utils::msgWin("Server error", packet.error.error, MB_ICONERROR);
+		auto win = Utils::msgWin(title, packet.error.error, MB_ICONERROR);
 		auto panel = tgui::Panel::create({"100%", "100%"});
 
 		panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});

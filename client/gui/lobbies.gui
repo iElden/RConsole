@@ -1,17 +1,27 @@
 ScrollablePanel.Players {
     ContentSize = (0, 0);
     Position = (10, 10);
-    Size = (460, 460);
+    Size = ((&.w - 30) - 150, &.h - 20);
 
     Renderer {
-        backgroundcolor = transparent;
+        backgroundcolor = #DDDDDD;
         bordercolor = black;
         texturebackground = None;
+    }
+
+    Picture.Picture1 {
+        Position = (10, 20);
+        Size = (20, 20);
+
+        Renderer {
+            texture = "gui/owner.png";
+            transparenttexture = false;
+        }
     }
 }
 
 Button.Leave {
-    Position = (480, 10);
+    Position = ((players.x + players.w) + 10, 10);
     Size = (150, 22);
     Text = "Leave lobby";
     TextSize = 13;
@@ -36,15 +46,5 @@ Button.Leave {
         texturedown = None;
         texturefocused = None;
         texturehover = None;
-    }
-}
-
-Picture.Picture1 {
-    Position = (10, 30);
-    Size = (20, 20);
-
-    Renderer {
-        texture = "gui/owner.png";
-        transparenttexture = false;
     }
 }
