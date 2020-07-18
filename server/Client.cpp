@@ -110,6 +110,6 @@ namespace RC::Server
 				this->_destroyed = true;
 			}
 		}
-		delete packet;
+		delete[] packet;
 	}
 }

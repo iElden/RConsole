@@ -58,10 +58,10 @@ namespace RC::Client
 
 			this->sendLobbyListRequest();
 		} catch (...) {
-			delete packet;
+			delete[] packet;
 			throw;
 		}
-		delete packet;
+		delete[] packet;
 	}
 
 	const Player &NetworkClient::getPlayer() const
@@ -100,7 +100,7 @@ namespace RC::Client
 
 			std::cerr << "Connection aborted." << std::endl << excName << ": " << e.what() << std::endl;
 			this->disconnectWithError(e.what());
-			delete packet;
+			delete[] packet;
 			packet = reinterpret_cast<Network::Packet *>(
 				new char[std::strlen(e.what()) + excName.size() + sizeof(Network::PacketHeader) + 3]
 			);
@@ -109,9 +109,9 @@ namespace RC::Client
 			packet->header.dataSize = std::strlen(e.what()) + sizeof(Network::PacketHeader) + 1;
 			strcpy(packet->error.error, (excName + ": " + e.what()).c_str());
 			this->emit("clientError", *packet);
-			delete packet;
+			delete[] packet;
 		}
-		delete packet;
+		delete[] packet;
 	}
 
 	bool NetworkClient::isConnected() const
