@@ -282,8 +282,24 @@ namespace RC::Client
 			openConnectWindow();
 
 		newLobby->setVisible(this->_client.isConnected());
-		remoteConnect->setVisible(!this->_client.isConnected());
-		remoteDisconnect->setVisible(this->_client.isConnected());
+		connect->setVisible(!this->_client.isConnected());
+		disconnect->setVisible(this->_client.isConnected());
+
+		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
+		const auto &lobbies = this->_client.getLobbyList();
+
+		panel->removeAllWidgets();
+		for (size_t i = 0; i < lobbies.size(); i++) {
+			auto &lobby = lobbies[i];
+			auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
+
+			button->setSize({"&.w - 20", 40});
+			button->setPosition({10, 10 + 50 * i});
+			button->onClick.connect([this, lobby]{
+				this->_client.joinLobby(lobby.id);
+			});
+			panel->add(button);
+		}
 	}
 
 	void Client::_handleLobbyListPacket(const Network::Packet &packet)

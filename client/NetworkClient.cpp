@@ -71,6 +71,9 @@ namespace RC::Client
 
 	void NetworkClient::disconnect()
 	{
+		this->_me.reset();
+		this->_myLobby.reset();
+		this->_lobbies.clear();
 		this->_connected = false;
 		Connection::disconnect();
 	}
@@ -90,6 +93,9 @@ namespace RC::Client
 				this->handlePacket(*packet, onError);
 			}
 		} catch (std::exception &e) {
+			if (!this->_connected)
+				return;
+
 			std::string excName = Utils::getLastExceptionName();
 
 			std::cerr << "Connection aborted." << std::endl << excName << ": " << e.what() << std::endl;
@@ -209,7 +215,7 @@ namespace RC::Client
 
 	void NetworkClient::_onGoodbye(const Network::Packet &packet)
 	{
-
+		NetworkClient::disconnect();
 	}
 
 	void NetworkClient::_onPing(const Network::Packet &packet)
@@ -232,7 +238,10 @@ namespace RC::Client
 
 	void NetworkClient::_onLobbyCreated(const Network::Packet &packet)
 	{
+		auto &lobby = this->_lobbies.emplace_back();
 
+		lobby.id = packet.lobbyCreated.lobby.id;
+		this->sendLobbyStateRequest(lobby.id);
 	}
 
 	void NetworkClient::_onLobbyDeleted(const Network::Packet &packet)
@@ -277,7 +286,6 @@ namespace RC::Client
 		auto ids = std::make_shared<std::pair<unsigned, unsigned>>(0, 0);
 
 		ids->first = this->attach(Network::opcodeToString.at(Network::OK), [this, ids](const Network::Packet &packet){
-			std::cout << "Detaching " << ids->first << " and " << ids->second << std::endl;
 			this->emit("lobbyLeft", packet);
 			this->_myLobby.reset();
 			this->detach(Network::opcodeToString.at(Network::OK), ids->first);

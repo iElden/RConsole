@@ -1,3 +1,25 @@
+Renderer.1 {
+    backgroundcolor = #F5F5F5;
+    backgroundcolordisabled = #E6E6E6;
+    backgroundcolordown = #EBEBEB;
+    backgroundcolorhover = white;
+    bordercolor = #3C3C3C;
+    bordercolordisabled = #7D7D7D;
+    bordercolordown = black;
+    bordercolorfocused = #1E1EB4;
+    bordercolorhover = black;
+    borders = (1, 1, 1, 1);
+    textcolor = #3C3C3C;
+    textcolordisabled = #7D7D7D;
+    textcolordown = black;
+    textcolorhover = black;
+    texture = None;
+    texturedisabled = None;
+    texturedown = None;
+    texturefocused = None;
+    texturehover = None;
+}
+
 ScrollablePanel.Players {
     ContentSize = (0, 0);
     Position = (10, 10);
@@ -25,26 +47,13 @@ Button.Leave {
     Size = (150, 22);
     Text = "Leave lobby";
     TextSize = 13;
+    renderer = &1;
+}
 
-    Renderer {
-        backgroundcolor = #F5F5F5;
-        backgroundcolordisabled = #E6E6E6;
-        backgroundcolordown = #EBEBEB;
-        backgroundcolorhover = white;
-        bordercolor = #3C3C3C;
-        bordercolordisabled = #7D7D7D;
-        bordercolordown = black;
-        bordercolorfocused = #1E1EB4;
-        bordercolorhover = black;
-        borders = (1, 1, 1, 1);
-        textcolor = #3C3C3C;
-        textcolordisabled = #7D7D7D;
-        textcolordown = black;
-        textcolorhover = black;
-        texture = None;
-        texturedisabled = None;
-        texturedown = None;
-        texturefocused = None;
-        texturehover = None;
-    }
+Button.Play0 {
+    Position = (480, 40);
+    Size = (150, 22);
+    Text = "Play Pong";
+    TextSize = 13;
+    renderer = &1;
 }
