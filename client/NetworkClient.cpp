@@ -207,7 +207,7 @@ namespace RC::Client
 			}
 		);
 
-		for (auto &handler : this->_handlers[signalName])
+		for (auto handler : this->_handlers[signalName])
 			if (handler)
 				handler(packet);
 		return this->_handlers[signalName].empty();
