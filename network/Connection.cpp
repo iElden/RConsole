@@ -74,15 +74,22 @@ namespace RC::Network
 			)
 		);
 
+		if (readSize != sizeof(packetSize))
+			throw InvalidPacketSizeException(readSize, packetSize);
+
 		delete[] buffer;
 		buffer = reinterpret_cast<Packet *>(new char[packetSize + sizeof(buffer->header.dataSize)]);
-		Connection::_checkSFMLStatus(
-			this->_sock.receive(
-				&buffer->header.code,
-				packetSize,
-				readSize
-			)
-		);
+		try {
+			Connection::_checkSFMLStatus(
+				this->_sock.receive(
+					&buffer->header.code,
+					packetSize,
+					readSize
+				)
+			);
+		} catch (...) {
+			throw InvalidPacketSizeException(packetSize);
+		}
 
 		if (readSize != packetSize)
 			throw InvalidPacketSizeException(readSize, packetSize);
