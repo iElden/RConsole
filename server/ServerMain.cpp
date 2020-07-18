@@ -100,8 +100,8 @@ namespace RC::Server
 
 		try {
 			switch (packet.header.code) {
-			case Opcode::GOODBYE:
-				client->connection.disconnect();
+			case GOODBYE:
+				this->onGoodbye(client);
 				break;
 			case JOIN_LOBBY:
 				this->onJoinLobby(client, packet.joinLobby.id);
@@ -120,6 +120,9 @@ namespace RC::Server
 				break;
 			case LOBBY_STATE_REQUEST:
 				this->onLobbyStateRequest(client, packet.lobbyStateRequest.id);
+				break;
+			case CHOOSE_GAME:
+				this->onChooseGame(client, packet.chooseGame.id);
 				break;
 			default:
 				throw InvalidOpcodeException(packet.header.code);
