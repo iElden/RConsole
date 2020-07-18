@@ -71,6 +71,27 @@ namespace RC::Server
 		client->connection.sendLobbyState(lobby.getNPlayers());
 	}
 
+	void Main::onChooseGame(const std::shared_ptr<Client> &client, uint32_t id)
+	{
+		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
+
+		for (std::shared_ptr<Client> &cl : lobby.players)
+			cl->connection.sendGameStart(id);
+	}
+
+	void Main::onDisconnect(const std::shared_ptr<Client> &client)
+	{
+		std::shared_ptr<Lobby> lobby = this->lobbies.getLobbyPtrByClient(*client);
+		if (lobby) {
+			lobby->players.remove(*client);
+		}
+	}
+
+	void Main::onGoodbye(const std::shared_ptr<Client> &client)
+	{
+		client->connection.disconnect();
+	}
+
 	void Main::onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet)
 	{
 		assert(client.use_count() >= 2);
@@ -79,8 +100,8 @@ namespace RC::Server
 
 		try {
 			switch (packet.header.code) {
-			case Opcode::GOODBYE:
-				client->connection.disconnect();
+			case GOODBYE:
+				this->onGoodbye(client);
 				break;
 			case JOIN_LOBBY:
 				this->onJoinLobby(client, packet.joinLobby.id);
@@ -99,6 +120,9 @@ namespace RC::Server
 				break;
 			case LOBBY_STATE_REQUEST:
 				this->onLobbyStateRequest(client, packet.lobbyStateRequest.id);
+				break;
+			case CHOOSE_GAME:
+				this->onChooseGame(client, packet.chooseGame.id);
 				break;
 			default:
 				throw InvalidOpcodeException(packet.header.code);
