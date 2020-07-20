@@ -2,8 +2,8 @@
 // Created by Gegel85 on 30/06/2020.
 //
 
-#ifndef RCONSOLE_EXCEPTIONS_HPP
-#define RCONSOLE_EXCEPTIONS_HPP
+#ifndef RCONSOLE_CLIENTEXCEPTIONS_HPP
+#define RCONSOLE_CLIENTEXCEPTIONS_HPP
 
 
 #include <string>

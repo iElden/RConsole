@@ -5,6 +5,7 @@
 #include <TGUI/Global.hpp>
 #include "CGame.hpp"
 #include "../../client/Exceptions.hpp"
+#include "../../network/Exceptions.hpp"
 
 namespace RC::Pong
 {
@@ -42,8 +43,8 @@ namespace RC::Pong
 
 		this->_text.setPosition(20, 20);
 		this->_text.setString(
-			"P1 pos: (" + std::to_string(this->_p1.pos.x) + ", " + std::to_string(this->_p1.pos.y) + ")\n" +
-			"P2 pos: (" + std::to_string(this->_p2.pos.x) + ", " + std::to_string(this->_p2.pos.y) + ")\n" +
+			"P1: pos (" + std::to_string(this->_p1.pos.x) + ", " + std::to_string(this->_p1.pos.y) + "), size " + std::to_string(this->_p1.size) + "px\n" +
+			"P2: pos (" + std::to_string(this->_p2.pos.x) + ", " + std::to_string(this->_p2.pos.y) + "), size " + std::to_string(this->_p2.size) + "px\n" +
 			"Ball pos: (" + std::to_string(this->_ball.pos.x) + ", " + std::to_string(this->_ball.pos.y) + ")\n" +
 			"Ball speed: " + std::to_string(this->_ball.speed) + "\n" +
 			"Ball angle: " + std::to_string(this->_ball.angle) + "\n" +
@@ -58,11 +59,17 @@ namespace RC::Pong
 
 		switch (pack.opcode) {
 		case Network::GAME_UPDATE:
+			if (size < sizeof(Network::PacketUpdate))
+				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketUpdate));
+
 			this->_ball = pack.update.ball;
 			this->_p1 = pack.update.racket1;
 			this->_p2 = pack.update.racket2;
 			break;
 		case Network::SCORE:
+			if (size < sizeof(Network::PacketScore))
+				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketScore));
+
 			this->_score.first = pack.score.score_1;
 			this->_score.second = pack.score.score_2;
 			break;

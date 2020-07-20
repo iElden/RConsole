@@ -397,7 +397,7 @@ namespace RC::Client
 		}
 
 		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
-			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.gameEvent.dataSize - sizeof(packet.header));
+			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code));
 		});
 		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		//this->_gui.removeAllWidgets();
