@@ -5,22 +5,22 @@
 ** Game.cpp
 */
 
-#include "Game.hpp"
+#include "SGame.hpp"
 
 namespace RC::Pong
 {
-	Game::Game(const std::vector<std::shared_ptr<Server::Client>> &players)
+	SGame::SGame(const std::vector<std::shared_ptr<Server::Client>> &players)
 	{
 		for (const std::shared_ptr<Server::Client> &p : players)
 			this->players.emplace_back(p);
 	}
 
-	void Game::run()
+	void SGame::run()
 	{
 
 	}
 
-	void Game::update()
+	void SGame::update()
 	{
 		switch (this->gameState) {
 			case WAITING:
@@ -37,13 +37,13 @@ namespace RC::Pong
 		}
 	}
 
-	void RC::Pong::Game::gameloop()
+	void RC::Pong::SGame::gameloop()
 	{
 		this->ball.update(this->racket1, this->racket2);
 		this->send_update_to_player();
 	}
 
-	void Game::send_update_to_player()
+	void SGame::send_update_to_player()
 	{
 		Network::PacketUpdate packet{
 			Network::GAME_UPDATE,
@@ -57,7 +57,7 @@ namespace RC::Pong
 		}
 	}
 
-	void Game::set_waiting_timer(unsigned int time)
+	void SGame::set_waiting_timer(unsigned int time)
 	{
 		this->timer = time;
 		this->gameState = WAITING;

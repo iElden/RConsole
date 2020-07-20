@@ -59,8 +59,8 @@ add_executable(
 		server/ClientList.hpp
 		server/LobbyList.cpp
 		server/LobbyList.hpp
-		games/pong/Game.cpp
-		games/pong/Game.hpp
+	games/pong/SGame.cpp
+	games/pong/SGame.hpp
 		games/pong/GameObject.cpp
 		games/pong/GameObject.hpp
 		games/pong/Player.cpp games/pong/Player.hpp games/ISGame.hpp)

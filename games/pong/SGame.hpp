@@ -4,8 +4,8 @@
 ** File description:
 ** Game.hpp
 */
-#ifndef RCONSOLE_GAME_HPP
-#define RCONSOLE_GAME_HPP
+#ifndef RCONSOLE_SGAME_HPP
+#define RCONSOLE_SGAME_HPP
 
 #include "GameObject.hpp"
 #include "Player.hpp"
@@ -14,7 +14,7 @@
 #define TICK_PER_SECOND 60
 
 namespace RC::Pong {
-	class Game : public ISGame {
+	class SGame : public ISGame {
 	private:
 		std::vector<Player> players = {};
 
@@ -33,11 +33,11 @@ namespace RC::Pong {
 		void gameloop();
 
 	public:
-		Game(const std::vector<std::shared_ptr<Server::Client>> &players);
+		SGame(const std::vector<std::shared_ptr<Server::Client>> &players);
 		void update();
 		void run() override;
 	};
 }
 
 
-#endif //RCONSOLE_GAME_HPP
+#endif //RCONSOLE_SGAME_HPP
