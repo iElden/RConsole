@@ -56,9 +56,6 @@ void Client3DS::testKeyboardsSpawn()
 
 bool Client3DS::initGamepadAction()
 {
-    /*if (this->network.isConnected()) {
-        return true;
-    }*/
     this->s_error.setText("");
     this->setStatus("Connecting...", Color::YELLOW);
 
@@ -120,7 +117,8 @@ void Client3DS::runGamepadAction()
     if (r[0] == Opcodes::INPUTS_REQ) {
         //this->s_help3.setText("AAAHHHH");
         this->packet[0] = Opcodes::INPUTS;
-        this->network.send(this->packet);
+        auto v = this->network.send(this->packet);
+        this->s_help3.setText("Send: {" + std::to_string(v) + "}");
         this->packet[1] = Data::EMPTY;
     } else {
         this->s_help3.setText("Nope. {" + std::to_string((int)r[0]) + "}");
@@ -184,7 +182,7 @@ void Client3DS::run()
             }
         }
 
-        this->s_help3.setText(std::to_string(this->idx));
+        //this->s_help3.setText(std::to_string(this->idx));
 
         gfxFlushBuffers();
         gfxSwapBuffers();
