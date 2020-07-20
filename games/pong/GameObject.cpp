@@ -9,7 +9,7 @@
 #include "GameObject.hpp"
 #include "SGame.hpp"
 
-#define COLLIDED1D(b, a, c) ((a>b)^(b>c))
+#define COLLIDED1D(b, a, c) ((a<b)?(b<=c):(b>=c))
 #define COLLIDED2D(r, op, np) (COLLIDED1D(r.pos.x, op.x, np.x) && COLLIDED1D(op.y, r.pos.y, r.pos.y+r.size))
 
 RC::Pong::Vector2::operator Network::Position() const noexcept
@@ -35,12 +35,21 @@ void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 	else
 		new_pos = {this->pos.x - static_cast<int>(speed), this->pos.y};
 
-	if (COLLIDED2D(r2, this->pos, new_pos)) { // ball collide with r1
+	if (new_pos.x == 950 || this->pos.x == 950 || new_pos.x == 50 || this->pos.x == 950)
+		printf("%d && %d rposx=%d; opx=%d; npx=%d\nop y=%d; rposy=%d; blabla=%d\n\n",
+				COLLIDED1D(r2.pos.x, this->pos.x, new_pos.x), COLLIDED1D(this->pos.y, r2.pos.y, r2.pos.y+r2.size),
+				r2.pos.x, this->pos.x, new_pos.x, this->pos.y, r2.pos.y, r2.pos.y+r2.size);
+
+	if (COLLIDED2D(r1, this->pos, new_pos)) { // ball collide with r1
 		this->angle = std::fmod((this->angle + 180), 360);
+		printf("COLLIDE 1\n");
 	}
-	if (COLLIDED2D(r2, this->pos, new_pos)) {  // ball collide with r2
+	else if (COLLIDED2D(r2, this->pos, new_pos)) {  // ball collide with r2
 		this->angle = std::fmod((this->angle + 180), 360);
+		printf("COLLIDE 2\n");
 	}
+	else
+		this->pos = new_pos;
 }
 
 void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
