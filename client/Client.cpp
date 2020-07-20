@@ -38,7 +38,8 @@ namespace RC::Client
 			while (this->_window.isOpen()) {
 				this->_window.clear();
 				this->_handleWindowEvents();
-				this->_gui.draw();
+				if (!this->_inGame)
+					this->_gui.draw();
 				this->_window.display();
 			}
 			return EXIT_SUCCESS;
@@ -223,6 +224,7 @@ namespace RC::Client
 				this->_client.startGame(static_cast<Network::GameID>(id));
 			});
 		}
+		this->_inGame = false;
 	}
 
 	void Client::_loadMainPage()
@@ -323,6 +325,7 @@ namespace RC::Client
 			});
 			panel->add(button);
 		}
+		this->_inGame = false;
 	}
 
 	void Client::_handleLobbyListPacket(const Network::Packet &packet)
@@ -382,9 +385,12 @@ namespace RC::Client
 
 	void Client::_startGame(Network::GameID id)
 	{
-		this->_gui.removeAllWidgets();
+		this->_inGame = true;
 
 		if (id >= Network::NB_OF_GAME_ID)
 			throw InvalidGameException(id);
+
+		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		//this->_gui.removeAllWidgets();
 	}
 }

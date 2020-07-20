@@ -16,6 +16,7 @@ namespace RC::Client
 {
 	class Client {
 	private:
+		bool _inGame = false;
 		std::thread _clientThread;
 		bool _controllerConnecting;
 		std::thread _controllerConnectThread;
