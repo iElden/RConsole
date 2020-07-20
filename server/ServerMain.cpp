@@ -139,7 +139,7 @@ namespace RC::Server
 
 	void Main::broadcastLobbyCreated(Network::NLobby id)
 	{
-		for (std::shared_ptr<Client> &cl : this->clients) {
+		for (const std::shared_ptr<Client> &cl : this->clients) {
 			try {
 				cl->connection.sendLobbyCreated(id);
 			} catch (...) {
@@ -150,7 +150,7 @@ namespace RC::Server
 
 	void Main::broadcastLobbyDeleted(Network::NLobby id)
 	{
-		for (std::shared_ptr<Client> &cl : this->clients) {
+		for (const std::shared_ptr<Client> &cl : this->clients) {
 			try {
 				cl->connection.sendLobbyDeleted(id);
 			} catch (...) {
@@ -161,7 +161,7 @@ namespace RC::Server
 
 	void Main::broadcastPlayerJoined(Network::NLobby lobby, Network::NPlayer player)
 	{
-		for (std::shared_ptr<Client> &cl : this->clients) {
+		for (const std::shared_ptr<Client> &cl : this->clients) {
 			try {
 				cl->connection.sendPlayerJoined(lobby, player);
 			} catch (...) {
@@ -172,7 +172,7 @@ namespace RC::Server
 
 	void Main::broadcastPlayerLeft(Network::NLobby lobby, Network::NPlayer player)
 	{
-		for (std::shared_ptr<Client> &cl : this->clients) {
+		for (const std::shared_ptr<Client> &cl : this->clients) {
 			try {
 				cl->connection.sendPlayerLeft(lobby, player);
 			} catch (...) {

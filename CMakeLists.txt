@@ -39,30 +39,36 @@ add_executable(
 	client/Controller/Controller.hpp
 	client/Controller/Exceptions.hpp
 	client/Controller/Packet.hpp
-	games/pong/CGame.cpp games/pong/CGame.hpp games/ICGame.hpp)
+	games/pong/CGame.cpp
+	games/pong/CGame.hpp
+	games/ICGame.hpp
+)
 
 target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
 
 
 add_executable(
-		server
-		server/main.cpp
-		${NETWORK_SRC}
-		server/ServerMain.cpp
-		server/ServerMain.hpp
-		server/Client.cpp
-		server/Client.hpp
-		server/exc.hpp
-		server/Lobby.cpp
-		server/Lobby.hpp
-		server/ClientList.cpp
-		server/ClientList.hpp
-		server/LobbyList.cpp
-		server/LobbyList.hpp
+	server
+	server/main.cpp
+	${NETWORK_SRC}
+	server/ServerMain.cpp
+	server/ServerMain.hpp
+	server/Client.cpp
+	server/Client.hpp
+	server/exc.hpp
+	server/Lobby.cpp
+	server/Lobby.hpp
+	server/ClientList.cpp
+	server/ClientList.hpp
+	server/LobbyList.cpp
+	server/LobbyList.hpp
 	games/pong/SGame.cpp
 	games/pong/SGame.hpp
-		games/pong/GameObject.cpp
-		games/pong/GameObject.hpp
-		games/pong/Player.cpp games/pong/Player.hpp games/ISGame.hpp)
+	games/pong/GameObject.cpp
+	games/pong/GameObject.hpp
+	games/pong/Player.cpp
+	games/pong/Player.hpp
+	games/ISGame.hpp
+)
 
 target_link_libraries(server sfml-network sfml-system pthread)

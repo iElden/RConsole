@@ -23,6 +23,7 @@ namespace RC::Server {
 		ClientList players;
 		LobbyState state = WAITING_FOR_PLAYER;
 		std::unique_ptr<ISGame> game = nullptr;
+		std::thread game_thread;
 
 		Lobby(uint32_t id, const std::shared_ptr<Client> &owner);
 		Network::NLobby toNLobby();

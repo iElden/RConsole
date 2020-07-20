@@ -22,7 +22,7 @@ namespace RC::Server {
 	std::shared_ptr<Lobby> LobbyList::getLobbyPtrByClient(Client &client) noexcept
 	{
 		for (std::shared_ptr<Lobby> &lobby : this->_lobbies) {
-			for (std::shared_ptr<Client> &cl : lobby->players) {
+			for (const std::shared_ptr<Client> &cl : lobby->players) {
 				if (*cl == client)
 					return lobby;
 			}
@@ -46,7 +46,7 @@ namespace RC::Server {
 	void LobbyList::delLobby(Lobby &lobby)
 	{
 		// kick all client in lobby
-		for (std::shared_ptr<Client> &cl : lobby.players) {
+		for (const std::shared_ptr<Client> &cl : lobby.players) {
 			cl->connection.sendKicked("The lobby has been deleted");
 		}
 
