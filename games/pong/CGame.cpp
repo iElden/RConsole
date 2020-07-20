@@ -62,6 +62,7 @@ namespace RC::Pong
 			if (size < sizeof(Network::PacketUpdate))
 				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketUpdate));
 
+			this->_sendInput(controller, client);
 			this->_ball.pos.x = pack.update.ball.pos.x;
 			this->_ball.pos.y = pack.update.ball.pos.y;
 			this->_ball.speed = pack.update.ball.speed;
@@ -85,9 +86,6 @@ namespace RC::Pong
 
 			this->_score.first = pack.score.score_1;
 			this->_score.second = pack.score.score_2;
-			break;
-		case Network::INPUT_REQ:
-			this->_sendInput(controller, client);
 			break;
 		default:
 			throw Client::InvalidOpcodeException(pack.opcode);

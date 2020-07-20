@@ -5,7 +5,10 @@
 ** Game.cpp
 */
 
+#include <iostream>
 #include "SGame.hpp"
+#include "../../network/Exceptions.hpp"
+#include "../../server/exc.hpp"
 
 using Keys = RC::Client::Controller::Network::Keys;
 
@@ -61,7 +64,9 @@ namespace RC::Pong
 		packet.racket1 = this->racket1;
 		packet.racket2 = this->racket2;
 		for (auto &pl : this->players) {
-			pl.send_update(packet);
+			try {
+				pl.send_update(packet);
+			} catch (...) {}
 		}
 	}
 
@@ -83,5 +88,22 @@ namespace RC::Pong
 			player_racket.move(DOWN);
 		else
 			player_racket.move(NONE);
+	}
+
+	void SGame::onPacketReceived(const void *data, size_t size, Server::Client &client)
+	{
+		const auto &pack = *reinterpret_cast<const Network::Packet *>(data);
+
+		switch (pack.opcode) {
+		case Network::GAME_INPUT:
+			if (size < sizeof(Network::PacketInput))
+				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketInput));
+
+			//TODO: Find which player sent it
+			this->onKeys(0, pack.input.keys);
+			break;
+		default:
+			throw Server::InvalidOpcodeException(pack.opcode);
+		}
 	}
 }

@@ -18,6 +18,7 @@ namespace RC::Server
 		Network::Packet *packet = nullptr;
 
 		while (true) {
+			std::cout << "Waiting for new client." << std::endl;
 			this->connection.host(listener);
 			try {
 				this->connection.receiveNextPacket(packet);
@@ -98,7 +99,6 @@ namespace RC::Server
 
 		while (!this->_destroyed) {
 			try {
-				std::cout << "Wait for client " << this->id << " packet." << std::endl;
 				this->connection.receiveNextPacket(packet);
 				this->emit("packet_received", *packet);
 			} catch (std::exception &e) {
