@@ -37,11 +37,19 @@ namespace RC::Client
 		try {
 			while (this->_window.isOpen()) {
 				this->_window.clear();
+
+				this->_waiting = true;
 				this->_handleWindowEvents();
+
 				if (this->_currentGame)
 					this->_currentGame->render(this->_window);
 				else
 					this->_gui.draw();
+
+				do
+					this->_waiting = false;
+				while (!this->_done);
+
 				this->_window.display();
 			}
 			return EXIT_SUCCESS;
@@ -201,6 +209,8 @@ namespace RC::Client
 
 	void Client::_loadLobbyPage()
 	{
+		this->_lockGUI();
+
 		this->_gui.loadWidgetsFromFile("gui/lobbies.gui");
 
 		auto leave = this->_gui.get<tgui::Button>("Leave");
@@ -235,10 +245,13 @@ namespace RC::Client
 			});
 		}
 		this->_currentGame.reset();
+		this->_unlockGUI();
 	}
 
 	void Client::_loadMainPage()
 	{
+		this->_lockGUI();
+
 		this->_gui.loadWidgetsFromFile("gui/mainPage.gui");
 
 		auto connect = this->_gui.get<tgui::Button>("Connect");
@@ -336,10 +349,13 @@ namespace RC::Client
 			panel->add(button);
 		}
 		this->_currentGame.reset();
+		this->_unlockGUI();
 	}
 
 	void Client::_handleLobbyListPacket(const Network::Packet &packet)
 	{
+		this->_lockGUI();
+
 		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
 
 		panel->removeAllWidgets();
@@ -354,10 +370,14 @@ namespace RC::Client
 			});
 			panel->add(button);
 		}
+
+		this->_unlockGUI();
 	}
 
 	void Client::_handleLobbyCreatedPacket(const Network::Packet &packet)
 	{
+		this->_lockGUI();
+
 		auto &lobby = packet.lobbyCreated.lobby;
 		auto button = tgui::Button::create("Lobby " + std::to_string(lobby.id));
 		auto panel = this->_gui.get<tgui::Panel>("Lobbies");
@@ -368,10 +388,14 @@ namespace RC::Client
 			this->_client.joinLobby(lobby.id);
 		});
 		panel->add(button);
+
+		this->_unlockGUI();
 	}
 
 	void Client::_handleErrorPacket(const std::string &error, const std::string &title)
 	{
+		this->_lockGUI();
+
 		auto win = Utils::msgWin(title, error, MB_ICONERROR);
 		auto panel = tgui::Panel::create({"100%", "100%"});
 
@@ -391,6 +415,8 @@ namespace RC::Client
 		panel->connect("Clicked", closeWindow);
 		win->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
 		this->_gui.add(win);
+
+		this->_unlockGUI();
 	}
 
 	void Client::_startGame(Network::GameID id)
@@ -409,5 +435,16 @@ namespace RC::Client
 			else
 				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
 		});
+	}
+
+	void Client::_lockGUI()
+	{
+		this->_done = false;
+		while (this->_waiting);
+	}
+
+	void Client::_unlockGUI()
+	{
+		this->_done = true;
 	}
 }

@@ -18,6 +18,8 @@ namespace RC::Client
 {
 	class Client {
 	private:
+		bool _waiting = false;
+		bool _done = true;
 		Controller::KeyboardController _defaultController;
 		std::unique_ptr<ICGame> _currentGame;
 		std::thread _clientThread;
@@ -40,6 +42,8 @@ namespace RC::Client
 		void _handleLobbyCreatedPacket(const Network::Packet &packet);
 		void _handleErrorPacket(const std::string &packet, const std::string &title);
 		void _startGame(Network::GameID id);
+		void _lockGUI();
+		void _unlockGUI();
 
 	public:
 		Client();
