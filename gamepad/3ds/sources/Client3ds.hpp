@@ -21,6 +21,14 @@ private:
     void setStatus(std::string status, int color);
     void displayStrings();
 
+    void scanInputs();
+    void fillInputs();
+
+    void testKeyboardsSpawn();
+
+    void initGamepadAction();
+    void runGamepadAction();
+
 private:
     char packet[PACKET_SIZE] = {0};
 
@@ -41,6 +49,8 @@ private:
     Keyboard k_id{0, 5};
 
     Network network;
+
+    u32 _keys;
 };
 
 #endif // CLIENT_3DS_HPP

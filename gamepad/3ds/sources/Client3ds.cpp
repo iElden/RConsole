@@ -39,6 +39,107 @@ void Client3DS::displayStrings()
     this->s_help2.display();
 }
 
+void Client3DS::testKeyboardsSpawn()
+{
+    if (this->s_setIP.isTouched(touch.getPosition())) {
+        k_ip.spawn([this](std::string buf) {
+            this->s_ip.setText(buf);
+        });
+    }
+    if (this->s_setID.isTouched(touch.getPosition())) {
+        k_id.spawn([this](std::string buf) {
+            this->s_id.setText(buf);
+        });
+    }
+}
+
+void Client3DS::initGamepadAction()
+{
+    this->s_error.setText("");
+    this->setStatus("Connecting...", Color::YELLOW);
+
+    if (!this->network.set(this->s_ip.str(), this->s_id.str())) {
+        this->s_error.setText(this->network.getLastError());
+        this->setStatus("Not connected", Color::RED);
+        this->network.setConnected(false);
+        return;
+    }
+
+    this->packet[0] = Opcodes::HELLO;
+    if (!this->network.send(this->packet)) {
+        this->s_error.setText("snd >> " + this->network.getLastError());
+        this->setStatus("Not connected", Color::RED);
+        this->network.setConnected(false);
+        return;
+    }
+
+    auto r = this->network.receive();
+    if (r == nullptr) {
+        this->s_error.setText("rcv >> " + this->network.getLastError());
+        this->setStatus("Not connected", Color::RED);
+        this->network.setConnected(false);
+        return;
+    }
+
+    if (r[0] != Opcodes::OLLEH) {
+        this->s_error.setText("invalid response, got (" + std::to_string((int)r[0]) + ") instead of " + std::to_string(Opcodes::OLLEH));
+        this->setStatus("Not connected", Color::RED);
+        this->network.setConnected(false);
+        return;
+    }
+
+    this->network.setConnected(true);
+    this->setStatus("Connected", Color::GREEN);
+}
+
+void Client3DS::runGamepadAction()
+{
+    auto r = this->network.receive();
+    if (r == nullptr) {
+        this->s_error.setText("rcv nullptr");
+        return;
+    } else {
+        this->s_error.setText("");
+    }
+
+    if (r[0] == Opcodes::GOODBYE) {
+        this->network.setConnected(false);
+        this->setStatus("Not connected", Color::RED);
+        return;
+    }
+
+    if (r[0] == Opcodes::INPUTS_REQ) {
+        this->packet[0] = Opcodes::INPUTS;
+        this->network.send(this->packet);
+        this->packet[1] = Data::EMPTY;
+    }
+}
+
+void Client3DS::scanInputs()
+{
+    this->touch.scan();
+    this->_keys = hidKeysHeld() | hidKeysDown() | hidKeysDownRepeat();
+
+    if (this->_keys & KEY_SELECT) {
+        this->packet[0] = Opcodes::GOODBYE;
+        this->network.send(this->packet);
+        this->network.setConnected(false);
+        this->setStatus("Not connected", Color::RED);
+    }
+}
+
+void Client3DS::fillInputs()
+{
+    this->packet[1] |= ((this->_keys & KEY_UP) != 0) << 0;
+    this->packet[1] |= ((this->_keys & KEY_DOWN) != 0) << 1;
+    this->packet[1] |= ((this->_keys & KEY_LEFT) != 0) << 2;
+    this->packet[1] |= ((this->_keys & KEY_RIGHT) != 0) << 3;
+    this->packet[1] |= ((this->_keys & KEY_A) != 0) << 4;
+    this->packet[1] |= ((this->_keys & KEY_B) != 0) << 5;
+    this->packet[1] |= ((this->_keys & KEY_X) != 0) << 6;
+    this->packet[1] |= ((this->_keys & KEY_Y) != 0) << 7;
+}
+
 void Client3DS::run()
 {
     if (this->network.error()) {
@@ -46,98 +147,17 @@ void Client3DS::run()
     }
 
     while (aptMainLoop()) {
-        this->touch.scan();
-
-        auto keys = hidKeysHeld() | hidKeysDown() | hidKeysDownRepeat();
-
-        if (keys & KEY_SELECT) {
-            this->packet[0] = Opcodes::GOODBYE;
-            network.send(this->packet);
-            network.setConnected(false);
-            this->setStatus("Not connected", Color::RED);
-        }
-
-        // Set input data.
-        this->packet[1] |= ((keys & KEY_UP) != 0) << 0;
-        this->packet[1] |= ((keys & KEY_DOWN) != 0) << 1;
-        this->packet[1] |= ((keys & KEY_LEFT) != 0) << 2;
-        this->packet[1] |= ((keys & KEY_RIGHT) != 0) << 3;
-        this->packet[1] |= ((keys & KEY_A) != 0) << 4;
-        this->packet[1] |= ((keys & KEY_B) != 0) << 5;
-        this->packet[1] |= ((keys & KEY_X) != 0) << 6;
-        this->packet[1] |= ((keys & KEY_Y) != 0) << 7;
-
-
         this->displayStrings();
 
-        // Set touch actions
-        if (this->s_setIP.isTouched(touch.getPosition())) {
-            k_ip.spawn([this](std::string buf) {
-                this->s_ip.setText(buf);
-            });
-        }
-        if (this->s_setID.isTouched(touch.getPosition())) {
-            k_id.spawn([this](std::string buf) {
-                this->s_id.setText(buf);
-            });
-        }
-        if (this->s_connect.isTouched(touch.getPosition()) && !network.isConnected()) {
-            this->s_error.setText("");
-            this->setStatus("Connecting...", Color::YELLOW);
-            if (!network.set(this->s_ip.str(), this->s_id.str())) {
-                this->s_error.setText(this->network.getLastError());
-                this->setStatus("Not connected", Color::RED);
-                network.setConnected(false);
-                continue;
-            }
+        this->scanInputs();
+        this->fillInputs();
 
-            packet[0] = Opcodes::HELLO;
-            if (!network.send(this->packet)) {
-                this->s_error.setText("snd >> " + network.getLastError());
-                this->setStatus("Not connected", Color::RED);
-                network.setConnected(false);
-                continue;
-            }
-
-            auto r = network.receive();
-            if (r == nullptr) {
-                this->s_error.setText("rcv >> " + network.getLastError());
-                this->setStatus("Not connected", Color::RED);
-                network.setConnected(false);
-                continue;
-            }
-
-            if (r[0] != Opcodes::OLLEH) {
-                this->s_error.setText("invalid response, got (" + std::to_string((int)r[0]) + ") instead of " + std::to_string(Opcodes::OLLEH));
-                this->setStatus("Not connected", Color::RED);
-                network.setConnected(false);
-                continue;
-            }
-
-            network.setConnected(true);
-            this->setStatus("Connected", Color::GREEN);
-        }
+        this->testKeyboardsSpawn();
 
         if (this->network.isConnected()) {
-            auto r = network.receive();
-            if (r == nullptr) {
-                this->s_error.setText("rcv nullptr");
-                continue;
-            } else {
-                this->s_error.setText("");
-            }
-
-            if (r[0] == Opcodes::GOODBYE) {
-                network.setConnected(false);
-                this->setStatus("Not connected", Color::RED);
-                continue;
-            }
-
-            if (r[0] == Opcodes::INPUTS_REQ) {
-                packet[0] = Opcodes::INPUTS;
-                network.send(this->packet);
-                packet[1] = Data::EMPTY;
-            }
+            this->runGamepadAction();
+        } else if (this->s_connect.isTouched(touch.getPosition())) {
+            this->initGamepadAction();
         }
 
         gfxFlushBuffers();
@@ -145,6 +165,6 @@ void Client3DS::run()
         gspWaitForVBlank();
     }
 
-    packet[0] = 4;
-    network.send(this->packet);
+    this->packet[0] = Opcodes::GOODBYE;
+    this->network.send(this->packet);
 }
