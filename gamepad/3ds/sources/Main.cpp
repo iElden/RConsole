@@ -58,6 +58,7 @@ int main(int ac, char **av)
             msg[0] = 4;
             s.send(msg);
             s.setConnected(false);
+            setStatus(s_status, "Not connected", 31);
         }
 
         // Set input data.
@@ -144,6 +145,7 @@ int main(int ac, char **av)
 
             if (r[0] == 4) {
                 s.setConnected(false);
+                setStatus(s_status, "Not connected", 31);
                 continue;
             }
 
