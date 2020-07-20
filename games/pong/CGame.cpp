@@ -57,10 +57,6 @@ namespace RC::Pong
 	{
 		const auto &pack = *reinterpret_cast<const Network::Packet *>(packet);
 
-		for (uint64_t i = 0; i < size; i++)
-			printf("%02x ", reinterpret_cast<const unsigned char *>(packet)[i]);
-		printf("\n");
-
 		switch (pack.opcode) {
 		case Network::GAME_UPDATE:
 			if (size < sizeof(Network::PacketUpdate))

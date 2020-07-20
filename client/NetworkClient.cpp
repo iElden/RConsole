@@ -109,7 +109,6 @@ namespace RC::Client
 			packet->header.dataSize = std::strlen(e.what()) + sizeof(Network::PacketHeader) + 1;
 			strcpy(packet->error.error, (excName + ": " + e.what()).c_str());
 			this->emit("clientError", *packet);
-			delete[] packet;
 		}
 		delete[] packet;
 	}
