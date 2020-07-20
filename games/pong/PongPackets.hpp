@@ -18,8 +18,7 @@ namespace RC::Pong::Network
 	enum PACKED Opcode {
 		GAME_UPDATE,
 		SCORE,
-		GAME_INPUT,
-		INPUT_REQ
+		GAME_INPUT
 	};
 
 	struct PACKED Position {

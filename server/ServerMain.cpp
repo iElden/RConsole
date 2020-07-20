@@ -20,8 +20,6 @@ namespace RC::Server
 			throw BindFailed(port);
 
 		while (true) {
-			std::cout << "Waiting for new client." << std::endl;
-
 			auto c = this->clients.createClient(listener);
 
 			c->attach("packet_received", [this, c](const Network::Packet &packet){
@@ -101,6 +99,16 @@ namespace RC::Server
 		client->connection.disconnect();
 	}
 
+	void Main::onGameEvent(const std::shared_ptr<Client> &client, const void *data, size_t size)
+	{
+		auto &lobby = this->lobbies.getLobbyByClient(*client);
+
+		if (lobby.state != IN_GAME)
+			throw Forbidden("The game has not started yet.");
+
+		lobby.game->onPacketReceived(data, size, *client);
+	}
+
 	void Main::onPacketReceived(const std::shared_ptr<Client> &client, const Network::Packet &packet)
 	{
 		assert(client.use_count() >= 2);
@@ -132,6 +140,9 @@ namespace RC::Server
 				break;
 			case CHOOSE_GAME:
 				this->onChooseGame(client, packet.chooseGame.id);
+				break;
+			case GAME_EVENT:
+				this->onGameEvent(client, packet.gameEvent.gameData, packet.gameEvent.dataSize - sizeof(packet.gameEvent.code));
 				break;
 			default:
 				throw InvalidOpcodeException(packet.header.code);
