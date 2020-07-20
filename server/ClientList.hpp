@@ -25,8 +25,8 @@ namespace RC::Server
 		void add(const std::shared_ptr<Client> &client);
 		bool isEmpty() const noexcept {return this->_clients.empty();};
 		// Overload Iterator
-		auto begin() {return this->_clients.begin();};
-		auto end() {return this->_clients.end();};
+		auto begin() const {return this->_clients.begin();};
+		auto end() const {return this->_clients.end();};
 	};
 };
 

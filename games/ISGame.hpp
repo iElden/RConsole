@@ -10,6 +10,7 @@
 
 namespace RC {
 	class ISGame {
+	public:
 		virtual void run() = 0;
 	};
 }

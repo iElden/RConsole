@@ -10,6 +10,7 @@
 #include "GameObject.hpp"
 #include "Player.hpp"
 #include "../ISGame.hpp"
+#include "../../server/ClientList.hpp"
 
 #define TICK_PER_SECOND 50
 
@@ -33,7 +34,7 @@ namespace RC::Pong {
 		void gameloop();
 
 	public:
-		SGame(const std::vector<std::shared_ptr<Server::Client>> &players);
+		SGame(const RC::Server::ClientList &players);
 		void update();
 		void run() override;
 	};

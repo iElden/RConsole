@@ -7,6 +7,7 @@
 
 #include "Lobby.hpp"
 #include "exc.hpp"
+#include "../games/pong/SGame.hpp"
 
 namespace RC::Server {
 	Lobby::Lobby(uint32_t id, const std::shared_ptr<Client> &owner) :
@@ -23,7 +24,7 @@ namespace RC::Server {
 	{
 		std::vector<Network::NPlayer> result;
 
-		for (std::shared_ptr<Client> &player : this->players)
+		for (const std::shared_ptr<Client> &player : this->players)
 			result.push_back(static_cast<Network::NPlayer>(*player));
 		return result;
 	}
@@ -42,7 +43,12 @@ namespace RC::Server {
 	void Lobby::startGame(Network::GameID game_ID)
 	{
 		this->state = IN_GAME;
-		for (std::shared_ptr<Client> &cl : this->players)
+
+
+		if (game_ID == Network::GAME_ID_PONG)
+			this->game.reset(new RC::Pong::SGame(this->players));
+		for (const std::shared_ptr<Client> &cl : this->players)
 			cl->connection.sendGameStart(game_ID);
+		this->game_thread = std::thread([this]{this->game->run();});
 	}
 }

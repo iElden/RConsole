@@ -9,7 +9,7 @@
 
 namespace RC::Pong
 {
-	SGame::SGame(const std::vector<std::shared_ptr<Server::Client>> &players)
+	SGame::SGame(const RC::Server::ClientList &players)
 	{
 		for (const std::shared_ptr<Server::Client> &p : players)
 			this->players.emplace_back(p);
