@@ -6,6 +6,8 @@
 */
 
 #include <cstring>
+#include <iostream>
+#include <iomanip>
 #include "Connection.hpp"
 #include "Exceptions.hpp"
 #include "Utils.hpp"
@@ -49,6 +51,10 @@ namespace RC::Network
 		char *buffer = new char[size + sizeof(PacketGameEvent)];
 		auto *packet = reinterpret_cast<PacketGameEvent *>(buffer);
 
+		for (uint64_t i = 0; i < size; i++)
+			printf("%02x ", reinterpret_cast<const unsigned char *>(data)[i]);
+
+		printf("\n");
 		packet->code = GAME_EVENT;
 		packet->dataSize = size + sizeof(PacketGameEvent) - sizeof(packet->dataSize);
 		std::memcpy(&packet->gameData, data, size);

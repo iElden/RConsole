@@ -52,12 +52,12 @@ namespace RC::Pong
 	void SGame::send_update_to_player()
 	{
 		Network::PacketUpdate packet{
-			Network::GAME_UPDATE,
-			this->ball,
-			this->racket1,
-			this->racket2
+			Network::GAME_UPDATE
 		};
 
+		packet.ball = this->ball;
+		packet.racket1 = this->racket1;
+		packet.racket2 = this->racket2;
 		for (auto &pl : this->players) {
 			pl.send_update(packet);
 		}
