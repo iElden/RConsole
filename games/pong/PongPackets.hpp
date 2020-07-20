@@ -62,6 +62,7 @@ namespace RC::Pong::Network
 		Opcode opcode;
 		PacketScore score;
 		PacketUpdate update;
+		PacketInput input;
 	};
 }
 
