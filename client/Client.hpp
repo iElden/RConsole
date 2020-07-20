@@ -11,12 +11,13 @@
 #include <thread>
 #include "NetworkClient.hpp"
 #include "Controller/Controller.hpp"
+#include "../games/ICGame.hpp"
 
 namespace RC::Client
 {
 	class Client {
 	private:
-		bool _inGame = false;
+		std::unique_ptr<ICGame> _currentGame;
 		std::thread _clientThread;
 		bool _controllerConnecting;
 		std::thread _controllerConnectThread;

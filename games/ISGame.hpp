@@ -8,9 +8,8 @@
 #ifndef RCONSOLE_ISGAME_HPP
 #define RCONSOLE_ISGAME_HPP
 
-#include "../server/Client.hpp"
-
-namespace RC {
+namespace RC
+{
 	class ISGame {
 		virtual void run() = 0;
 	};

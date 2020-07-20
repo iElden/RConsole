@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Utils.hpp"
 #include "Controller/Exceptions.hpp"
+#include "../games/pong/CGame.hpp"
 
 namespace RC::Client
 {
@@ -38,7 +39,9 @@ namespace RC::Client
 			while (this->_window.isOpen()) {
 				this->_window.clear();
 				this->_handleWindowEvents();
-				if (!this->_inGame)
+				if (this->_currentGame)
+					this->_currentGame->render(this->_window);
+				else
 					this->_gui.draw();
 				this->_window.display();
 			}
@@ -224,7 +227,7 @@ namespace RC::Client
 				this->_client.startGame(static_cast<Network::GameID>(id));
 			});
 		}
-		this->_inGame = false;
+		this->_currentGame.reset();
 	}
 
 	void Client::_loadMainPage()
@@ -325,7 +328,7 @@ namespace RC::Client
 			});
 			panel->add(button);
 		}
-		this->_inGame = false;
+		this->_currentGame.reset();
 	}
 
 	void Client::_handleLobbyListPacket(const Network::Packet &packet)
@@ -385,11 +388,17 @@ namespace RC::Client
 
 	void Client::_startGame(Network::GameID id)
 	{
-		this->_inGame = true;
-
-		if (id >= Network::NB_OF_GAME_ID)
+		switch (id) {
+		case Network::GAME_ID_PONG:
+			this->_currentGame.reset(new Pong::CGame());
+			break;
+		default:
 			throw InvalidGameException(id);
+		}
 
+		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
+			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.gameEvent.dataSize - sizeof(packet.header));
+		});
 		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		//this->_gui.removeAllWidgets();
 	}

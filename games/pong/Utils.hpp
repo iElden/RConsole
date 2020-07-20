@@ -4,8 +4,9 @@
 ** File description:
 ** Utils.hpp
 */
-#ifndef RCONSOLE_UTILS_HPP
-#define RCONSOLE_UTILS_HPP
+
+#ifndef RCONSOLE_PONGUTILS_HPP
+#define RCONSOLE_PONGUTILS_HPP
 
 
 namespace RC::Pong {

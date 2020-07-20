@@ -140,28 +140,44 @@ namespace RC::Server
 	void Main::broadcastLobbyCreated(Network::NLobby id)
 	{
 		for (std::shared_ptr<Client> &cl : this->clients) {
-			cl->connection.sendLobbyCreated(id);
+			try {
+				cl->connection.sendLobbyCreated(id);
+			} catch (...) {
+				this->onDisconnect(cl);
+			}
 		}
 	}
 
 	void Main::broadcastLobbyDeleted(Network::NLobby id)
 	{
 		for (std::shared_ptr<Client> &cl : this->clients) {
-			cl->connection.sendLobbyDeleted(id);
+			try {
+				cl->connection.sendLobbyDeleted(id);
+			} catch (...) {
+				this->onDisconnect(cl);
+			}
 		}
 	}
 
 	void Main::broadcastPlayerJoined(Network::NLobby lobby, Network::NPlayer player)
 	{
 		for (std::shared_ptr<Client> &cl : this->clients) {
-			cl->connection.sendPlayerJoined(lobby, player);
+			try {
+				cl->connection.sendPlayerJoined(lobby, player);
+			} catch (...) {
+				this->onDisconnect(cl);
+			}
 		}
 	}
 
 	void Main::broadcastPlayerLeft(Network::NLobby lobby, Network::NPlayer player)
 	{
 		for (std::shared_ptr<Client> &cl : this->clients) {
-			cl->connection.sendPlayerLeft(lobby, player);
+			try {
+				cl->connection.sendPlayerLeft(lobby, player);
+			} catch (...) {
+				this->onDisconnect(cl);
+			}
 		}
 	}
 }
