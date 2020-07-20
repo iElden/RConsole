@@ -12,7 +12,12 @@ namespace RC::Client
 
 	void Lobby::addPlayer(int id, const std::string &name)
 	{
-		this->players.emplace_back(id, name);
+		if (std::find_if(this->players.begin(),this->players.end(),
+			[id](Player &player){
+				return player.getId() == id;
+			}
+		) == this->players.end())
+			this->players.emplace_back(id, name);
 	}
 
 	void Lobby::removePlayer(int id)

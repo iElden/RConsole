@@ -177,6 +177,9 @@ namespace RC::Client
 		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_CREATED), [this](const Network::Packet &packet){
 			this->_handleLobbyCreatedPacket(packet);
 		});
+		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_DELETED), [this](const Network::Packet &packet){
+			this->_loadMainPage();
+		});
 		this->_client.attach(Network::opcodeToString.at(Network::ERROR), [this](const Network::Packet &packet){
 			this->_handleErrorPacket(packet.error.error, "Server error");
 		});

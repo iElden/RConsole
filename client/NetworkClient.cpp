@@ -284,6 +284,8 @@ namespace RC::Client
 
 		if (it != this->_lobbies.end())
 			it->addPlayer(packet.playerJoined.player.id, packet.playerJoined.player.username);
+		if (this->_myLobby && this->_myLobby->id == packet.playerLeft.lobby.id)
+			this->_myLobby->addPlayer(packet.playerJoined.player.id, packet.playerJoined.player.username);
 	}
 
 	void NetworkClient::_onPlayerLeft(const Network::Packet &packet)
@@ -294,6 +296,8 @@ namespace RC::Client
 
 		if (it != this->_lobbies.end())
 			it->removePlayer(packet.playerLeft.player.id);
+		if (this->_myLobby && this->_myLobby->id == packet.playerLeft.lobby.id)
+			this->_myLobby->removePlayer(packet.playerLeft.player.id);
 	}
 
 	void NetworkClient::makeLobby()
