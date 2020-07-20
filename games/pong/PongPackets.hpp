@@ -9,10 +9,18 @@
 #define RCONSOLE_PONGPACKETS_HPP
 
 #include "Utils.hpp"
+#include "../../client/Controller/Packet.hpp"
 
 #define PACKED __attribute((packed))
 
-namespace RC::Pong::Network {
+namespace RC::Pong::Network
+{
+	enum PACKED Opcode {
+		GAME_UPDATE,
+		SCORE,
+		GAME_INPUT,
+		INPUT_REQ
+	};
 
 	struct PACKED Position {
 		int x;
@@ -33,18 +41,28 @@ namespace RC::Pong::Network {
 	};
 
 	struct PACKED PacketUpdate {
+		Opcode opcode;
 		Ball ball;
 		Racket racket1;
 		Racket racket2;
-
-
-		PacketUpdate(const Ball &b, const Racket &r1, const Racket &r2):
-			ball(b), racket1(r1), racket2(r2){};
 	};
 
 	struct PACKED PacketScore {
+		Opcode opcode;
 		int score_1;
 		int score_2;
+	};
+
+	struct PACKED PacketInput {
+		Opcode opcode;
+		Client::Controller::Network::Keys keys;
+	};
+
+	struct PACKED Packet {
+		Opcode opcode;
+		PacketScore score;
+		PacketUpdate update;
+		PacketInput input;
 	};
 }
 
