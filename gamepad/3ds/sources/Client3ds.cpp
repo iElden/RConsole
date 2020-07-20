@@ -37,6 +37,7 @@ void Client3DS::displayStrings()
 
     this->s_help.display();
     this->s_help2.display();
+    this->s_help3.display();
 }
 
 void Client3DS::testKeyboardsSpawn()
@@ -53,7 +54,7 @@ void Client3DS::testKeyboardsSpawn()
     }
 }
 
-void Client3DS::initGamepadAction()
+bool Client3DS::initGamepadAction()
 {
     this->s_error.setText("");
     this->setStatus("Connecting...", Color::YELLOW);
@@ -62,15 +63,18 @@ void Client3DS::initGamepadAction()
         this->s_error.setText(this->network.getLastError());
         this->setStatus("Not connected", Color::RED);
         this->network.setConnected(false);
-        return;
+        return false;
     }
 
-    this->packet[0] = Opcodes::HELLO;
-    if (!this->network.send(this->packet)) {
-        this->s_error.setText("snd >> " + this->network.getLastError());
-        this->setStatus("Not connected", Color::RED);
-        this->network.setConnected(false);
-        return;
+    if (this->idx == 0) {
+        this->packet[0] = Opcodes::HELLO;
+        if (!this->network.send(this->packet)) {
+            this->s_error.setText("snd >> " + this->network.getLastError());
+            this->setStatus("Not connected", Color::RED);
+            this->network.setConnected(false);
+            return false;
+        }
+        idx += 1;
     }
 
     auto r = this->network.receive();
@@ -78,18 +82,20 @@ void Client3DS::initGamepadAction()
         this->s_error.setText("rcv >> " + this->network.getLastError());
         this->setStatus("Not connected", Color::RED);
         this->network.setConnected(false);
-        return;
+        return false;
     }
 
     if (r[0] != Opcodes::OLLEH) {
         this->s_error.setText("invalid response, got (" + std::to_string((int)r[0]) + ") instead of " + std::to_string(Opcodes::OLLEH));
         this->setStatus("Not connected", Color::RED);
         this->network.setConnected(false);
-        return;
+        return false;
     }
 
     this->network.setConnected(true);
     this->setStatus("Connected", Color::GREEN);
+    this->idx = 0;
+    return true;
 }
 
 void Client3DS::runGamepadAction()
@@ -109,10 +115,15 @@ void Client3DS::runGamepadAction()
     }
 
     if (r[0] == Opcodes::INPUTS_REQ) {
+        //this->s_help3.setText("AAAHHHH");
         this->packet[0] = Opcodes::INPUTS;
-        this->network.send(this->packet);
+        auto v = this->network.send(this->packet);
+        this->s_help3.setText("Send: {" + std::to_string(v) + "}");
         this->packet[1] = Data::EMPTY;
+    } else {
+        this->s_help3.setText("Nope. {" + std::to_string((int)r[0]) + "}");
     }
+    idx = 0;
 }
 
 void Client3DS::scanInputs()
@@ -146,6 +157,8 @@ void Client3DS::run()
         this->s_error.setText(this->network.getLastError());
     }
 
+    bool init = false;
+
     while (aptMainLoop()) {
         this->displayStrings();
 
@@ -156,9 +169,20 @@ void Client3DS::run()
 
         if (this->network.isConnected()) {
             this->runGamepadAction();
+            init = false;
         } else if (this->s_connect.isTouched(touch.getPosition())) {
-            this->initGamepadAction();
+            this->s_connect.setTouchArea();
+            init = true;
         }
+
+        if (init) {
+            init = false;
+            if (this->initGamepadAction()) {
+                this->s_connect.setTouchArea({VINT{30, 180}, VINT{150, 210}});
+            }
+        }
+
+        //this->s_help3.setText(std::to_string(this->idx));
 
         gfxFlushBuffers();
         gfxSwapBuffers();
