@@ -1,0 +1,8 @@
+APP_TITLE = RConsole
+APP_DESCRIPTION = The new Gamepad for RConsole
+APP_AUTHOR = Louprenard
+APP_PRODUCT_CODE = RGamepad
+APP_UNIQUE_ID = 0x2002
+APP_VER_MAJOR = 1
+APP_VER_MINOR = 0
+APP_VER_MICRO = 0
