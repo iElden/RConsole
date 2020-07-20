@@ -9,11 +9,12 @@
 
 #include "GameObject.hpp"
 #include "Player.hpp"
+#include "../ISGame.hpp"
 
 #define TICK_PER_SECOND 60
 
 namespace RC::Pong {
-	class Game {
+	class Game : public ISGame {
 	private:
 		std::vector<Player> players = {};
 
@@ -34,7 +35,7 @@ namespace RC::Pong {
 	public:
 		Game(const std::vector<std::shared_ptr<Server::Client>> &players);
 		void update();
-		void run();
+		void run() override;
 	};
 }
 

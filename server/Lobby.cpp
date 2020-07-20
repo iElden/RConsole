@@ -38,4 +38,11 @@ namespace RC::Server {
 	{
 		this->players.remove(client);
 	}
+
+	void Lobby::startGame(uint32_t game_ID)
+	{
+		this->state = IN_GAME;
+		for (std::shared_ptr<Client> &cl : this->players)
+			cl->connection.sendGameStart(id);
+	}
 }

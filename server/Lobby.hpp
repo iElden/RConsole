@@ -8,6 +8,7 @@
 #define RCONSOLE_LOBBY_HPP
 
 #include "ClientList.hpp"
+#include "../games/ISGame.hpp"
 
 namespace RC::Server {
 	enum LobbyState {
@@ -21,11 +22,13 @@ namespace RC::Server {
 		uint32_t id;
 		ClientList players;
 		LobbyState state = WAITING_FOR_PLAYER;
+		std::unique_ptr<ISGame> game = nullptr;
 
 		Lobby(uint32_t id, const std::shared_ptr<Client> &owner);
 		Network::NLobby toNLobby();
 		Lobby &join(const std::shared_ptr<Client> &client);
 		void leave(Client &client);
+		void startGame(uint32_t game_ID);
 		std::vector<Network::NPlayer> getNPlayers();
 		bool operator==(const Lobby &other) const noexcept {return this->id == other.id;};
 		bool isEmpty() const noexcept {return this->players.isEmpty();};

@@ -79,10 +79,7 @@ namespace RC::Server
 	void Main::onChooseGame(const std::shared_ptr<Client> &client, uint32_t id)
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
-
-		lobby.state = IN_GAME;
-		for (std::shared_ptr<Client> &cl : lobby.players)
-			cl->connection.sendGameStart(id);
+		lobby.startGame(id);
 	}
 
 	void Main::onDisconnect(const std::shared_ptr<Client> &client)
