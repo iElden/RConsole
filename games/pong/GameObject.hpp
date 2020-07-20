@@ -34,6 +34,7 @@ namespace RC::Pong {
 		float speed;
 
 		operator Network::Racket() const noexcept;
+		void move(Direction1D new_dir);
 	};
 }
 

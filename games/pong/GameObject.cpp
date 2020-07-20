@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include "GameObject.hpp"
+#include "SGame.hpp"
 
 #define COLLIDED1D(b, a, c) ((a>b)^(b>c))
 #define COLLIDED2D(r, op, np) (COLLIDED1D(r.pos.x, op.x, np.x) && COLLIDED1D(op.y, r.pos.y, r.pos.y+r.size))
@@ -40,4 +41,21 @@ void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 	if (COLLIDED2D(r2, this->pos, new_pos)) {  // ball collide with r2
 		this->angle = std::fmod((this->angle + 180), 360);
 	}
+}
+
+void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
+{
+	this->direction1D = new_dir;
+
+	switch (new_dir) {
+	case NONE:
+		return;
+	case UP:
+		this->pos.y -= this->speed;
+		break;
+	case DOWN:
+		this->pos.y += this->speed;
+		break;
+	}
+	this->pos.y = std::max(std::min(this->pos.y, PONG_MAX_Y), 0);
 }

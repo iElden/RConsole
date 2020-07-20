@@ -11,8 +11,10 @@
 #include "Player.hpp"
 #include "../ISGame.hpp"
 #include "../../server/ClientList.hpp"
+#include "../../client/Controller/Controller.hpp"
 
 #define TICK_PER_SECOND 50
+#define PONG_MAX_Y 500
 
 namespace RC::Pong {
 	class SGame : public ISGame {
@@ -37,6 +39,7 @@ namespace RC::Pong {
 		SGame(const RC::Server::ClientList &players);
 		void update();
 		void run() override;
+		void onKeys(int player, Client::Controller::Network::Keys keys);
 	};
 }
 

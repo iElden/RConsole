@@ -7,6 +7,8 @@
 
 #include "SGame.hpp"
 
+using Keys = RC::Client::Controller::Network::Keys;
+
 namespace RC::Pong
 {
 	SGame::SGame(const RC::Server::ClientList &players)
@@ -67,5 +69,19 @@ namespace RC::Pong
 	{
 		this->timer = time;
 		this->gameState = WAITING;
+	}
+
+	void SGame::onKeys(int player, Client::Controller::Network::Keys keys)
+	{
+		if (player >= 2)
+			return;
+
+		Racket &player_racket = (player ? this->racket2 : this->racket1);
+		if (keys.up)
+			player_racket.move(UP);
+		else if (keys.down)
+			player_racket.move(DOWN);
+		else
+			player_racket.move(NONE);
 	}
 }
