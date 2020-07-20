@@ -58,7 +58,7 @@ namespace RC::Pong::Network
 		Client::Controller::Network::Keys keys;
 	};
 
-	struct PACKED Packet {
+	union PACKED Packet {
 		Opcode opcode;
 		PacketScore score;
 		PacketUpdate update;

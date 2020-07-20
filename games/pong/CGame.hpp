@@ -17,9 +17,9 @@ namespace RC::Pong
 	class CGame : public ICGame {
 	private:
 		std::pair<int, int> _score;
-		Network::Ball _ball;
-		Network::Racket _p1;
-		Network::Racket _p2;
+		Network::Ball _ball{{0, 0}, 0, 0};
+		Network::Racket _p1{{0, 0}, 0, NONE};
+		Network::Racket _p2{{0, 0}, 0, NONE};
 		sf::CircleShape _circle;
 		sf::RectangleShape _rect;
 		tgui::Text _text;

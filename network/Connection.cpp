@@ -51,10 +51,6 @@ namespace RC::Network
 		char *buffer = new char[size + sizeof(PacketGameEvent)];
 		auto *packet = reinterpret_cast<PacketGameEvent *>(buffer);
 
-		for (uint64_t i = 0; i < size; i++)
-			printf("%02x ", reinterpret_cast<const unsigned char *>(data)[i]);
-
-		printf("\n");
 		packet->code = GAME_EVENT;
 		packet->dataSize = size + sizeof(PacketGameEvent) - sizeof(packet->dataSize);
 		std::memcpy(&packet->gameData, data, size);
@@ -105,6 +101,10 @@ namespace RC::Network
 
 	void Connection::sendRawData(const void *data, size_t size)
 	{
+		for (uint64_t i = 0; i < size; i++)
+			printf("%02x ", reinterpret_cast<const unsigned char *>(data)[i]);
+
+		printf("-> %s\n\n", opcodeToString.at(static_cast<const Opcode>(reinterpret_cast<const unsigned char *>(data)[8])).c_str());
 		Connection::_checkSFMLStatus(this->_sock.send(data, size));
 	}
 
