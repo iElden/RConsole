@@ -44,7 +44,11 @@ add_executable(
 	games/ICGame.hpp
 	client/Controller/IController.hpp client/Controller/KeyboardController.cpp client/Controller/KeyboardController.hpp)
 
-target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
+if (WIN32)
+	target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
+else (WIN32)
+	target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread X11)
+endif (WIN32)
 
 
 add_executable(

@@ -57,5 +57,5 @@ void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
 		this->pos.y += this->speed;
 		break;
 	}
-	this->pos.y = std::max(std::min(this->pos.y, PONG_MAX_Y), 0);
+	this->pos.y = std::max(std::min(this->pos.y, PONG_MAX_Y - this->size), 0);
 }
