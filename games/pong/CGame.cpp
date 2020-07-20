@@ -9,11 +9,13 @@
 
 namespace RC::Pong
 {
-	CGame::CGame()
+	CGame::CGame(const Client::Lobby &lobby) :
+		_lobby(lobby)
 	{
 		this->_music.openFromFile("gui/game_merged.ogg");
 		this->_music.play();
 		this->_music.setLoopPoints({sf::seconds(5.477), sf::seconds(32.011)});
+		this->_music.setLoop(true);
 
 		this->_rect.setOutlineThickness(0);
 		this->_rect.setFillColor(sf::Color::White);
@@ -33,7 +35,7 @@ namespace RC::Pong
 			20,
 			static_cast<float>(this->_p1.size)
 		});
-		this->_rect.setPosition(this->_p1.pos.x, this->_p1.pos.y);
+		this->_rect.setPosition(this->_p1.pos.x - 20, this->_p1.pos.y);
 		target.draw(this->_rect);
 
 		this->_rect.setSize({
@@ -43,18 +45,11 @@ namespace RC::Pong
 		this->_rect.setPosition(this->_p2.pos.x, this->_p2.pos.y);
 		target.draw(this->_rect);
 
-		this->_circle.setPosition(this->_ball.pos.x, this->_ball.pos.y);
+		this->_circle.setPosition(this->_ball.pos.x - 3, this->_ball.pos.y - 3);
 		target.draw(this->_circle);
 
-		this->_text.setPosition(20, 20);
-		this->_text.setString(
-			"P1: pos (" + std::to_string(this->_p1.pos.x) + ", " + std::to_string(this->_p1.pos.y) + "), size " + std::to_string(this->_p1.size) + "px\n" +
-			"P2: pos (" + std::to_string(this->_p2.pos.x) + ", " + std::to_string(this->_p2.pos.y) + "), size " + std::to_string(this->_p2.size) + "px\n" +
-			"Ball pos: (" + std::to_string(this->_ball.pos.x) + ", " + std::to_string(this->_ball.pos.y) + ")\n" +
-			"Ball speed: " + std::to_string(this->_ball.speed) + "\n" +
-			"Ball angle: " + std::to_string(this->_ball.angle) + "\n" +
-			"Score: " + std::to_string(this->_score.first) + "/" + std::to_string(this->_score.second)
-		);
+		this->_text.setPosition(2, 2);
+		this->_text.setString();
 		this->_text.draw(target, {});
 	}
 

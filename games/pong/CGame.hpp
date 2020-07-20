@@ -17,6 +17,7 @@ namespace RC::Pong
 {
 	class CGame : public ICGame {
 	private:
+		const Client::Lobby &_lobby;
 		sf::Music _music;
 		std::pair<int, int> _score;
 		Network::Ball _ball{{0, 0}, 0, 0};
@@ -29,7 +30,7 @@ namespace RC::Pong
 		void _sendInput(Client::Controller::IController &controller, Client::NetworkClient &client);
 
 	public:
-		CGame();
+		CGame(const Client::Lobby &lobby);
 		void render(sf::RenderTarget &target) override;
 		void onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller) override;
 		sf::View getView() const override;

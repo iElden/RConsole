@@ -51,7 +51,7 @@ Button.Leave {
 }
 
 Button.play0 {
-    Position = (480, 40);
+    Position = ((players.x + players.w) + 10, 40);
     Size = (150, 22);
     Text = "Play Pong";
     TextSize = 13;

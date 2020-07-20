@@ -439,7 +439,7 @@ namespace RC::Client
 	{
 		switch (id) {
 		case Network::GAME_ID_PONG:
-			this->_currentGame.reset(new Pong::CGame());
+			this->_currentGame.reset(new Pong::CGame(this->_client.getLobby()));
 			break;
 		default:
 			throw InvalidGameException(id);
