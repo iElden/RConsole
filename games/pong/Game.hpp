@@ -27,7 +27,6 @@ namespace RC::Pong {
 		} gameState = WAITING;
 		unsigned int timer = 0;
 
-		Network::PacketUpdate get_packet();
 		void send_update_to_player();
 		void set_waiting_timer(unsigned int time);
 		void gameloop();
