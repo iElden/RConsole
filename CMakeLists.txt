@@ -45,24 +45,24 @@ target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-sy
 
 
 add_executable(
-	server
-	server/main.cpp
-	${NETWORK_SRC}
-	server/ServerMain.cpp
-	server/ServerMain.hpp
-	server/Client.cpp
-	server/Client.hpp
-	server/exc.hpp
-	server/Lobby.cpp
-	server/Lobby.hpp
-	server/ClientList.cpp
-	server/ClientList.hpp
-	server/LobbyList.cpp
-	server/LobbyList.hpp
-	games/pong/Game.cpp
-	games/pong/Game.hpp
-	games/pong/GameObject.cpp
-	games/pong/GameObject.hpp
-	games/pong/Player.cpp games/pong/Player.hpp)
+		server
+		server/main.cpp
+		${NETWORK_SRC}
+		server/ServerMain.cpp
+		server/ServerMain.hpp
+		server/Client.cpp
+		server/Client.hpp
+		server/exc.hpp
+		server/Lobby.cpp
+		server/Lobby.hpp
+		server/ClientList.cpp
+		server/ClientList.hpp
+		server/LobbyList.cpp
+		server/LobbyList.hpp
+		games/pong/Game.cpp
+		games/pong/Game.hpp
+		games/pong/GameObject.cpp
+		games/pong/GameObject.hpp
+		games/pong/Player.cpp games/pong/Player.hpp games/ISGame.hpp)
 
 target_link_libraries(server sfml-network sfml-system pthread)

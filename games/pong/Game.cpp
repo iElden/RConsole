@@ -15,6 +15,11 @@ namespace RC::Pong
 			this->players.emplace_back(p);
 	}
 
+	void Game::run()
+	{
+
+	}
+
 	void Game::update()
 	{
 		switch (this->gameState) {
@@ -32,14 +37,10 @@ namespace RC::Pong
 		}
 	}
 
-	void Game::gameloop()
+	void RC::Pong::Game::gameloop()
 	{
 		this->ball.update(this->racket1, this->racket2);
-	}
-
-	void Game::run()
-	{
-
+		this->send_update_to_player();
 	}
 
 	void Game::send_update_to_player()
