@@ -17,7 +17,13 @@ namespace RC::Pong
 
 	void SGame::run()
 	{
+		sf::Clock clock;
 
+		while (true) {
+			clock.restart();
+			this->update();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000 / TICK_PER_SECOND - clock.getElapsedTime().asMilliseconds()));
+		}
 	}
 
 	void SGame::update()

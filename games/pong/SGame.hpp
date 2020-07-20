@@ -11,7 +11,7 @@
 #include "Player.hpp"
 #include "../ISGame.hpp"
 
-#define TICK_PER_SECOND 60
+#define TICK_PER_SECOND 50
 
 namespace RC::Pong {
 	class SGame : public ISGame {
