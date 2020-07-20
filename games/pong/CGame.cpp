@@ -11,6 +11,10 @@ namespace RC::Pong
 {
 	CGame::CGame()
 	{
+		this->_music.openFromFile("gui/game_merged.ogg");
+		this->_music.play();
+		this->_music.setLoopPoints({sf::seconds(5.477), sf::seconds(32.011)});
+
 		this->_rect.setOutlineThickness(0);
 		this->_rect.setFillColor(sf::Color::White);
 

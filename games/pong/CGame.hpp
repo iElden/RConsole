@@ -9,6 +9,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <TGUI/Text.hpp>
+#include <SFML/Audio/Music.hpp>
 #include "../ICGame.hpp"
 #include "PongPackets.hpp"
 
@@ -16,6 +17,7 @@ namespace RC::Pong
 {
 	class CGame : public ICGame {
 	private:
+		sf::Music _music;
 		std::pair<int, int> _score;
 		Network::Ball _ball{{0, 0}, 0, 0};
 		Network::Racket _p1{{0, 0}, 0, NONE};
