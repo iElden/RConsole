@@ -21,6 +21,8 @@ public:
     void setText(std::string text);
     void setColor(int color);
 
+    void setTouchArea(std::array<VINT, 2> touchArea = {VINT{-1, -1}, VINT{-1, -1}});
+
     bool isTouched(Vector2<int> touchPosition);
 
     const char *c_str() const;
