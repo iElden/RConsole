@@ -182,6 +182,14 @@ namespace RC::Client
 		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_JOINED), [this](const Network::Packet &packet){
 			this->_loadLobbyPage();
 		});
+		this->_client.attach(Network::opcodeToString.at(Network::PLAYER_LEFT), [this](const Network::Packet &packet){
+			if (this->_client.isInLobby())
+				this->_loadLobbyPage();
+		});
+		this->_client.attach(Network::opcodeToString.at(Network::PLAYER_JOINED), [this](const Network::Packet &packet){
+			if (this->_client.isInLobby())
+				this->_loadLobbyPage();
+		});
 		this->_client.attach("clientError", [this](const Network::Packet &packet){
 			this->_loadMainPage();
 			this->_handleErrorPacket(packet.error.error, "Client error");

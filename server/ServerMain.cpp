@@ -45,6 +45,7 @@ namespace RC::Server
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 		this->lobbies.delLobby(lobby);
 		client->connection.sendOk();
+		this->broadcastLobbyDeleted(lobby.toNLobby());
 	}
 
 	void Main::onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id)
@@ -53,7 +54,7 @@ namespace RC::Server
 		if (lobby.state != WAITING_FOR_PLAYER)
 			throw Forbidden("Game has started, lobby don't accept anymore");
 		lobby.join(client);
-		client->connection.sendLobbyJoined(lobby.toNLobby(), lobby.getNPlayers());
+		this->broadcastPlayerJoined(lobby.toNLobby(), *client);
 	}
 
 	void Main::onLeaveLobby(const std::shared_ptr<Client> &client)
@@ -63,6 +64,7 @@ namespace RC::Server
 		if (lobby.isEmpty())
 			this->lobbies.delLobby(lobby);
 		client->connection.sendOk();
+		this->broadcastPlayerLeft(lobby.toNLobby(), *client);
 	}
 
 	void Main::onLobbyListRequest(const std::shared_ptr<Client> &client)

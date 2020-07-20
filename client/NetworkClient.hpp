@@ -33,6 +33,7 @@ namespace RC::Client
 		void _onLobbyState(const Network::Packet &packet);
 		void _onPlayerReady(const Network::Packet &packet);
 		void _onPlayerJoined(const Network::Packet &packet);
+		void _onPlayerLeft(const Network::Packet &packet);
 
 	public:
 		NetworkClient();

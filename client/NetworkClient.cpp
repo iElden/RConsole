@@ -16,15 +16,16 @@ namespace RC::Client
 {
 	NetworkClient::NetworkClient()
 	{
-		this->attach("Goodbye",       [this](const Network::Packet &packet){ this->_onGoodbye(packet); });
-		this->attach("Ping",          [this](const Network::Packet &packet){ this->_onPing(packet); });
-		this->attach("Lobby_List",    [this](const Network::Packet &packet){ this->_onLobbyList(packet); });
-		this->attach("Lobby_Created", [this](const Network::Packet &packet){ this->_onLobbyCreated(packet); });
-		this->attach("Lobby_Deleted", [this](const Network::Packet &packet){ this->_onLobbyDeleted(packet); });
-		this->attach("Lobby_Joined",  [this](const Network::Packet &packet){ this->_onLobbyJoined(packet); });
-		this->attach("Lobby_State",   [this](const Network::Packet &packet){ this->_onLobbyState(packet); });
-		this->attach("Player_Ready",  [this](const Network::Packet &packet){ this->_onPlayerReady(packet); });
-		this->attach("Player_Joined", [this](const Network::Packet &packet){ this->_onPlayerJoined(packet); });
+		this->attach(Network::opcodeToString.at(Network::GOODBYE),       [this](const Network::Packet &packet){ this->_onGoodbye(packet); });
+		this->attach(Network::opcodeToString.at(Network::PING),          [this](const Network::Packet &packet){ this->_onPing(packet); });
+		this->attach(Network::opcodeToString.at(Network::LOBBY_LIST),    [this](const Network::Packet &packet){ this->_onLobbyList(packet); });
+		this->attach(Network::opcodeToString.at(Network::LOBBY_CREATED), [this](const Network::Packet &packet){ this->_onLobbyCreated(packet); });
+		this->attach(Network::opcodeToString.at(Network::LOBBY_DELETED), [this](const Network::Packet &packet){ this->_onLobbyDeleted(packet); });
+		this->attach(Network::opcodeToString.at(Network::LOBBY_JOINED),  [this](const Network::Packet &packet){ this->_onLobbyJoined(packet); });
+		this->attach(Network::opcodeToString.at(Network::LOBBY_STATE),   [this](const Network::Packet &packet){ this->_onLobbyState(packet); });
+		this->attach(Network::opcodeToString.at(Network::PLAYER_READY),  [this](const Network::Packet &packet){ this->_onPlayerReady(packet); });
+		this->attach(Network::opcodeToString.at(Network::PLAYER_JOINED), [this](const Network::Packet &packet){ this->_onPlayerJoined(packet); });
+		this->attach(Network::opcodeToString.at(Network::PLAYER_LEFT),   [this](const Network::Packet &packet){ this->_onPlayerLeft(packet); });
 	}
 
 	bool NetworkClient::isInLobby() const noexcept
@@ -137,6 +138,7 @@ namespace RC::Client
 		case Network::LOBBY_JOINED:
 		case Network::LOBBY_CREATED:
 		case Network::LOBBY_DELETED:
+		case Network::PLAYER_LEFT:
 		case Network::PLAYER_JOINED:
 		case Network::OK:
 		case Network::LOBBY_LIST:
@@ -276,7 +278,22 @@ namespace RC::Client
 
 	void NetworkClient::_onPlayerJoined(const Network::Packet &packet)
 	{
+		auto it = std::find_if(this->_lobbies.begin(), this->_lobbies.end(), [&packet](Lobby &lobby){
+			return lobby.id == packet.playerJoined.lobby.id;
+		});
 
+		if (it != this->_lobbies.end())
+			it->addPlayer(packet.playerJoined.player.id, packet.playerJoined.player.username);
+	}
+
+	void NetworkClient::_onPlayerLeft(const Network::Packet &packet)
+	{
+		auto it = std::find_if(this->_lobbies.begin(), this->_lobbies.end(), [&packet](Lobby &lobby){
+			return lobby.id == packet.playerLeft.lobby.id;
+		});
+
+		if (it != this->_lobbies.end())
+			it->removePlayer(packet.playerLeft.player.id);
 	}
 
 	void NetworkClient::makeLobby()
