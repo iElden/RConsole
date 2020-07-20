@@ -41,10 +41,13 @@ namespace RC::Client
 				this->_waiting = true;
 				this->_handleWindowEvents();
 
-				if (this->_currentGame)
+				if (this->_currentGame) {
 					this->_currentGame->render(this->_window);
-				else
+					this->_window.setView(this->_currentGame->getView());
+				} else {
 					this->_gui.draw();
+					this->_window.setView(sf::View{sf::FloatRect(0, 0, this->_window.getSize().x, this->_window.getSize().y)});
+				}
 
 				do
 					this->_waiting = false;
@@ -70,7 +73,6 @@ namespace RC::Client
 			case sf::Event::Closed:
 				return this->_window.close();
 			case sf::Event::Resized:
-				this->_window.setView(sf::View{sf::FloatRect(0, 0, event.size.width, event.size.height)});
 				return this->_gui.setView(sf::View{sf::FloatRect(0, 0, event.size.width, event.size.height)});
 			default:
 				return;
@@ -432,6 +434,9 @@ namespace RC::Client
 			throw InvalidGameException(id);
 		}
 
+		auto view = this->_currentGame->getView();
+
+		this->_window.setView(view);
 		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
 			if (!this->_controller)
 				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);

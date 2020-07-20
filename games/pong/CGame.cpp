@@ -96,7 +96,7 @@ namespace RC::Pong
 
 	sf::View CGame::getView() const
 	{
-		return sf::View{{0, 0, 100, 500}};
+		return sf::View{{0, 0, 1000, 500}};
 	}
 
 	void CGame::_sendInput(Client::Controller::IController &controller, Client::NetworkClient &client)
