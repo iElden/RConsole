@@ -73,11 +73,11 @@ namespace RC::Pong
 			this->_p1.pos.x = pack.update.racket1.pos.x;
 			this->_p1.pos.y = pack.update.racket1.pos.y;
 
-			this->_p2.speed = pack.update.racket1.speed;
-			this->_p2.direction = pack.update.racket1.direction;
-			this->_p2.size = pack.update.racket1.size;
-			this->_p2.pos.x = pack.update.racket1.pos.x;
-			this->_p2.pos.y = pack.update.racket1.pos.y;
+			this->_p2.speed = pack.update.racket2.speed;
+			this->_p2.direction = pack.update.racket2.direction;
+			this->_p2.size = pack.update.racket2.size;
+			this->_p2.pos.x = pack.update.racket2.pos.x;
+			this->_p2.pos.y = pack.update.racket2.pos.y;
 			break;
 		case Network::SCORE:
 			if (size < sizeof(Network::PacketScore))
