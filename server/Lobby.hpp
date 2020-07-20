@@ -28,7 +28,7 @@ namespace RC::Server {
 		Network::NLobby toNLobby();
 		Lobby &join(const std::shared_ptr<Client> &client);
 		void leave(Client &client);
-		void startGame(uint32_t game_ID);
+		void startGame(Network::GameID game_ID);
 		std::vector<Network::NPlayer> getNPlayers();
 		bool operator==(const Lobby &other) const noexcept {return this->id == other.id;};
 		bool isEmpty() const noexcept {return this->players.isEmpty();};

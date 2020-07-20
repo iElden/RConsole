@@ -51,9 +51,14 @@ namespace RC::Server {
 		}
 
 		// remove lobby from vector
-		this->_lobbies.erase(std::remove_if(this->_lobbies.begin(), this->_lobbies.end(),
-											[lobby](const std::shared_ptr<Lobby> &lb) { return lobby == *lb; }),
-							 this->_lobbies.end());
+		this->_lobbies.erase(
+			std::remove_if(
+				this->_lobbies.begin(),
+				this->_lobbies.end(),
+				[&lobby](const std::shared_ptr<Lobby> &lb) { return lobby == *lb; }
+			),
+			this->_lobbies.end()
+		);
 	}
 
 	std::shared_ptr<Lobby> LobbyList::getLobbyPtrById(uint32_t id) noexcept
