@@ -52,7 +52,7 @@ namespace RC::Server
 	{
 		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
 		if (lobby.state != WAITING_FOR_PLAYER)
-			throw Forbidden("Game has started, lobby don't accept anymore");
+			throw Forbidden("Game has started, lobby can't accept any new players.");
 		lobby.join(client);
 		this->broadcastPlayerJoined(lobby.toNLobby(), *client);
 	}

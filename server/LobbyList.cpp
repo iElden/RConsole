@@ -15,7 +15,7 @@ namespace RC::Server {
 	{
 		std::shared_ptr<Lobby> lobby = this->getLobbyPtrByClient(client);
 		if (lobby == nullptr)
-			throw NotFound("Lobby don't found");
+			throw NotFound("Lobby not found.");
 		return *lobby;
 	}
 
@@ -74,7 +74,7 @@ namespace RC::Server {
 	{
 		std::shared_ptr<Lobby> lobby = this->getLobbyPtrById(id);
 		if (lobby == nullptr)
-			throw NotFound("Lobby don't found");
+			throw NotFound("Lobby not found.");
 		return *lobby;
 	}
 
