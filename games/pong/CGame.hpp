@@ -24,10 +24,13 @@ namespace RC::Pong
 		sf::RectangleShape _rect;
 		tgui::Text _text;
 
+		void _sendInput(Client::Controller::IController &controller, Client::NetworkClient &client);
+
 	public:
 		CGame();
 		void render(sf::RenderTarget &target) override;
-		void onPacketReceived(const void *packet, size_t size) override;
+		void onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller) override;
+		sf::View getView() const override;
 	};
 }
 

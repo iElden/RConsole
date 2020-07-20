@@ -53,7 +53,7 @@ namespace RC::Pong
 		this->_text.draw(target, {});
 	}
 
-	void CGame::onPacketReceived(const void *packet, size_t size)
+	void CGame::onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller)
 	{
 		const auto &pack = *reinterpret_cast<const Network::Packet *>(packet);
 
@@ -87,8 +87,25 @@ namespace RC::Pong
 			this->_score.second = pack.score.score_2;
 			break;
 		case Network::INPUT_REQ:
+			this->_sendInput(controller, client);
+			break;
 		default:
 			throw Client::InvalidOpcodeException(pack.opcode);
 		}
+	}
+
+	sf::View CGame::getView() const
+	{
+		return sf::View{{0, 0, 100, 500}};
+	}
+
+	void CGame::_sendInput(Client::Controller::IController &controller, Client::NetworkClient &client)
+	{
+		Network::PacketInput packet{
+			Network::GAME_INPUT
+		};
+
+		packet.keys = controller.getKeys();
+		client.sendGameEvent(packet);
 	}
 }

@@ -10,13 +10,15 @@
 #include <TGUI/TGUI.hpp>
 #include <thread>
 #include "NetworkClient.hpp"
-#include "Controller/Controller.hpp"
+#include "Controller/MobileController.hpp"
+#include "Controller/KeyboardController.hpp"
 #include "../games/ICGame.hpp"
 
 namespace RC::Client
 {
 	class Client {
 	private:
+		Controller::KeyboardController _defaultController;
 		std::unique_ptr<ICGame> _currentGame;
 		std::thread _clientThread;
 		bool _controllerConnecting;
@@ -24,7 +26,7 @@ namespace RC::Client
 		sf::RenderWindow _window;
 		tgui::Gui _gui;
 		NetworkClient _client;
-		std::unique_ptr<Controller::Controller> _controller;
+		std::unique_ptr<Controller::MobileController> _controller;
 
 		void _loadMainPage();
 		void _loadLobbyPage();

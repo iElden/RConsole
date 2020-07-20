@@ -5,7 +5,6 @@
 #include "Client.hpp"
 
 #include <memory>
-#include <iostream>
 #include "Utils.hpp"
 #include "Controller/Exceptions.hpp"
 #include "../games/pong/CGame.hpp"
@@ -73,7 +72,7 @@ namespace RC::Client
 
 	void Client::_setController(unsigned short port)
 	{
-		this->_controller = std::make_unique<Controller::Controller>(port);
+		this->_controller = std::make_unique<Controller::MobileController>(port);
 	}
 
 	void Client::_disconnectController()
@@ -397,9 +396,10 @@ namespace RC::Client
 		}
 
 		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
-			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code));
+			if (!this->_controller)
+				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
+			else
+				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
 		});
-		//std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		//this->_gui.removeAllWidgets();
 	}
 }

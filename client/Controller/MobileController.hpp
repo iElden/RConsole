@@ -2,18 +2,18 @@
 // Created by Gegel85 on 14/07/2020.
 //
 
-#ifndef RCONSOLE_CONTROLLER_HPP
-#define RCONSOLE_CONTROLLER_HPP
+#ifndef RCONSOLE_MOBILECONTROLLER_HPP
+#define RCONSOLE_MOBILECONTROLLER_HPP
 
 
 #include <SFML/Network/UdpSocket.hpp>
 #include <thread>
 #include <SFML/System/Clock.hpp>
-#include "Packet.hpp"
+#include "IController.hpp"
 
 namespace RC::Client::Controller
 {
-	class Controller {
+	class MobileController : public IController {
 	private:
 		bool _vibrate = false;
 		bool _connected = false;
@@ -27,8 +27,8 @@ namespace RC::Client::Controller
 		size_t _receiveNextPacket(void *packet, size_t size);
 
 	public:
-		Controller(unsigned short port);
-		Network::Keys getKeys();
+		MobileController(unsigned short port);
+		Network::Keys getKeys() override;
 
 		void sendOlleh();
 		void sendGoodbye();
@@ -39,4 +39,4 @@ namespace RC::Client::Controller
 }
 
 
-#endif //RCONSOLE_CONTROLLER_HPP
+#endif //RCONSOLE_MOBILECONTROLLER_HPP

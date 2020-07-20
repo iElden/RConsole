@@ -2,12 +2,12 @@
 // Created by Gegel85 on 14/07/2020.
 //
 
-#include "Controller.hpp"
+#include "MobileController.hpp"
 #include "Exceptions.hpp"
 
 namespace RC::Client::Controller
 {
-	Controller::Controller(unsigned short port)
+	MobileController::MobileController(unsigned short port)
 	{
 		try {
 			Network::Packet packet;
@@ -36,7 +36,7 @@ namespace RC::Client::Controller
 		}
 	}
 
-	void Controller::_checkSFMLStatus(const sf::Socket::Status &status)
+	void MobileController::_checkSFMLStatus(const sf::Socket::Status &status)
 	{
 		switch (status) {
 		case sf::Socket::Status::Disconnected:
@@ -51,7 +51,7 @@ namespace RC::Client::Controller
 		}
 	}
 
-	Network::Keys Controller::getKeys()
+	Network::Keys MobileController::getKeys()
 	{
 		Network::InputPacket packet;
 
@@ -68,7 +68,7 @@ namespace RC::Client::Controller
 		return packet.keys;
 	}
 
-	void Controller::sendOlleh()
+	void MobileController::sendOlleh()
 	{
 		Network::Opcode packet{
 			Network::OLLEH
@@ -79,7 +79,7 @@ namespace RC::Client::Controller
 		this->_checkSFMLStatus(this->_sock.send(&packet, sizeof(packet), this->_remote, this->_remotePort));
 	}
 
-	void Controller::sendGoodbye()
+	void MobileController::sendGoodbye()
 	{
 		Network::Opcode packet{
 			Network::GOODBYE
@@ -90,7 +90,7 @@ namespace RC::Client::Controller
 		this->_checkSFMLStatus(this->_sock.send(&packet, sizeof(packet), this->_remote, this->_remotePort));
 	}
 
-	void Controller::sendInputReq(bool vibrate)
+	void MobileController::sendInputReq(bool vibrate)
 	{
 		Network::InputReqPacket packet{
 			Network::INPUT_REQ,
@@ -102,12 +102,12 @@ namespace RC::Client::Controller
 		this->_checkSFMLStatus(this->_sock.send(&packet, sizeof(packet), this->_remote, this->_remotePort));
 	}
 
-	void Controller::setVibrating(bool vibrate)
+	void MobileController::setVibrating(bool vibrate)
 	{
 		this->_vibrate = vibrate;
 	}
 
-	size_t Controller::_receiveNextPacket(void *packet, size_t size)
+	size_t MobileController::_receiveNextPacket(void *packet, size_t size)
 	{
 		size_t realSize;
 
@@ -125,7 +125,7 @@ namespace RC::Client::Controller
 		throw TimeOutException(1);
 	}
 
-	void Controller::disconnect()
+	void MobileController::disconnect()
 	{
 		this->sendGoodbye();
 		this->_connected = false;

@@ -7,13 +7,16 @@
 
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "../client/Controller/MobileController.hpp"
+#include "../client/NetworkClient.hpp"
 
 namespace RC
 {
 	class ICGame {
 	public:
 		virtual void render(sf::RenderTarget &target) = 0;
-		virtual void onPacketReceived(const void *packet, size_t size) = 0;
+		virtual void onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller) = 0;
+		virtual sf::View getView() const = 0;
 	};
 }
 

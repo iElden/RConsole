@@ -37,6 +37,10 @@ namespace RC::Client
 	public:
 		NetworkClient();
 
+		template<typename T>
+		void sendGameEvent(const T &packet) {
+			Connection::sendGameEvent(&packet, sizeof(packet));
+		}
 		void connect(const std::string &ip, unsigned port, const std::string &username, const std::string &password);
 		void disconnectWithError(const std::string &error);
 		void disconnect();

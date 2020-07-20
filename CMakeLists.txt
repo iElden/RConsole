@@ -35,14 +35,14 @@ add_executable(
 	client/Exceptions.hpp
 	client/Utils.hpp
 	client/Utils.cpp
-	client/Controller/Controller.cpp
-	client/Controller/Controller.hpp
+	client/Controller/MobileController.cpp
+	client/Controller/MobileController.hpp
 	client/Controller/Exceptions.hpp
 	client/Controller/Packet.hpp
 	games/pong/CGame.cpp
 	games/pong/CGame.hpp
 	games/ICGame.hpp
-)
+	client/Controller/IController.hpp client/Controller/KeyboardController.cpp client/Controller/KeyboardController.hpp)
 
 target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
 
