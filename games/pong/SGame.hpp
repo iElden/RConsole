@@ -21,9 +21,9 @@ namespace RC::Pong {
 	private:
 		std::vector<Player> players = {};
 
-		Ball ball{{0x12, 0x24}, 1.f, 1.f};
-		Racket racket1{{0x04, 0x08}, 0x42, UP};
-		Racket racket2{{0x84, 0x88}, 0xEB, DOWN};
+		Ball ball{{500, 250}, 1, 45};
+		Racket racket1{{50, 200}, 100, NONE};
+		Racket racket2{{950, 200}, 100, NONE};
 		enum GameState {
 			WAITING,
 			PLAYING,

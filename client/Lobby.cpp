@@ -5,6 +5,7 @@
 ** RClientLobby.cpp
 */
 
+#include <algorithm>
 #include "Lobby.hpp"
 
 namespace RC::Client
