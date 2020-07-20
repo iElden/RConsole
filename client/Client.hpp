@@ -19,7 +19,8 @@ namespace RC::Client
 {
 	class Client {
 	private:
-		std::array<sf::Music, 3> _menu;
+		std::array<sf::SoundBuffer, 3> _buffers;
+		std::array<sf::Sound, 3> _menu;
 		bool _waiting = false;
 		bool _done = true;
 		Controller::KeyboardController _defaultController;

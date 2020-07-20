@@ -19,7 +19,8 @@ namespace RC::Client
 		this->_hookNetworkHandler();
 
 		for (int i = 0; i < 3; i++) {
-			this->_menu[i].openFromFile("gui/menu" + std::to_string(i + 1) + ".ogg");
+			this->_buffers[i].loadFromFile("gui/menu" + std::to_string(i + 1) + ".ogg");
+			this->_menu[i].setBuffer(this->_buffers[i]);
 			this->_menu[i].setLoop(true);
 		}
 
@@ -443,6 +444,9 @@ namespace RC::Client
 		default:
 			throw InvalidGameException(id);
 		}
+
+		for (int i = 0; i < 3; i++)
+			this->_menu[i].stop();
 
 		auto view = this->_currentGame->getView();
 
