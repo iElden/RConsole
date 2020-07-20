@@ -33,6 +33,7 @@ void RC::Pong::Game::update()
 void RC::Pong::Game::gameloop()
 {
 	this->ball.update(this->racket1, this->racket2);
+	this->send_update_to_player();
 }
 
 void RC::Pong::Game::run()

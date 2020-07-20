@@ -54,6 +54,11 @@ namespace RC::Server {
 	public:
 		LobbyNotFound(): NotFound("Lobby was not Found") {};
 	};
+
+	class Forbidden : public ServerException {
+	public:
+		Forbidden(const std::string &&msg): ServerException(msg) {};
+	};
 }
 
 #endif //RCONSOLE_EXC_HPP

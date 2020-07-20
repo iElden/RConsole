@@ -50,6 +50,8 @@ namespace RC::Server
 	void Main::onJoinLobby(const std::shared_ptr<Client> &client, uint32_t lobby_id)
 	{
 		Lobby &lobby = this->lobbies.getLobbyById(lobby_id);
+		if (lobby.state != WAITING_FOR_PLAYER)
+			throw Forbidden("Game has started, lobby don't accept anymore");
 		lobby.join(client);
 		client->connection.sendLobbyJoined(lobby.toNLobby(), lobby.getNPlayers());
 	}
@@ -78,6 +80,7 @@ namespace RC::Server
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 
+		lobby.state = IN_GAME;
 		for (std::shared_ptr<Client> &cl : lobby.players)
 			cl->connection.sendGameStart(id);
 	}
