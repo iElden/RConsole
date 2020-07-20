@@ -5,9 +5,16 @@
 #include <string>
 #include "Vector2.hpp"
 
+enum Color {
+    RED = 31,
+    GREEN = 32,
+    YELLOW = 33,
+    WHITE = 37
+};
+
 class Text {
 public:
-    Text(std::string text, Vector2<int> position, std::array<VINT, 2> touchArea = {VINT{-1, -1}, VINT{-1, -1}}, int color = 37);
+    Text(std::string text, Vector2<int> position, std::array<VINT, 2> touchArea = {VINT{-1, -1}, VINT{-1, -1}}, int color = WHITE);
     void clear();
     void display(std::string s = "");
 

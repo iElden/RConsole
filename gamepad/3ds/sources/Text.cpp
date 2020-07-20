@@ -41,7 +41,7 @@ void Text::display(std::string text)
     ss << "\x1b[" << row << ";" << column << "H";
     ss << "\x1b[" << this->_color << "m";
     ss << (text.empty() ? this->_text : text);
-    ss << "\x1b[" << 37 << "m";
+    ss << "\x1b[" << WHITE << "m";
     std::cout << ss.str() << std::endl;
 }
 

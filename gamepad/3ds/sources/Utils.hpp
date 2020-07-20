@@ -14,9 +14,6 @@ namespace Utils {
             point.y >= min.y &&
             point.y <= max.y;
     }
-
-
-
 };
 
 #endif // UTILS_HPP

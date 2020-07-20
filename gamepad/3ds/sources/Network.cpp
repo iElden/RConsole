@@ -1,4 +1,4 @@
-#include "Socket.hpp"
+#include "Network.hpp"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -7,7 +7,7 @@
 
 static u32 *SOC_buffer = nullptr;
 
-Socket::Socket()
+Network::Network()
 {
     SOC_buffer = (u32 *)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
 
@@ -36,12 +36,12 @@ Socket::Socket()
     }
 }
 
-Socket::~Socket()
+Network::~Network()
 {
     close(this->_socket);
 }
 
-bool Socket::set(std::string ip, std::string port)
+bool Network::set(std::string ip, std::string port)
 {
     if (inet_pton(AF_INET, ip.c_str(), &(this->_addr.sin_addr)) == 0) {
         this->_error.set("invalid id address >> {" + ip + "}");
@@ -57,7 +57,7 @@ bool Socket::set(std::string ip, std::string port)
     return true;
 }
 
-bool Socket::send(char *msg)
+bool Network::send(char *msg)
 {
     auto ret = sendto(this->_socket, msg, 16, 0, (struct sockaddr *) &this->_addr, this->_addrSize);
 
@@ -68,7 +68,7 @@ bool Socket::send(char *msg)
     return true;
 }
 
-char *Socket::receive()
+char *Network::receive()
 {
     static char msg[2] = {0};
 
@@ -81,22 +81,22 @@ char *Socket::receive()
     return msg;
 }
 
-bool Socket::error()
+bool Network::error()
 {
     return this->_error.hasOccured();
 }
 
-std::string Socket::getLastError()
+std::string Network::getLastError()
 {
     return this->_error.getLast();
 }
 
-bool Socket::isConnected()
+bool Network::isConnected()
 {
     return this->_connected;
 }
 
-void Socket::setConnected(bool state)
+void Network::setConnected(bool state)
 {
     this->_connected = state;
 }

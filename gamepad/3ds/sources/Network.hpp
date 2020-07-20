@@ -1,5 +1,5 @@
-#ifndef SOCKET_HPP
-#define SOCKET_HPP
+#ifndef NETWORK_HPP
+#define NETWORK_HPP
 
 #include <string>
 #include <3ds.h>
@@ -17,10 +17,22 @@
 #define SOC_ALIGN       0x1000
 #define SOC_BUFFERSIZE  0x100000
 
-class Socket {
+enum Opcodes {
+    HELLO,
+    OLLEH,
+    INPUTS_REQ,
+    INPUTS,
+    GOODBYE
+};
+
+enum Data {
+    EMPTY
+};
+
+class Network {
 public:
-    Socket();
-    ~Socket();
+    Network();
+    ~Network();
 
     bool error();
     std::string getLastError();
@@ -43,4 +55,4 @@ private:
     Error _error;
 };
 
-#endif // SOCKET_HPP
+#endif // NETWORK_HPP
