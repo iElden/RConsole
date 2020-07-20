@@ -46,6 +46,7 @@ namespace RC::Client
 		void _startGame(Network::GameID id);
 		void _lockGUI();
 		void _unlockGUI();
+		void _switchMusic(unsigned char newMusic);
 
 	public:
 		Client();

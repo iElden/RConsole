@@ -16,14 +16,14 @@ namespace RC::Client
 		_gui(this->_window)
 	{
 		this->_window.setFramerateLimit(60);
-		this->_loadMainPage();
-
 		this->_hookNetworkHandler();
 
 		for (int i = 0; i < 3; i++) {
 			this->_menu[i].openFromFile("gui/menu" + std::to_string(i + 1) + ".ogg");
 			this->_menu[i].setLoop(true);
 		}
+
+		this->_loadMainPage();
 	}
 
 	Client::~Client()
@@ -221,6 +221,7 @@ namespace RC::Client
 	{
 		this->_lockGUI();
 
+		this->_switchMusic(2);
 		this->_gui.loadWidgetsFromFile("gui/lobbies.gui");
 
 		auto leave = this->_gui.get<tgui::Button>("Leave");
@@ -272,6 +273,7 @@ namespace RC::Client
 		auto openConnectWindow = [this, connect, disconnect, newLobby]{
 			auto window = Utils::openWindowWithFocus(this->_gui, 200, 170);
 
+			this->_switchMusic(0);
 			this->_gui.get<tgui::Panel>("Lobbies")->removeAllWidgets();
 			connect->setVisible(true);
 			disconnect->setVisible(false);
@@ -302,6 +304,7 @@ namespace RC::Client
 					connect->setVisible(false);
 					newLobby->setVisible(true);
 					disconnect->setVisible(true);
+					this->_switchMusic(1);
 				} catch (std::invalid_argument &e) {
 					error->setText("Port is invalid");
 					return;
@@ -338,6 +341,8 @@ namespace RC::Client
 
 		if (!this->_client.isConnected())
 			openConnectWindow();
+		else
+			this->_switchMusic(1);
 
 		newLobby->setVisible(this->_client.isConnected());
 		connect->setVisible(!this->_client.isConnected());
@@ -459,5 +464,28 @@ namespace RC::Client
 	void Client::_unlockGUI()
 	{
 		this->_done = true;
+	}
+
+	void Client::_switchMusic(unsigned char newMusic)
+	{
+		unsigned currentMusic = 0;
+
+		while (currentMusic < 3 && this->_menu[currentMusic].getStatus() != sf::Music::Playing)
+			currentMusic++;
+
+		if (currentMusic == 3) {
+			this->_menu[newMusic].setLoop(true);
+			this->_menu[newMusic].play();
+			return;
+		}
+
+		if (currentMusic == newMusic)
+			return;
+
+		this->_menu[newMusic].setPlayingOffset(this->_menu[currentMusic].getPlayingOffset());
+		this->_menu[newMusic].setLoop(true);
+		this->_menu[newMusic].play();
+		this->_menu[currentMusic].stop();
+		this->_menu[currentMusic].setLoop(true);
 	}
 }
