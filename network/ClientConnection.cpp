@@ -95,7 +95,7 @@ namespace RC::Network
 		this->sendData(packet);
 	}
 
-	void ClientConnection::sendGameStart(uint32_t gameSelected)
+	void ClientConnection::sendGameStart(GameID gameSelected)
 	{
 		PacketGameStart packet{
 			sizeof(packet) - sizeof(packet.dataSize),

@@ -28,7 +28,7 @@ namespace RC::Server {
 		void onGoodbye(const std::shared_ptr<Client> &client);
 		void onDisconnect(const std::shared_ptr<Client> &client);
 		// void onSetReady(const std::shared_ptr<Client> &client);
-		void onChooseGame(const std::shared_ptr<Client> &client, uint32_t id);
+		void onChooseGame(const std::shared_ptr<Client> &client, Network::GameID id);
 		void broadcastLobbyCreated(Network::NLobby id);
 		void broadcastLobbyDeleted(Network::NLobby id);
 		void broadcastPlayerJoined(Network::NLobby id, Network::NPlayer player);

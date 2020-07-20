@@ -30,6 +30,7 @@ namespace RC::Client
 		Player(unsigned id, const std::string &name);
 		bool operator==(const Player& other) const noexcept;
 		const std::string &getName() const noexcept;
+		unsigned getId() const noexcept;
 	};
 }
 

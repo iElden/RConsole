@@ -25,4 +25,9 @@ namespace RC::Client
 	{
 		return name;
 	}
+
+	unsigned Player::getId() const noexcept
+	{
+		return this->id;
+	}
 }

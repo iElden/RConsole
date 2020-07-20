@@ -46,6 +46,7 @@ namespace RC::Client
 		bool emit(std::string signalName, const Network::Packet &packet);
 		void makeLobby();
 		void leaveLobby();
+		void startGame(Network::GameID gameId);
 		void joinLobby(uint8_t id);
 		bool isInLobby() const noexcept;
 		const Player &getPlayer() const;

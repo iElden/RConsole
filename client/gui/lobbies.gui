@@ -50,7 +50,7 @@ Button.Leave {
     renderer = &1;
 }
 
-Button.Play0 {
+Button.play0 {
     Position = (480, 40);
     Size = (150, 22);
     Text = "Play Pong";

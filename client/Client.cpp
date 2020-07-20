@@ -5,6 +5,7 @@
 #include "Client.hpp"
 
 #include <memory>
+#include <iostream>
 #include "Utils.hpp"
 #include "Controller/Exceptions.hpp"
 
@@ -166,14 +167,21 @@ namespace RC::Client
 			this->_handleLobbyCreatedPacket(packet);
 		});
 		this->_client.attach(Network::opcodeToString.at(Network::ERROR), [this](const Network::Packet &packet){
-			this->_handleErrorPacket(packet, "Server error");
+			this->_handleErrorPacket(packet.error.error, "Server error");
+		});
+		this->_client.attach(Network::opcodeToString.at(Network::KICKED), [this](const Network::Packet &packet){
+			this->_loadMainPage();
+			this->_handleErrorPacket(packet.kicked.reason, "Kicked");
+		});
+		this->_client.attach(Network::opcodeToString.at(Network::GAME_START), [this](const Network::Packet &packet){
+			this->_startGame(packet.gameStart.gameSelected);
 		});
 		this->_client.attach(Network::opcodeToString.at(Network::LOBBY_JOINED), [this](const Network::Packet &packet){
 			this->_loadLobbyPage();
 		});
 		this->_client.attach("clientError", [this](const Network::Packet &packet){
 			this->_loadMainPage();
-			this->_handleErrorPacket(packet, "Client error");
+			this->_handleErrorPacket(packet.error.error, "Client error");
 		});
 		this->_client.attach("lobbyLeft", [this](const Network::Packet &){
 			this->_loadMainPage();
@@ -200,6 +208,21 @@ namespace RC::Client
 		leave->onClick.connect([this]{
 			this->_client.leaveLobby();
 		});
+
+		bool visible = lobby.players[0] == this->_client.getPlayer();
+
+		for (const auto &name : this->_gui.getWidgetNames()) {
+			if (name.substring(0, strlen("play")) != "play")
+				continue;
+
+			auto play = this->_gui.get<tgui::Button>(name);
+			auto id = std::stol(name.substring(strlen("play")).toAnsiString());
+
+			play->setVisible(visible);
+			play->onClick.connect([this, id] {
+				this->_client.startGame(static_cast<Network::GameID>(id));
+			});
+		}
 	}
 
 	void Client::_loadMainPage()
@@ -334,9 +357,9 @@ namespace RC::Client
 		panel->add(button);
 	}
 
-	void Client::_handleErrorPacket(const Network::Packet &packet, const std::string &title)
+	void Client::_handleErrorPacket(const std::string &error, const std::string &title)
 	{
-		auto win = Utils::msgWin(title, packet.error.error, MB_ICONERROR);
+		auto win = Utils::msgWin(title, error, MB_ICONERROR);
 		auto panel = tgui::Panel::create({"100%", "100%"});
 
 		panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
@@ -355,5 +378,13 @@ namespace RC::Client
 		panel->connect("Clicked", closeWindow);
 		win->connect({"Closed", "EscapeKeyPressed"}, closeWindow);
 		this->_gui.add(win);
+	}
+
+	void Client::_startGame(Network::GameID id)
+	{
+		this->_gui.removeAllWidgets();
+
+		if (id >= Network::NB_OF_GAME_ID)
+			throw InvalidGameException(id);
 	}
 }

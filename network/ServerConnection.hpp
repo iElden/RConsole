@@ -25,7 +25,7 @@ namespace RC::Network
 		void sendLobbyListRequest();
 		void sendLobbyStateRequest(uint32_t id);
 		void sendSetReady();
-		void sendChooseGame(uint32_t id);
+		void sendChooseGame(GameID id);
 	};
 }
 

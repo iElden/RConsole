@@ -34,7 +34,8 @@ namespace RC::Client
 		void _addController(unsigned short port, const std::function<void()> &onConnected, const std::function<void(const std::string &msg)> &onError);
 		void _handleLobbyListPacket(const Network::Packet &packet);
 		void _handleLobbyCreatedPacket(const Network::Packet &packet);
-		void _handleErrorPacket(const Network::Packet &packet, const std::string &title);
+		void _handleErrorPacket(const std::string &packet, const std::string &title);
+		void _startGame(Network::GameID id);
 
 	public:
 		Client();

@@ -7,6 +7,7 @@
 
 
 #include <string>
+#include "../network/RPackets.hpp"
 
 namespace RC::Client
 {
@@ -43,6 +44,11 @@ namespace RC::Client
 	class WtfException : public ClientException {
 	public:
 		WtfException(): ClientException("Wtf ?") {};
+	};
+
+	class InvalidGameException : public ClientException {
+	public:
+		InvalidGameException(Network::GameID id): ClientException("Invalid game id provided: " + std::to_string(id)) {};
 	};
 }
 

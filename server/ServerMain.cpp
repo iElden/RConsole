@@ -74,7 +74,7 @@ namespace RC::Server
 		client->connection.sendLobbyState(lobby.getNPlayers());
 	}
 
-	void Main::onChooseGame(const std::shared_ptr<Client> &client, uint32_t id)
+	void Main::onChooseGame(const std::shared_ptr<Client> &client, Network::GameID id)
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 

@@ -46,6 +46,11 @@ namespace RC::Network
 		GAME_EVENT
 	};
 
+	enum PACKED GameID {
+		GAME_ID_PONG,
+		NB_OF_GAME_ID
+	};
+
 	const std::map<Opcode, std::string> opcodeToString{
 		{ HELLO,               "HELLO"},
 		{ OLLEH,               "OLLEH" },
@@ -185,13 +190,13 @@ namespace RC::Network
 	struct PACKED PacketChooseGame {
 		uint64_t dataSize;
 		Opcode code;
-		uint32_t id;
+		GameID id;
 	};
 
 	struct PACKED PacketGameStart {
 		uint64_t dataSize;
 		Opcode code;
-		uint32_t gameSelected;
+		GameID gameSelected;
 	};
 
 	struct PACKED PacketGameEvent {

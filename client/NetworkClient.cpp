@@ -306,4 +306,9 @@ namespace RC::Client
 		});
 		this->sendLeaveLobby();
 	}
+
+	void NetworkClient::startGame(Network::GameID gameId)
+	{
+		this->sendChooseGame(gameId);
+	}
 }
