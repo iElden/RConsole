@@ -14,6 +14,7 @@ namespace RC::Pong
 		this->_rect.setOutlineThickness(0);
 		this->_rect.setFillColor(sf::Color::White);
 
+		this->_circle.setRadius(3);
 		this->_circle.setOutlineThickness(0);
 		this->_circle.setFillColor(sf::Color::White);
 

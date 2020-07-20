@@ -19,6 +19,11 @@ namespace RC::Client
 		this->_loadMainPage();
 
 		this->_hookNetworkHandler();
+
+		for (int i = 0; i < 3; i++) {
+			this->_menu[i].openFromFile("gui/menu" + std::to_string(i + 1) + ".ogg");
+			this->_menu[i].setLoop(true);
+		}
 	}
 
 	Client::~Client()

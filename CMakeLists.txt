@@ -45,9 +45,9 @@ add_executable(
 	client/Controller/IController.hpp client/Controller/KeyboardController.cpp client/Controller/KeyboardController.hpp)
 
 if (WIN32)
-	target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread)
+	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread)
 else (WIN32)
-	target_link_libraries(client tgui sfml-graphics sfml-window sfml-network sfml-system pthread X11)
+	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread X11)
 endif (WIN32)
 
 

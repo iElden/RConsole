@@ -6,6 +6,7 @@
 #define RCONSOLE_CLIENT_HPP
 
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <thread>
@@ -18,6 +19,7 @@ namespace RC::Client
 {
 	class Client {
 	private:
+		std::array<sf::Music, 3> _menu;
 		bool _waiting = false;
 		bool _done = true;
 		Controller::KeyboardController _defaultController;
