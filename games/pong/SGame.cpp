@@ -98,12 +98,20 @@ namespace RC::Pong
 		case Network::GAME_INPUT:
 			if (size < sizeof(Network::PacketInput))
 				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketInput));
-
-			//TODO: Find which player sent it
-			this->onKeys(0, pack.input.keys);
+			
+			this->onKeys(this->getPlayerIDByClient(client), pack.input.keys);
 			break;
 		default:
 			throw Server::InvalidOpcodeException(pack.opcode);
 		}
+	}
+
+	int SGame::getPlayerIDByClient(const Server::Client &client)
+	{
+		for (int i = 0; i < this->players.size(); i++) {
+			if (this->players[i] == client)
+				return i;
+		}
+		return 2147483647;
 	}
 }

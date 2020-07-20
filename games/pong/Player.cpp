@@ -14,3 +14,8 @@ void RC::Pong::Player::send_update(const RC::Pong::Network::PacketUpdate &packet
 {
 	this->_client->connection.sendGameEvent(&packetUpdate, sizeof(packetUpdate));
 }
+
+bool RC::Pong::Player::operator==(const Server::Client &client) const
+{
+	return this->_client->id == client.id;
+}

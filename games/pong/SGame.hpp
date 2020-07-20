@@ -41,6 +41,7 @@ namespace RC::Pong {
 		void run() override;
 		void onKeys(int player, Client::Controller::Network::Keys keys);
 		void onPacketReceived(const void *data, size_t size, Server::Client &client) override;
+		int getPlayerIDByClient(const Server::Client &client);
 	};
 }
 
