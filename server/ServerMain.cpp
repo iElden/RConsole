@@ -54,6 +54,7 @@ namespace RC::Server
 		if (lobby.state != WAITING_FOR_PLAYER)
 			throw Forbidden("Game has started, lobby can't accept any new players.");
 		lobby.join(client);
+		client->connection.sendLobbyJoined(lobby.toNLobby(), lobby.getNPlayers());
 		this->broadcastPlayerJoined(lobby.toNLobby(), *client);
 	}
 
@@ -61,8 +62,10 @@ namespace RC::Server
 	{
 		Lobby &lobby = this->lobbies.getLobbyByClient(*client);
 		lobby.leave(*client);
-		if (lobby.isEmpty())
+		if (lobby.isEmpty()) {
 			this->lobbies.delLobby(lobby);
+			this->broadcastLobbyDeleted(lobby.toNLobby());
+		}
 		client->connection.sendOk();
 		this->broadcastPlayerLeft(lobby.toNLobby(), *client);
 	}
