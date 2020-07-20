@@ -11,7 +11,7 @@
 #include "Player.hpp"
 #include "../ISGame.hpp"
 #include "../../server/ClientList.hpp"
-#include "../../client/Controller/Controller.hpp"
+#include "../../client/Controller/IController.hpp"
 
 #define TICK_PER_SECOND 50
 #define PONG_MAX_Y 500
