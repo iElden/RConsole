@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">RGamepad</string>
+    <string name="server">ielden.eu</string>
+    <string name="left"><![CDATA[<]]></string>
+    <string name="right"><![CDATA[>]]></string>
+    <string name="up">^</string>
+    <string name="down">v</string>
+    <string name="x">x</string>
+    <string name="y">y</string>
+    <string name="b">b</string>
+    <string name="a">a</string>
+    <string name="connect">Connect to the client</string>
+    <string name="client_ip_short">Client IP</string>
+    <string name="client_id_short">Client ID</string>
+    <string name="client_ip_long">Enter the client IP here.</string>
+    <string name="client_id_long">Enter the client ID here.</string>
+    <string name="reset">Reset</string>
+</resources>
