@@ -18,6 +18,7 @@ namespace RC::Pong
 	{
 		for (const std::shared_ptr<Server::Client> &p : players)
 			this->players.emplace_back(p);
+		srand(time(nullptr));
 	}
 
 	void SGame::run()
@@ -98,7 +99,7 @@ namespace RC::Pong
 		case Network::GAME_INPUT:
 			if (size < sizeof(Network::PacketInput))
 				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketInput));
-			
+
 			this->onKeys(this->getPlayerIDByClient(client), pack.input.keys);
 			break;
 		default:

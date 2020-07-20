@@ -30,26 +30,26 @@ RC::Pong::Ball::operator Network::Ball() const noexcept
 void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 {
 	Vector2 new_pos;
-	if (this->angle < 180)
-		new_pos = {this->pos.x + static_cast<int>(speed), this->pos.y};
-	else
-		new_pos = {this->pos.x - static_cast<int>(speed), this->pos.y};
+	new_pos.x = this->pos.x + static_cast<int>(cos(this->angle) * this->speed);
+	new_pos.y = this->pos.y + static_cast<int>(sin(this->angle) * this->speed);
 
-	if (new_pos.x == 950 || this->pos.x == 950 || new_pos.x == 50 || this->pos.x == 950)
-		printf("%d && %d rposx=%d; opx=%d; npx=%d\nop y=%d; rposy=%d; blabla=%d\n\n",
-				COLLIDED1D(r2.pos.x, this->pos.x, new_pos.x), COLLIDED1D(this->pos.y, r2.pos.y, r2.pos.y+r2.size),
-				r2.pos.x, this->pos.x, new_pos.x, this->pos.y, r2.pos.y, r2.pos.y+r2.size);
-
+	if (COLLIDED1D(0, this->pos.y, new_pos.y)) {
+		this->angle = -this->angle;
+		return;
+	}
+	else if (COLLIDED1D(500, this->pos.y, new_pos.y)) {
+		this->angle = -this->angle;
+		return;
+	}
 	if (COLLIDED2D(r1, this->pos, new_pos)) { // ball collide with r1
-		this->angle = std::fmod((this->angle + 180), 360);
-		printf("COLLIDE 1\n");
+		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 0.57;
 	}
 	else if (COLLIDED2D(r2, this->pos, new_pos)) {  // ball collide with r2
-		this->angle = std::fmod((this->angle + 180), 360);
-		printf("COLLIDE 2\n");
+		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 3.71159;
 	}
 	else
 		this->pos = new_pos;
+	this->speed += 0.01;
 }
 
 void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
