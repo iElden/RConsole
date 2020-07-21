@@ -8,9 +8,7 @@
 #include <cmath>
 #include "GameObject.hpp"
 #include "SGame.hpp"
-
-#define COLLIDED1D(b, a, c) ((a<b)?(b<=c):(b>=c))
-#define COLLIDED2D(r, op, np) (COLLIDED1D(r.pos.x, op.x, np.x) && COLLIDED1D(op.y, r.pos.y, r.pos.y+r.size))
+#include "macro.hpp"
 
 RC::Pong::Vector2::operator Network::Position() const noexcept
 {
@@ -37,15 +35,16 @@ void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 		this->angle = -this->angle;
 		return;
 	}
-	else if (COLLIDED1D(500, this->pos.y, new_pos.y)) {
+	if (COLLIDED1D(PONG_MAX_Y, this->pos.y, new_pos.y)) {
 		this->angle = -this->angle;
 		return;
 	}
+
 	if (COLLIDED2D(r1, this->pos, new_pos)) { // ball collide with r1
-		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 0.57;
+		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 5.28318530717;
 	}
 	else if (COLLIDED2D(r2, this->pos, new_pos)) {  // ball collide with r2
-		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 3.71159;
+		this->angle = ((double) rand() / (RAND_MAX)) * 2 + 2.14159265358;
 	}
 	else
 		this->pos = new_pos;

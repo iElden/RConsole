@@ -13,9 +13,6 @@
 #include "../../server/ClientList.hpp"
 #include "../../client/Controller/IController.hpp"
 
-#define TICK_PER_SECOND 50
-#define PONG_MAX_Y 500
-
 namespace RC::Pong {
 	class SGame : public ISGame {
 	private:

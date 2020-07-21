@@ -9,6 +9,7 @@
 #include "SGame.hpp"
 #include "../../network/Exceptions.hpp"
 #include "../../server/exc.hpp"
+#include "macro.hpp"
 
 using Keys = RC::Client::Controller::Network::Keys;
 
