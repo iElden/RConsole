@@ -25,8 +25,8 @@ namespace RC::Client
 		}
 
 		this->_loadMainPage();
-/*
-		this->_currentGame.reset(new Pong::CGame(*new Lobby()));
+
+		/*this->_currentGame.reset(new Pong::CGame(*new Lobby()));
 		for (int i = 0; i < 3; i++)
 			this->_menu[i].stop();
 
