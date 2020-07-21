@@ -7,6 +7,7 @@
 #include "../../client/Exceptions.hpp"
 #include "../../network/Exceptions.hpp"
 
+#include <iostream>
 namespace RC::Pong
 {
 	CGame::CGame(const Client::Lobby &lobby) :
@@ -102,22 +103,9 @@ namespace RC::Pong
 				throw ::RC::Network::InvalidPacketSizeException(size, sizeof(Network::PacketUpdate));
 
 			this->_sendInput(controller, client);
-			this->_ball.pos.x = pack.update.ball.pos.x;
-			this->_ball.pos.y = pack.update.ball.pos.y;
-			this->_ball.speed = pack.update.ball.speed;
-			this->_ball.angle = pack.update.ball.angle;
-
-			this->_p1.speed = pack.update.racket1.speed;
-			this->_p1.direction = pack.update.racket1.direction;
-			this->_p1.size = pack.update.racket1.size;
-			this->_p1.pos.x = pack.update.racket1.pos.x;
-			this->_p1.pos.y = pack.update.racket1.pos.y;
-
-			this->_p2.speed = pack.update.racket2.speed;
-			this->_p2.direction = pack.update.racket2.direction;
-			this->_p2.size = pack.update.racket2.size;
-			this->_p2.pos.x = pack.update.racket2.pos.x;
-			this->_p2.pos.y = pack.update.racket2.pos.y;
+			this->_ball = pack.update.ball;
+			this->_p1 = pack.update.racket1;
+			this->_p2 = pack.update.racket2;
 			break;
 		case Network::SCORE:
 			if (size < sizeof(Network::PacketScore))
