@@ -87,7 +87,8 @@ namespace RC::Client
 		sf::Event event;
 
 		while (this->_window.pollEvent(event)) {
-			this->_gui.handleEvent(event);
+			if (!this->_currentGame)
+				this->_gui.handleEvent(event);
 
 			switch (event.type) {
 			case sf::Event::Closed:
