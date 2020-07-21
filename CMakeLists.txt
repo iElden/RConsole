@@ -20,9 +20,14 @@ set(
 	games/pong/Utils.hpp
 )
 
+if (WIN32)
+	set(ICON client/icon.rc)
+endif ()
+
 add_executable(
 	client
 	client/main.cpp
+	${ICON}
 	${NETWORK_SRC}
 	client/Player.hpp
 	client/Player.cpp
@@ -42,12 +47,21 @@ add_executable(
 	games/pong/CGame.cpp
 	games/pong/CGame.hpp
 	games/ICGame.hpp
-	client/Controller/IController.hpp client/Controller/KeyboardController.cpp client/Controller/KeyboardController.hpp)
+	client/Controller/IController.hpp
+	client/Controller/KeyboardController.cpp
+	client/Controller/KeyboardController.hpp
+)
 
 if (WIN32)
 	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread)
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+		target_compile_options(client PUBLIC -mwindows -O0)
+	endif()
 else (WIN32)
 	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread X11)
+	if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+		target_compile_options(client PUBLIC -O0)
+	endif()
 endif (WIN32)
 
 

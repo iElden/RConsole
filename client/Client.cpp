@@ -15,6 +15,10 @@ namespace RC::Client
 		_window({640, 480}, "RConsole"),
 		_gui(this->_window)
 	{
+		sf::Image logo;
+
+		logo.loadFromFile("gui/logo.png");
+		this->_window.setIcon(logo.getSize().x, logo.getSize().y, logo.getPixelsPtr());
 		this->_window.setFramerateLimit(60);
 		this->_hookNetworkHandler();
 
@@ -450,6 +454,19 @@ namespace RC::Client
 		this->_unlockGUI();
 	}
 
+	void Client::_handleGameEvent(const Network::Packet &packet)
+	{
+		if (!this->_controller)
+			return this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
+
+		try {
+			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
+		} catch (Controller::ControllerException &) {
+			this->_disconnectController();
+			this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
+		}
+	}
+
 	void Client::_startGame(Network::GameID id)
 	{
 		switch (id) {
@@ -467,10 +484,7 @@ namespace RC::Client
 
 		this->_window.setView(view);
 		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
-			if (!this->_controller)
-				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
-			else
-				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
+			this->_handleGameEvent(packet);
 		});
 	}
 

@@ -34,6 +34,7 @@ namespace RC::Pong
 
 	public:
 		CGame(const Client::Lobby &lobby);
+		~CGame();
 		void render(sf::RenderTarget &target) override;
 		void onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller) override;
 		sf::View getView() const override;

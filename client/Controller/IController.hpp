@@ -12,6 +12,7 @@ namespace RC::Client::Controller
 {
 	class IController {
 	public:
+		virtual ~IController() = default;
 		virtual Network::Keys getKeys() = 0;
 	};
 }

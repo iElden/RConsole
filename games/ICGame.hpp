@@ -14,6 +14,7 @@ namespace RC
 {
 	class ICGame {
 	public:
+		virtual ~ICGame() = default;
 		virtual void render(sf::RenderTarget &target) = 0;
 		virtual void onPacketReceived(const void *packet, size_t size, Client::NetworkClient &client, Client::Controller::IController &controller) = 0;
 		virtual sf::View getView() const = 0;

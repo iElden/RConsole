@@ -44,6 +44,7 @@ namespace RC::Client
 		void _handleLobbyListPacket(const Network::Packet &packet);
 		void _handleLobbyCreatedPacket(const Network::Packet &packet);
 		void _handleErrorPacket(const std::string &packet, const std::string &title);
+		void _handleGameEvent(const Network::Packet &packet);
 		void _startGame(Network::GameID id);
 		void _lockGUI();
 		void _unlockGUI();

@@ -26,6 +26,11 @@ namespace RC::Pong
 		this->_text.setCharacterSize(20);
 	}
 
+	CGame::~CGame()
+	{
+		this->_music.stop();
+	}
+
 	void CGame::render(sf::RenderTarget &target)
 	{
 		this->_rect.setOutlineThickness(0);
