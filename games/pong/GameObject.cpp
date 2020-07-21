@@ -94,7 +94,7 @@ void RC::Pong::Racket::update()
 		this->ult -= 2;
 	}
 	if (this->boosted) {
-			this->ult -= 4;
+			this->ult -= 5;
 		if (this->ult < 0) {
 			this->ult = 0;
 			this->unboost();
@@ -111,26 +111,26 @@ void RC::Pong::Racket::addsize(int size)
 
 void RC::Pong::Racket::boost()
 {
-	this->addsize(50);
+	this->addsize(35);
 	this->speed = 12.5;
 	this->boosted = true;
 }
 
 void RC::Pong::Racket::unboost()
 {
-	this->addsize(-50);
+	this->addsize(-35);
 	this->speed = 10;
 	this->boosted = false;
 }
 
 void RC::Pong::Racket::strike()
 {
-	this->addsize(-20);
+	this->addsize(-30);
 	this->striked = true;
 }
 
 void RC::Pong::Racket::unstrike()
 {
-	this->addsize(20);
+	this->addsize(30);
 	this->striked = false;
 }

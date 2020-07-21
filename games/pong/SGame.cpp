@@ -99,8 +99,8 @@ namespace RC::Pong
 			player_racket.move(NONE);
 
 		if (keys.x) {
-			if (player_racket.ult >= 600) {
-				player_racket.ult -= 550;
+			if (player_racket.ult >= 700) {
+				player_racket.ult -= 700;
 				this->ball.set_slowed();
 			}
 		}
