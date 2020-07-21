@@ -164,9 +164,9 @@ namespace RC::Pong
 		this->_rect.setOrigin(5, 15);
 		this->_rect.setRotation(goLeft ? 22.5 : -22.5);
 		if (goLeft)
-			this->_rect.setPosition(pos.x - (timer - 500) * 8 + 5, pos.y + 15);
+			this->_rect.setPosition(pos.x - ((timer - 500) * racket.meter / 1000.f) * 8 + 5, pos.y + 12);
 		else
-			this->_rect.setPosition(pos.x + (timer - 500) * 8 + 5, pos.y + 15);
+			this->_rect.setPosition(pos.x + ((timer - 500) * racket.meter / 1000.f) * 8 + 5, pos.y + 12);
 		target.draw(this->_rect);
 
 		this->_rect.setOrigin(0, 0);
@@ -180,11 +180,11 @@ namespace RC::Pong
 			this->_rect.setPosition(pos.x + 400 * racket.meter / 1000.f, pos.y);
 		target.draw(this->_rect);
 
-		this->_rect.setSize({10, 20});
+		this->_rect.setSize({30, 20});
 		if (goLeft)
 			this->_rect.setPosition(pos.x, pos.y);
 		else
-			this->_rect.setPosition(pos.x - 10, pos.y);
+			this->_rect.setPosition(pos.x - 30, pos.y);
 		target.draw(this->_rect);
 
 		this->_rect.setSize({410, 12});
