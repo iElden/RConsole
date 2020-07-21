@@ -21,6 +21,8 @@ namespace RC::Pong {
 		Ball ball{{500, 250}, 7.5, 0};
 		Racket racket1{{50, 200}, 100, NONE, 10.f};
 		Racket racket2{{950, 200}, 100, NONE, 10.f};
+		int score1 = 0;
+		int score2 = 0;
 		enum GameState {
 			WAITING,
 			PLAYING,
@@ -29,7 +31,9 @@ namespace RC::Pong {
 		unsigned int timer = 0;
 
 		void send_update_to_player();
+		void send_score_to_player();
 		void set_waiting_timer(unsigned int time);
+		void goal(int pl);
 		void gameloop();
 
 	public:

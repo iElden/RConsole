@@ -22,9 +22,13 @@ namespace RC::Pong {
 		Vector2 pos;
 		float speed;
 		float angle;
+		bool slowed;
+		int slowed_timer;
 
 		operator Network::Ball() const noexcept;
 		void update(const Racket &r1, const Racket &r2) noexcept;
+		void reset(float speed=7.5);
+		void set_slowed();
 	};
 
 	struct Racket {

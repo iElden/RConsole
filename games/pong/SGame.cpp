@@ -41,35 +41,31 @@ namespace RC::Pong
 					this->gameState = PLAYING;
 				else
 					this->timer--;
-				return;
+				break;
 			case PLAYING:
 				this->gameloop();
-				return;
+				break;
 			case ENDED:
-				return;
+				break;
 		}
+		this->send_update_to_player();
 	}
 
 	void RC::Pong::SGame::gameloop()
 	{
 		this->ball.update(this->racket1, this->racket2);
-		this->send_update_to_player();
+		if (this->ball.pos.x <= 0)
+			this->goal(1);
+		if (this->ball.pos.x >= PONG_MAX_X)
+			this->goal(0);
 	}
 
-	void SGame::send_update_to_player()
+	void RC::Pong::SGame::goal(int pl)
 	{
-		Network::PacketUpdate packet{
-			Network::GAME_UPDATE
-		};
-
-		packet.ball = this->ball;
-		packet.racket1 = this->racket1;
-		packet.racket2 = this->racket2;
-		for (auto &pl : this->players) {
-			try {
-				pl.send_update(packet);
-			} catch (...) {}
-		}
+		(pl ? this->score2 : this->score1) += 1;
+		this->ball.reset();
+		this->set_waiting_timer(3 * TICK_PER_SECOND);
+		this->send_score_to_player();
 	}
 
 	void SGame::set_waiting_timer(unsigned int time)
@@ -90,6 +86,10 @@ namespace RC::Pong
 			player_racket.move(DOWN);
 		else
 			player_racket.move(NONE);
+
+		if (keys.x) {
+			this->ball.set_slowed();
+		}
 	}
 
 	void SGame::onPacketReceived(const void *data, size_t size, Server::Client &client)
@@ -115,5 +115,36 @@ namespace RC::Pong
 				return i;
 		}
 		return 2147483647;
+	}
+
+	void SGame::send_update_to_player()
+	{
+		Network::PacketUpdate packet{
+				Network::GAME_UPDATE
+		};
+
+		packet.ball = this->ball;
+		packet.racket1 = this->racket1;
+		packet.racket2 = this->racket2;
+		for (auto &pl : this->players) {
+			try {
+				pl.send_update(packet);
+			} catch (...) {}
+		}
+	}
+
+	void SGame::send_score_to_player()
+	{
+		Network::PacketScore packet{
+				Network::SCORE
+		};
+
+		packet.score_1 = this->score1;
+		packet.score_2 = this->score2;
+		for (auto &pl : this->players) {
+			try {
+				pl.send_score(packet);
+			} catch (...) {}
+		}
 	}
 }

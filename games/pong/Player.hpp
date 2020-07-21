@@ -19,6 +19,7 @@ namespace RC::Pong {
 	public:
 		Player(const std::shared_ptr<Server::Client> &client_ptr);
 		void send_update(const Network::PacketUpdate &packetUpdate);
+		void send_score(const Network::PacketScore &packetScore);
 		bool operator==(const Server::Client &client) const;
 	};
 }

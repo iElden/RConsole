@@ -28,8 +28,9 @@ RC::Pong::Ball::operator Network::Ball() const noexcept
 void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 {
 	Vector2 new_pos;
-	new_pos.x = this->pos.x + static_cast<int>(cos(this->angle) * this->speed);
-	new_pos.y = this->pos.y + static_cast<int>(sin(this->angle) * this->speed);
+	int aspeed = this->slowed ? (this->speed / 3) : this->speed;
+	new_pos.x = this->pos.x + static_cast<int>(cos(this->angle) * aspeed);
+	new_pos.y = this->pos.y + static_cast<int>(sin(this->angle) * aspeed);
 
 	if (COLLIDED1D(0, this->pos.y, new_pos.y)) {
 		this->angle = -this->angle;
@@ -48,7 +49,13 @@ void RC::Pong::Ball::update(const Racket &r1, const Racket &r2) noexcept
 	}
 	else
 		this->pos = new_pos;
-	this->speed += 0.01;
+	if (this->slowed) {
+		this->slowed_timer--;
+		if (!this->slowed_timer)
+			this->slowed = false;
+	}
+	else
+		this->speed += 0.01;
 }
 
 void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
@@ -66,4 +73,17 @@ void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
 		break;
 	}
 	this->pos.y = std::max(std::min(this->pos.y, PONG_MAX_Y - this->size), 0);
+}
+
+void RC::Pong::Ball::reset(float speed_)
+{
+	this->pos = {500, 250};
+	this->speed = speed_;
+	this->angle = (rand() % 2) * M_PI;
+}
+
+void RC::Pong::Ball::set_slowed()
+{
+	this->slowed = true;
+	this->slowed_timer = TICK_PER_SECOND;
 }
