@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnTouchListener { view, _ ->
                 this.data[0] = this.data[0].or(button.tag.toString().toInt().toByte())
                 view.performClick()
-                //button.performClick()
+                button.performClick()
                 return@setOnTouchListener true
             }
         }
