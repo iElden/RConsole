@@ -21,13 +21,16 @@ namespace RC::Pong
 		sf::Music _music;
 		std::pair<int, int> _score;
 		Network::Ball _ball{{0, 0}, 0, 0};
-		Network::Racket _p1{{0, 0}, 0, NONE};
-		Network::Racket _p2{{0, 0}, 0, NONE};
+		Network::Racket _p1{{0, 0}, 0, 500, NONE};
+		Network::Racket _p2{{0, 0}, 0, 500, NONE};
 		sf::CircleShape _circle;
 		sf::RectangleShape _rect;
 		tgui::Text _text;
+		unsigned timer1 = 950;
+		unsigned timer2 = 0;
 
 		void _sendInput(Client::Controller::IController &controller, Client::NetworkClient &client);
+		void _displayMeterBar(sf::RenderTarget &target, const Network::Racket &racket, unsigned &timer, sf::Color color, sf::Vector2f pos, bool goLeft);
 
 	public:
 		CGame(const Client::Lobby &lobby);
