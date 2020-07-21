@@ -17,7 +17,7 @@ RC::Pong::Vector2::operator Network::Position() const noexcept
 
 RC::Pong::Racket::operator Network::Racket() const noexcept
 {
-	return RC::Pong::Network::Racket{this->pos, this->size, this->direction1D, this->speed};
+	return RC::Pong::Network::Racket{this->pos, this->size, 0, this->direction1D, this->speed};
 }
 
 RC::Pong::Ball::operator Network::Ball() const noexcept

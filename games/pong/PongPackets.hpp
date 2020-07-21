@@ -35,6 +35,7 @@ namespace RC::Pong::Network
 	struct PACKED Racket {
 		Position pos;
 		int size;
+		unsigned meter;
 		Direction1D direction;
 		float speed;
 	};
