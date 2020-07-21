@@ -26,7 +26,7 @@ namespace RC::Client
 
 		this->_loadMainPage();
 
-		this->_currentGame.reset(new Pong::CGame(*new Lobby()));
+		/*this->_currentGame.reset(new Pong::CGame(*new Lobby()));
 		for (int i = 0; i < 3; i++)
 			this->_menu[i].stop();
 
@@ -38,7 +38,7 @@ namespace RC::Client
 				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
 			else
 				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
-		});
+		});*/
 	}
 
 	Client::~Client()
