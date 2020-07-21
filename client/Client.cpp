@@ -25,6 +25,20 @@ namespace RC::Client
 		}
 
 		this->_loadMainPage();
+/*
+		this->_currentGame.reset(new Pong::CGame(*new Lobby()));
+		for (int i = 0; i < 3; i++)
+			this->_menu[i].stop();
+
+		auto view = this->_currentGame->getView();
+
+		this->_window.setView(view);
+		this->_client.attach(Network::opcodeToString.at(Network::GAME_EVENT), [this](const Network::Packet &packet){
+			if (!this->_controller)
+				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, this->_defaultController);
+			else
+				this->_currentGame->onPacketReceived(packet.gameEvent.gameData, packet.header.dataSize - sizeof(packet.header.code), this->_client, *this->_controller);
+		});*/
 	}
 
 	Client::~Client()

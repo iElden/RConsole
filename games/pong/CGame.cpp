@@ -17,20 +17,28 @@ namespace RC::Pong
 		this->_music.setLoopPoints({sf::seconds(5.477), sf::seconds(32.011)});
 		this->_music.setLoop(true);
 
-		this->_rect.setOutlineThickness(0);
-		this->_rect.setFillColor(sf::Color::White);
-
 		this->_circle.setRadius(3);
 		this->_circle.setOutlineThickness(0);
 		this->_circle.setFillColor(sf::Color::White);
 
 		this->_text.setFont(tgui::getGlobalFont());
-		this->_text.setColor(sf::Color::White);
 		this->_text.setCharacterSize(20);
 	}
 
 	void CGame::render(sf::RenderTarget &target)
 	{
+		this->_rect.setOutlineThickness(0);
+		this->_rect.setPosition(-50, -100);
+		this->_rect.setSize({1100, 650});
+		this->_rect.setFillColor({125, 125, 125, 255});
+		target.draw(this->_rect);
+
+		this->_rect.setPosition(0, 0);
+		this->_rect.setSize({1000, 500});
+		this->_rect.setFillColor(sf::Color::Black);
+		target.draw(this->_rect);
+
+		this->_rect.setFillColor(sf::Color::White);
 		this->_rect.setSize({
 			20,
 			static_cast<float>(this->_p1.size)
@@ -48,12 +56,39 @@ namespace RC::Pong
 		this->_circle.setPosition(this->_ball.pos.x - 3, this->_ball.pos.y - 3);
 		target.draw(this->_circle);
 
-		this->_text.setPosition(2, 2);
+		this->_rect.setFillColor(sf::Color::Blue);
+		this->_rect.setPosition(0, -28);
+		this->_rect.setSize({400 * this->_p1.meter / 1000.f, 20});
+		target.draw(this->_rect);
+
+		this->_rect.setFillColor(sf::Color::Red);
+		this->_rect.setPosition(1000 - 400 * this->_p2.meter / 1000.f, -28);
+		this->_rect.setSize({400 * this->_p2.meter / 1000.f, 20});
+		target.draw(this->_rect);
+
+		this->_rect.setOutlineThickness(3);
+		this->_rect.setFillColor(sf::Color::Transparent);
+		this->_rect.setSize({400, 20});
+
+		this->_rect.setPosition(0, -28);
+		target.draw(this->_rect);
+
+		this->_rect.setPosition(600, -28);
+		target.draw(this->_rect);
+
+		this->_text.setColor(sf::Color::Blue);
+		this->_text.setPosition(2, -60);
 		this->_text.setString((this->_lobby.players.size() >= 1 ? this->_lobby.players[0].getName() : "No player") + ": " + std::to_string(this->_score.first));
 		this->_text.draw(target, {});
 
-		this->_text.setPosition(800, 2);
-		this->_text.setString((this->_lobby.players.size() >= 2 ? this->_lobby.players[1].getName() : "No player") + ": " + std::to_string(this->_score.second));
+		std::string str = (this->_lobby.players.size() >= 2 ? this->_lobby.players[1].getName() : "No player") + ": " + std::to_string(this->_score.second);
+		unsigned pos = 1000;
+
+		for (char c : str)
+			pos -= this->_text.getFont().getGlyph(c, 20, false).advance;
+		this->_text.setColor(sf::Color::Red);
+		this->_text.setPosition(pos, -60);
+		this->_text.setString(str);
 		this->_text.draw(target, {});
 	}
 
@@ -98,7 +133,7 @@ namespace RC::Pong
 
 	sf::View CGame::getView() const
 	{
-		return sf::View{{0, 0, 1000, 500}};
+		return sf::View{{-50, -100, 1100, 650}};
 	}
 
 	void CGame::_sendInput(Client::Controller::IController &controller, Client::NetworkClient &client)
