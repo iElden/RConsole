@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <map>
+#include <string>
 
 #define PACKED __attribute((packed))
 #define MAX_USERNAME 64
