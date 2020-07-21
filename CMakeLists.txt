@@ -52,16 +52,17 @@ add_executable(
 	client/Controller/KeyboardController.hpp
 )
 
+if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	target_compile_options(client PUBLIC -O0)
+endif()
+
 if (WIN32)
 	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread)
 	if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-		target_compile_options(client PUBLIC -mwindows -O0)
+		target_link_options(client PUBLIC -mwindows)
 	endif()
 else (WIN32)
 	target_link_libraries(client tgui sfml-audio sfml-graphics sfml-window sfml-network sfml-system pthread X11)
-	if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
-		target_compile_options(client PUBLIC -O0)
-	endif()
 endif (WIN32)
 
 
