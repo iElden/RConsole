@@ -22,6 +22,11 @@ void Text::setText(std::string text)
     this->_text = text;
 }
 
+void Text::setTouchArea(std::array<VINT, 2> touchArea)
+{
+    this->_touchArea = _touchArea;
+}
+
 bool Text::isTouched(Vector2<int> touchPosition)
 {
     return touchPosition.isInside(this->_touchArea[0], this->_touchArea[1]);

@@ -26,7 +26,7 @@ private:
 
     void testKeyboardsSpawn();
 
-    void initGamepadAction();
+    bool initGamepadAction();
     void runGamepadAction();
 
 private:
@@ -40,6 +40,7 @@ private:
     Text s_connect{"Connect to client", {25, 5}, {VINT{30, 180}, VINT{150, 210}}};
     Text s_help{"Double-tap on connect if needed.", {26, 5}};
     Text s_help2{"Select to change combination.", {27, 5}};
+    Text s_help3{"", {28, 5}};
     Text s_ip{"0.0.0.0", {10, 24}};
     Text s_id{"0000", {20, 24}};
     Text s_status{"Not connected", {25, 24}};
@@ -51,6 +52,8 @@ private:
     Network network;
 
     u32 _keys;
+
+    int idx = 0;
 };
 
 #endif // CLIENT_3DS_HPP
