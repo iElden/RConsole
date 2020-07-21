@@ -58,6 +58,17 @@ namespace RC::Pong
 			this->goal(1);
 		if (this->ball.pos.x >= PONG_MAX_X)
 			this->goal(0);
+		if (this->racket1.striked) {
+			this->racket2.ult -= 5;
+			if (this->racket2.ult < 0)
+				this->racket1.unstrike();
+		}
+		if (this->racket2.striked)
+			this->racket1.ult -= 5;
+			if (this->racket1.ult < 0)
+				this->racket2.unstrike();
+		this->racket1.update();
+		this->racket2.update();
 	}
 
 	void RC::Pong::SGame::goal(int pl)
@@ -88,8 +99,25 @@ namespace RC::Pong
 			player_racket.move(NONE);
 
 		if (keys.x) {
-			this->ball.set_slowed();
+			if (player_racket.ult >= 600) {
+				player_racket.ult -= 550;
+				this->ball.set_slowed();
+			}
 		}
+		if (keys.y) {
+			if (player_racket.ult >= 1000) {
+				player_racket.ult = 975;
+				player_racket.boost();
+			}
+		}
+		if (keys.a) {
+			if (player_racket.ult >= 1000) {
+				(player ? this->racket1 : this->racket2).strike();
+				player_racket.ult = 975;
+			}
+		}
+
+		player_racket.sprinting = keys.b;
 	}
 
 	void SGame::onPacketReceived(const void *data, size_t size, Server::Client &client)

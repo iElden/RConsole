@@ -18,6 +18,7 @@ namespace RC::Pong {
 	};
 
 	class Racket;
+
 	struct Ball {
 		Vector2 pos;
 		float speed;
@@ -34,11 +35,21 @@ namespace RC::Pong {
 	struct Racket {
 		Vector2 pos;
 		int size;
+		int ult;
 		Direction1D direction1D;
 		float speed;
+		bool boosted;
+		bool striked;
+		bool sprinting;
 
 		operator Network::Racket() const noexcept;
 		void move(Direction1D new_dir);
+		void addsize(int size);
+		void boost();
+		void unboost();
+		void update();
+		void strike();
+		void unstrike();
 	};
 }
 

@@ -19,8 +19,8 @@ namespace RC::Pong {
 		std::vector<Player> players = {};
 
 		Ball ball{{500, 250}, 7.5, 0};
-		Racket racket1{{50, 200}, 100, NONE, 10.f};
-		Racket racket2{{950, 200}, 100, NONE, 10.f};
+		Racket racket1{{50, 200}, 100, 0, NONE, 10.f};
+		Racket racket2{{950, 200}, 100, 0, NONE, 10.f};
 		int score1 = 0;
 		int score2 = 0;
 		enum GameState {

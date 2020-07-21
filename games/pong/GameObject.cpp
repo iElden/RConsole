@@ -17,7 +17,7 @@ RC::Pong::Vector2::operator Network::Position() const noexcept
 
 RC::Pong::Racket::operator Network::Racket() const noexcept
 {
-	return RC::Pong::Network::Racket{this->pos, this->size, 0, this->direction1D, this->speed};
+	return RC::Pong::Network::Racket{this->pos, this->size, static_cast<unsigned>(this->ult), this->direction1D, this->speed};
 }
 
 RC::Pong::Ball::operator Network::Ball() const noexcept
@@ -66,10 +66,10 @@ void RC::Pong::Racket::move(RC::Pong::Direction1D new_dir)
 	case NONE:
 		return;
 	case UP:
-		this->pos.y -= this->speed;
+		this->pos.y -= this->speed + this->sprinting * 8;
 		break;
 	case DOWN:
-		this->pos.y += this->speed;
+		this->pos.y += this->speed + this->sprinting * 8;
 		break;
 	}
 	this->pos.y = std::max(std::min(this->pos.y, PONG_MAX_Y - this->size), 0);
@@ -86,4 +86,51 @@ void RC::Pong::Ball::set_slowed()
 {
 	this->slowed = true;
 	this->slowed_timer = TICK_PER_SECOND;
+}
+
+void RC::Pong::Racket::update()
+{
+	if (this->sprinting) {
+		this->ult -= 2;
+	}
+	if (this->boosted) {
+			this->ult -= 4;
+		if (this->ult < 0) {
+			this->ult = 0;
+			this->unboost();
+		}
+	}
+	this->ult = std::min(std::max(this->ult += 1, 0), 1000);
+}
+
+void RC::Pong::Racket::addsize(int size)
+{
+	this->pos.y -= size / 2;
+	this->size += size;
+}
+
+void RC::Pong::Racket::boost()
+{
+	this->addsize(50);
+	this->speed = 12.5;
+	this->boosted = true;
+}
+
+void RC::Pong::Racket::unboost()
+{
+	this->addsize(-50);
+	this->speed = 10;
+	this->boosted = false;
+}
+
+void RC::Pong::Racket::strike()
+{
+	this->addsize(-20);
+	this->striked = true;
+}
+
+void RC::Pong::Racket::unstrike()
+{
+	this->addsize(20);
+	this->striked = false;
 }
