@@ -49,7 +49,11 @@ namespace RC::Pong
 		target.draw(this->_circle);
 
 		this->_text.setPosition(2, 2);
-		this->_text.setString();
+		this->_text.setString((this->_lobby.players.size() >= 1 ? this->_lobby.players[0].getName() : "No player") + ": " + std::to_string(this->_score.first));
+		this->_text.draw(target, {});
+
+		this->_text.setPosition(800, 2);
+		this->_text.setString((this->_lobby.players.size() >= 2 ? this->_lobby.players[1].getName() : "No player") + ": " + std::to_string(this->_score.second));
 		this->_text.draw(target, {});
 	}
 
