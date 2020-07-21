@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnTouchListener { view, _ ->
                 this.data[0] = this.data[0].or(button.tag.toString().toInt().toByte())
                 view.performClick()
-                button.performClick()
+                //button.performClick()
                 return@setOnTouchListener true
             }
         }
@@ -143,6 +143,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     if (this.response[0] == Opcodes.INPUT_REQ.byte) {
                         send(Packet(Opcodes.INPUTS, data))
+                        data[0] = 0
                     }
                 } catch (e: SocketTimeoutException) {
 
